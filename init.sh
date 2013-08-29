@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # backup old files if exist
 if [ -e $HOME/.emacs ]; then
     echo "backup ~/.emacs"
