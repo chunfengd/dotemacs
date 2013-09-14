@@ -13,7 +13,6 @@
     ))
 
 (cond
- ;; windows
  ((string-equal system-type "windows-nt")
   (progn
     (setq default-frame-alist
@@ -22,30 +21,28 @@
                     (foreground-color . "grey75")
                     (border-color . "white")
                     (cursor-color . "grey80")
-                    (mouse-color . "dark orange")
-                    )))))
+                    (mouse-color . "dark orange"))))))
  ((string-equal system-type "darwin")
   (progn
     (setq default-frame-alist
           (append cf-default-frame-alist
-                  '(
-                    (background-color . "black")
+                  '((background-color . "black")
                     (foreground-color . "grey75")
                     (border-color . "white")
                     (cursor-color . "purple")
-                    (mouse-color . "dark orange")
-                    )))))
+                    (mouse-color . "dark orange"))))))
  ((string-equal system-type "gnu/linux")
   (progn
     (setq default-frame-alist
           (append cf-default-frame-alist
-                  '(
-                    (background-color . "black")
+                  '((background-color . "black")
                     (foreground-color . "grey75")
                     (border-color . "white")
                     (cursor-color . "grey80")
-                    (mouse-color . "dark orange")
-                    ))))))
+                    (mouse-color . "dark orange")))))))
+
+(if (display-graphic-p)
+    (set-face-background hl-line-face "grey15"))
   
 ;;(add-to-list 'initial-frame-alist '(top . 60))
 (add-to-list 'initial-frame-alist '(left . 650))
@@ -69,7 +66,7 @@
 (global-font-lock-mode t)
 
 (global-hl-line-mode t)
-(set-face-background hl-line-face "grey15")
+
 
 (setq-default indent-tabs-mode nil)
 (setq default-tab-width 8)
