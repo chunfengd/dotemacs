@@ -41,6 +41,7 @@
                     (cursor-color . "grey80")
                     (mouse-color . "dark orange")))))))
 
+(global-hl-line-mode t)
 (if (display-graphic-p)
     (set-face-background hl-line-face "grey15"))
   
@@ -64,9 +65,6 @@
 (setq scroll-margin 3
       scroll-conservatively 10000)
 (global-font-lock-mode t)
-
-(global-hl-line-mode t)
-
 
 (setq-default indent-tabs-mode nil)
 (setq default-tab-width 8)
