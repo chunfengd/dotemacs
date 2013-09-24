@@ -52,3 +52,4 @@ char will be used."
   (c-toggle-hungry-state 1))
 (add-hook 'c-mode-hook 'cf-init-c)
 (add-hook 'c++-mode-hook 'cf-init-c)
+(add-hook 'java-mode-hook 'cf-init-c)
