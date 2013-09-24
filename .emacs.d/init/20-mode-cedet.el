@@ -38,7 +38,7 @@
   (semantic-load-enable-minimum-features)
   ;;(semantic-load-enable-guady-code-helpers)
   ;;(semantic-load-enable-excessive-code-helpers)
-  (semantic-load-enable-semantic-debugging-helpers)
+  ;;(semantic-load-enable-semantic-debugging-helpers)
   (require 'semanticdb)
   (global-semanticdb-minor-mode 1)
   ;;(require 'semanticdb-global)
