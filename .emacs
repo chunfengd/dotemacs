@@ -5,12 +5,8 @@
     (setenv "HOME" "d:/emacshome")
     (setq default-directory "~/"))))
 
-(add-to-list 'load-path "~/.emacs.d/site")
-(add-to-list 'load-path "~/.emacs.d/site-byte")
-(add-to-list 'load-path "~/.emacs.d/site-byte/cedet/common")
+;;(add-to-list 'load-path "~/.emacs.d/site")
 (mapc 'load (directory-files "~/.emacs.d/init" t
-			     "^[a-zA-Z0-9].*.el$"))
-(mapc 'load (directory-files "~/.emacs.d/cedet-pro" t
 			     "^[a-zA-Z0-9].*.el$"))
 
 (custom-set-variables
