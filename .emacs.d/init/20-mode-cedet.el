@@ -4,6 +4,7 @@
 ;(require 'cedet)
 
 (defconst cedet-home "~/.emacs.d/site-byte/cedet")
+(defconst cedet-pro-home "~/.emacs.d/cedet-pro")
 
 (setq byte-compile-warnings nil)
 
@@ -63,8 +64,10 @@
   (global-semantic-tag-folding-mode 1)
   (cf-semantic-folding-key-binding)
   (cf-semantic-tag-key-binding)
-  (mapc 'load (directory-files "~/.emacs.d/cedet-pro" t
-			     "^[a-zA-Z0-9].*.el$")))
+  (if (file-exists-p cedet-pro-home)
+      (mapc 'load
+            (directory-files cedet-pro-home t
+                             "^[a-zA-Z0-9].*.el$"))))
 
 (if (file-exists-p cedet-home)
     (cf-load-cedet))
