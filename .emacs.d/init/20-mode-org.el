@@ -36,6 +36,16 @@
      ("C-c C-p" nil)
      ("C-c C-f" nil)
 
+     ("C-c C-v C-h" org-metaleft)
+     ("C-c C-v C-l" org-metaright)
+     ("C-c C-v C-k" org-metaup)
+     ("C-c C-v C-j" org-metadown)
+
+     ("C-c C-x C-h" org-shiftmetaleft)
+     ("C-c C-x C-l" org-shiftmetaright)
+     ("C-c C-x C-k" org-shiftmetaup)
+     ("C-c C-x C-j" org-shiftmetadown)
+
      ("M-h" backward-word)
      ("M-b" org-mark-element)
 
