@@ -3,11 +3,13 @@
 (require 'org-install)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 
-(setq org-directory "~/Dropbox/org")
-(setq org-mobile-inbox-for-pull "~/Dropbox/org/flagged.org")
-(setq org-mobile-directory "~/Dropbox/Apps/MobileOrg")
-(setq org-mobile-files
-      (directory-files "~/Dropbox/org" nil "^.*.org$"))
+(defconst org-dir-home "~/Dropbox/org")
+(if (file-exists-p org-dir-home)
+    (setq org-directory org-dir-home))
+;; (setq org-mobile-inbox-for-pull "~/Dropbox/org/flagged.org")
+;; (setq org-mobile-directory "~/Dropbox/Apps/MobileOrg")
+;; (setq org-mobile-files
+;;       (directory-files "~/Dropbox/org" nil "^.*.org$"))
 ;;(setq org-mobile-files '("emacs-note.org" "machine-learning.org"))
 
 (defun cf-org-beginning-of-line ()
