@@ -3,11 +3,15 @@
 ;(cf-install-packages '(cedet))
 ;(require 'cedet)
 
+(defconst cedet-home "~/.emacs.d/site-byte/cedet")
+
 (setq byte-compile-warnings nil)
+
 (defconst cf-user-include-dirs
   (list ".." "../frame" "../src" "../include"
 	"../.." "../../frame" "../../src" "../../include"
 	"../../.." "../../../frame" "../../../src" "../../../include"))
+
 (defun cf-semantic-folding-key-binding ()
   (cf-set-key-bindings
    'define-key
@@ -18,6 +22,7 @@
      ("C-c C-=" semantic-tag-folding-show-all)
      )
    semantic-tag-folding-mode-map))
+
 (defun cf-semantic-tag-key-binding ()
   (cf-set-key-bindings
    'define-key
@@ -26,10 +31,11 @@
      ("b" cf-semantic-ia-fast-jump-back)
      )
    senator-prefix-map))
+
 (defun cf-load-cedet ()
   ""
   (interactive)
-  (add-to-list 'load-path "~/.emacs.d/site-byte/cedet/common")
+  (add-to-list 'load-path (concat cedet-home "/common"))
   (require 'cedet)
   (require 'semantic-ia)
   (require 'semantic-gcc)
@@ -58,6 +64,7 @@
   (cf-semantic-folding-key-binding)
   (cf-semantic-tag-key-binding)
   (mapc 'load (directory-files "~/.emacs.d/cedet-pro" t
-			     "^[a-zA-Z0-9].*.el$"))
-  )
-(cf-load-cedet)
+			     "^[a-zA-Z0-9].*.el$")))
+
+(if (file-exists-p cedet-home)
+    (cf-load-cedet))
