@@ -14,3 +14,10 @@
 ;; R session
  (setq ess-ask-for-ess-directory nil)
 
+(defun cf-ess-config-func ()
+  (cf-set-key-bindings
+   'define-key
+   '(("_" nil))
+   ess-mode-map))
+
+(add-hook 'ess-mode-hook 'cf-ess-config-func)
