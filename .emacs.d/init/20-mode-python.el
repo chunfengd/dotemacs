@@ -6,6 +6,7 @@
    'local-set-key
    '(
      ("C-c C-c" comment-or-uncomment-region)))
+  (setq python-indent-offset 4)
   ;; (c-toggle-auto-state)
   (c-toggle-hungry-state 1))
 (add-hook 'python-mode-hook 'cf-init-python)
