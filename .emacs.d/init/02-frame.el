@@ -69,7 +69,10 @@
 (setq-default indent-tabs-mode nil)
 (setq default-tab-width 8)
 
-(global-linum-mode 1)
+;; linum
+(global-linum-mode t)
+(if (not (display-graphic-p))
+    (setq linum-format "%d ")) ; for margin in terminal
 
 ;; parentheses
 ;; (setq show-paren-mode t) ; does not work
