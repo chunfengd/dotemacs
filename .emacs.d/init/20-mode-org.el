@@ -12,6 +12,25 @@
 ;;       (directory-files "~/Dropbox/org" nil "^.*.org$"))
 ;;(setq org-mobile-files '("emacs-note.org" "machine-learning.org"))
 
+(when (file-exists-p org-dir-home)
+  (require 'org-publish)
+  (setq org-publish-project-alist
+        '(("org-notes"
+           :base-directory "~/Dropbox/org/"
+           :base-extension "org"
+           :publishing-directory "~/Dropbox/org-html/"
+           :recursive t
+           :publishing-function org-publish-org-to-html
+           :headline-levels 4
+           :auto-preamble t)
+          ("org-static"
+           :base-directory "~/Dropbox/org/"
+           :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+           :publishing-directory "~/Dropbox/org-html/"
+           :recursive t
+           :publishing-function org-publish-attachment)
+          ("org" :components ("org-notes" "org-static")))))
+
 (defun cf-org-beginning-of-line ()
   (interactive)
   (setq pos-temp (point))
