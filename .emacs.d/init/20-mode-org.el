@@ -12,6 +12,33 @@
 ;;       (directory-files "~/Dropbox/org" nil "^.*.org$"))
 ;;(setq org-mobile-files '("emacs-note.org" "machine-learning.org"))
 
+;; default org-infojs-options:
+;; ((path . "http://orgmode.org/org-info.js")
+;;  (view . "info")
+;;  (toc . :table-of-contents)
+;;  (ftoc . "0")
+;;  (tdepth . "max")
+;;  (sdepth . "max")
+;;  (mouse . "underline")
+;;  (buttons . "0")
+;;  (ltoc . "1")
+;;  (up . :link-up)
+;;  (home . :link-home))
+(setq cf-default-org-infojs-options
+      '((path . "js/org-info.js")
+        (author . nil)
+        (email . nil)
+        (creator . nil)
+        (view . overview)
+        (toc . t)
+        (tdepth . "max")
+        (sdepth . "max")
+        (mouse . "underline")
+        (buttons . "0")
+        (ltoc . "1")
+        (up . :line-up)
+        (home . :link-home)))
+
 (when (file-exists-p org-dir-home)
   (require 'org-publish)
   (setq org-publish-project-alist
@@ -80,7 +107,11 @@
    org-mode-map)
   (linum-mode 0)
   (org-indent-mode t)
-  (flyspell-mode-off))
+  (flyspell-mode-off)
+  (setq org-src-fontify-natively t)
+  (setq org-infojs-options cf-default-org-infojs-options)
+  (setq org-export-html-use-infojs t) ; alternative: when-configured, nil
+  )
 (add-hook 'org-mode-hook 'cf-org-mode-hook-func)
 
 (cf-set-key-bindings
