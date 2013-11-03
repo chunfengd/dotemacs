@@ -103,6 +103,8 @@
 
      ("C-S-i" org-table-previous-field)
      ("M-S-RET" org-table-wrap-region)
+
+     ("C-c C-x C-p" org-preview-latex-fragment)
      )
    org-mode-map)
   (linum-mode 0)
