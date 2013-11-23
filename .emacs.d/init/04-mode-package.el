@@ -2,6 +2,7 @@
 ;; list all packages
 ;; (package-list-packages)
 ;; (package-refresh-contents)
+;; (cf-install-packages '(auto-complete))
 
 (require 'package)
 (add-to-list 'package-archives 
