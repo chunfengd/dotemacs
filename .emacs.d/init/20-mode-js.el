@@ -6,5 +6,9 @@
 
 (defun cf-init-js ()
   (setq js-indent-level 2)
-  (setq js2-basic-offset 2))
+  (setq js2-basic-offset 2)
+  (cf-set-key-bindings
+   'local-set-key
+   '(
+     ("C-c C-c" comment-or-uncomment-region))))
 (add-hook 'js2-mode-hook 'cf-init-js)
