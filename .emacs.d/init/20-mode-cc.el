@@ -53,3 +53,10 @@ char will be used."
 (add-hook 'c-mode-hook 'cf-init-c)
 (add-hook 'c++-mode-hook 'cf-init-c)
 (add-hook 'java-mode-hook 'cf-init-c)
+
+(add-hook 'objc-mode-hook 'cf-init-c)
+(defun cf-init-objc ()
+  (cf-set-key-bindings
+   'local-set-key
+   '(("C-M-h" nil))))
+(add-hook 'objc-mode-hook 'cf-init-objc)
