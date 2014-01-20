@@ -1,6 +1,6 @@
 
-(setq auto-mode-alist
-      (cons '("\\.m$" . octave-mode) auto-mode-alist))
+;; (setq auto-mode-alist
+;;       (cons '("\\.m$" . octave-mode) auto-mode-alist))
 
 (add-hook 'octave-mode-hook
           (lambda ()
