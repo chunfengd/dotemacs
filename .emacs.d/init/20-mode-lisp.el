@@ -9,9 +9,9 @@
    nrepl))
 
 (dolist (mode '(scheme emacs-lisp lisp clojure clojurescript))
-    (when (> (display-color-cells) 8)
-      (font-lock-add-keywords (intern (concat (symbol-name mode) "-mode"))
-                              '(("(\\|)" . 'esk-paren-face))))
+    ;; (when (> (display-color-cells) 8)
+    ;;   (font-lock-add-keywords (intern (concat (symbol-name mode) "-mode"))
+    ;;                           '(("(\\|)" . 'esk-paren-face))))
     (add-hook (intern (concat (symbol-name mode) "-mode-hook"))
               'paredit-mode))
 
@@ -31,7 +31,8 @@ char will be used."
      ("C-k" previous-line)
      ("C-f" paredit-kill)
      ("C-n" paredit-newline)
-     ("C-d" cf-paredit-kill)
+     ;; ("C-d" cf-paredit-kill)
+     ("C-d" nil)
 
      ("C-M-b" nil)
      ("C-M-f" nil)
@@ -48,6 +49,7 @@ char will be used."
      ("]" nil)
      ("{" nil)
      ("}" nil)
+     ("\"" nil)
      )
    paredit-mode-map))
 
@@ -57,3 +59,15 @@ char will be used."
 (add-hook 'nrepl-mode-hook 'subword-mode)
 ;(add-hook 'nrepl-mode-hook 'rainbow-delimiters-mode)
 
+;; doesn't work
+(defun cf-clojure-mode-func ()
+  (cf-set-key-bindings
+   'define-key
+   '(
+     ("{" nil)
+     ("}" nil)
+     )
+   clojure-mode-map)
+  (message "In change key")
+  )
+(add-hook 'paredit-mode-hook 'cf-clojure-mode-func)
