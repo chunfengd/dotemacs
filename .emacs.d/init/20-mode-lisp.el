@@ -81,4 +81,4 @@ Called by `imenu--generic-function'."
   (setq-local imenu-create-index-function
               (lambda ()
                 (imenu--generic-function '((nil cf-clojure-match-next-def 0))))))
-(add-hook 'paredit-mode-hook 'cf-clojure-mode-func)
+(add-hook 'clojure-mode-hook 'cf-clojure-mode-func)
