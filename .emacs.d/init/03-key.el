@@ -42,6 +42,7 @@
    ("C-M-w" scroll-other-window-down)
    ("C-c RET" imenu)
    ("M-o" kill-ring-save)
+   ("C-c C-c" comment-or-uncomment-region)
    ))
 
 (cf-set-key-bindings
