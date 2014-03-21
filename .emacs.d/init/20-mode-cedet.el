@@ -69,5 +69,5 @@
             (directory-files cedet-pro-home t
                              "^[a-zA-Z0-9].*.el$"))))
 
-(if (file-exists-p cedet-home)
-    (cf-load-cedet))
+;; (if (file-exists-p cedet-home)
+;;     (cf-load-cedet))

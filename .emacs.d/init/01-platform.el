@@ -64,6 +64,10 @@
     ;; for cedet include dir
     (defconst cf-system-include-dirs
       (list "/opt/local/include"))
+    (defconst cf-macports-lisp-dir
+      "/opt/local/share/emacs/site-lisp/")
+    (if (file-exists-p cf-macports-lisp-dir)
+        (add-to-list 'load-path cf-macports-lisp-dir))
     (defun toggle-fullscreen ()
       "Toggle full screen. From: http://emacswiki.org/emacs/FullScreen."
       (interactive)
