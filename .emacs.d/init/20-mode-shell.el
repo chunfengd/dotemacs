@@ -21,6 +21,8 @@ char will be used."
      ("M-j" comint-next-input)
      ("M-k" comint-previous-input)
      ("M-h" backward-word)
+     ("C-M-j" comint-next-matching-input-from-input)
+     ("C-M-k" comint-previous-matching-input-from-input)
      ("M-n" nil)
      ("M-p" nil)
 
