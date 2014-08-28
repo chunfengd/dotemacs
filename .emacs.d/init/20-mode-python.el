@@ -31,5 +31,7 @@
    python-mode-map)
   (setq python-indent-offset 4)
   ;; (c-toggle-auto-state)
-  (c-toggle-hungry-state 1))
+  (c-toggle-hungry-state 1)
+  (highlight-indentation-mode)
+  (highlight-indentation-current-column-mode))
 (add-hook 'python-mode-hook 'cf-init-python)
