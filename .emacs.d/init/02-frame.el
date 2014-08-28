@@ -43,7 +43,7 @@
 
 (global-hl-line-mode t)
 (if (display-graphic-p)
-    (set-face-background hl-line-face "grey15"))
+    (set-face-background hl-line-face "grey20"))
   
 ;;(add-to-list 'initial-frame-alist '(top . 60))
 (add-to-list 'initial-frame-alist '(left . 650))
@@ -202,7 +202,8 @@ specified by HEIGHT."
      ;;":pixelsize=14:antialias=subpixel")
     ))
  ((string-equal system-type "darwin")
-  (progn))
+  (progn
+    (set-fontset-font t 'han (font-spec :name "Songti SC"))))
  ;; linux
  ((string-equal system-type "gnu/linux")))
 
