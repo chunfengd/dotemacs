@@ -203,7 +203,9 @@ specified by HEIGHT."
     ))
  ((string-equal system-type "darwin")
   (progn
-    (set-fontset-font t 'han (font-spec :name "Songti SC"))))
+    (if (display-graphic-p)
+        (set-fontset-font
+         t 'han (font-spec :name "Songti SC")))))
  ;; linux
  ((string-equal system-type "gnu/linux")))
 
