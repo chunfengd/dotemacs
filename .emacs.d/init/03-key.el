@@ -167,4 +167,8 @@ capitalize the word."
     (capitalize-word 1)))
 (global-set-key (kbd "M-c") 'cf-magic-kill-ring-save)
 
+(defun cf-indent-regidly-inverse (start end)
+  (interactive "r")
+  (indent-rigidly start end -1))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; chunfeng edit ;;;;;;;;;;;;;;;;;;;;;;
