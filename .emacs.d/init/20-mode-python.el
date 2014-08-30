@@ -16,6 +16,7 @@
    'define-key
    '(("C-j" nil)
      ("C-n" py-newline-and-indent)
+     ("C-m" nil)
      ("C-M-h" nil)
      ("C-M-b" py-mark-def-or-class)
      ("M-j" py-forward-block-or-clause)
