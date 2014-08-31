@@ -31,3 +31,11 @@
    '(("C-c C-/" sgml-close-tag))
    sgml-mode-map))
 (add-hook 'html-mode-hook 'cf-html-func)
+
+(defun cf-nxml-func()
+  (cf-set-key-bindings
+   'define-key
+   '(
+     ("M-h" nil))
+   nxml-mode-map))
+(add-hook 'nxml-mode-hook 'cf-nxml-func)
