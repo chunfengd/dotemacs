@@ -36,6 +36,7 @@
   (cf-set-key-bindings
    'define-key
    '(
+     ("C-c C-e" sgml-close-tag)
      ("M-h" nil))
    nxml-mode-map))
 (add-hook 'nxml-mode-hook 'cf-nxml-func)
