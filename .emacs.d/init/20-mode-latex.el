@@ -7,6 +7,7 @@
      ("C-j" next-line)
      ;;("C-n" tex-terminate-paragraph)
      ("C-c C-o" nil)
+     ("C-c C-c" nil) ;; tex-compile
      ("C-c C-b" latex-insert-block)
      ))
   ;; (setq tex-command "xelatex")
