@@ -113,6 +113,7 @@
   (setq org-src-fontify-natively t)
   (setq org-infojs-options cf-default-org-infojs-options)
   (setq org-export-html-use-infojs t) ; alternative: when-configured, nil
+  (setq org-latex-preview-ltxpng-directory "/tmp/ltxpng/")
   )
 (add-hook 'org-mode-hook 'cf-org-mode-hook-func)
 
