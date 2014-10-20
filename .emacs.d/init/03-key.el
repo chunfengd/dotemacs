@@ -12,6 +12,12 @@
 	(funcall action (eval `(kbd ,(nth 0 pair))) (nth 1 pair))
       (funcall action map (eval `(kbd ,(nth 0 pair))) (nth 1 pair)))))
 
+(defun show-file-name ()
+  "Show the full path file name in the minibuffer.
+   From: http://stackoverflow.com/questions/3669511/the-function-to-show-current-files-full-path-in-mini-buffer"
+  (interactive)
+  (message (buffer-file-name)))
+
 (cf-set-key-bindings
  'global-set-key
  '(
