@@ -4,18 +4,7 @@
 (defun cf-html-func ()
   (cf-set-key-bindings
    'define-key
-   '(
-     ("C-c C-c -" nil)
-     ("C-c C-c c" nil)
-     ("C-c C-c h" nil)
-     ("C-c C-c i" nil)
-     ("C-c C-c l" nil)
-     ("C-c C-c n" nil)
-     ("C-c C-c o" nil)
-     ("C-c C-c r" nil)
-     ("C-c C-c u" nil)
-
-     ("C-c C-c" comment-or-uncomment-region)
+   '(("C-c C-c" comment-or-uncomment-region)
      ("C-c C-x -" html-horizontal-rule)
      ("C-c C-x c" html-checkboxes)
      ("C-c C-x h" html-href-anchor)
