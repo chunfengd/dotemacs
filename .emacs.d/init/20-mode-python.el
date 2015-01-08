@@ -23,6 +23,8 @@
      ("M-k" py-backward-block-or-clause)
      ("C-M-j" py-forward-block-or-clause)
      ("C-M-k" py-backward-block-or-clause)
+     ("C-M-a" nil)
+     ("C-M-e" nil)
      ("C-c C-v" nil)
      ("C-c C-x" nil)
      ("C-c C-m" nil)
