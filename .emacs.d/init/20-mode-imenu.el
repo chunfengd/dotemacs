@@ -1,3 +1,3 @@
 ;; imenu
 
-(setq imenu-auto-rescan t)
+(setq imenu-auto-rescan nil)
