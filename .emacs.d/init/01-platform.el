@@ -32,9 +32,9 @@
     ;; (cf-append-path "D:/run")
     ;; (cf-append-path "C:/texlive/2011/bin/win32")
     ;; (setenv "QMAKESPEC" "win32-g++")
-    (defconst cf-system-include-dirs
-      (list "D:/qt/sdk-4.7.4/include"
-	    "D:/qt/mingw-4.4.0/lib/gcc/mingw32/4.4.0/include/c++"))
+    ;; (defconst cf-system-include-dirs
+    ;;   (list "D:/qt/sdk-4.7.4/include"
+    ;;         "D:/qt/mingw-4.4.0/lib/gcc/mingw32/4.4.0/include/c++"))
     (defun toggle-frame-maximum ()
       "Toggle frame between maximum and norm."
       (interactive)
