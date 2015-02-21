@@ -206,6 +206,7 @@ specified by HEIGHT."
     ))
  ((string-equal system-type "darwin")
   (progn
+    (setq default-directory "~/")
     (if (display-graphic-p)
         (set-fontset-font
          t 'han (font-spec :name "Songti SC")))))
