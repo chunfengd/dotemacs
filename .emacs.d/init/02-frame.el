@@ -7,14 +7,16 @@
 
 (defvar cf-default-frame-alist
   '(
-    ;;(width . 150)
-    (width . 80)
-    (height . 42)
+    ;; (width . 150)
+    ;; (width . 80)
+    ;; (height . 42)
     ))
 
 (cond
  ((string-equal system-type "windows-nt")
   (progn
+    (add-to-list 'initial-frame-alist '(left . 650))
+    ;; (add-to-list 'initial-frame-alist '(top . 100))
     (setq default-frame-alist
           (append cf-default-frame-alist
                   '((background-color . "black")
@@ -24,15 +26,20 @@
                     (mouse-color . "dark orange"))))))
  ((string-equal system-type "darwin")
   (progn
+    (add-to-list 'initial-frame-alist '(left . 650))
+    (add-to-list 'initial-frame-alist '(top . 100))
     (setq default-frame-alist
           (append cf-default-frame-alist
-                  '((background-color . "black")
+                  '((width . 80)
+                    (height . 42)
+                    (background-color . "black")
                     (foreground-color . "grey75")
                     (border-color . "white")
                     (cursor-color . "purple")
                     (mouse-color . "dark orange"))))))
  ((string-equal system-type "gnu/linux")
   (progn
+    (add-to-list 'initial-frame-alist '(left . 650))
     (setq default-frame-alist
           (append cf-default-frame-alist
                   '((background-color . "black")
@@ -44,10 +51,6 @@
 (global-hl-line-mode t)
 (if (display-graphic-p)
     (set-face-background hl-line-face "grey20"))
-  
-;;(add-to-list 'initial-frame-alist '(top . 60))
-(add-to-list 'initial-frame-alist '(left . 650))
-(add-to-list 'initial-frame-alist '(top . 100))
 
 (dolist (mode '(menu-bar-mode tool-bar-mode scroll-bar-mode))
   (when (fboundp mode) (funcall mode -1)))
@@ -189,11 +192,11 @@ specified by HEIGHT."
  ;; windows
  ((string-equal system-type "windows-nt")
   (progn
-    (set-default-font "Consolas:antialias=subpixel")
+    (set-default-font "Consolas:pixelsize=12:antialias=subpixel")
     (set-fontset-font "fontset-default"
 		      'han '("Microsoft Yahei" . "unicode-bmp"))
     (add-to-list 'default-frame-alist
-		 '(font . "Consolas:antialias=subpixel"))
+		 '(font . "Consolas:pixelsize=12:antialias=subpixel"))
     ;;(cf-set-en-font
      ;;'("Consolas" "Monaco" "DejaVu Sans Mono" "Courier New")
      ;;":pixelsize=14:antialias=subpixel")
