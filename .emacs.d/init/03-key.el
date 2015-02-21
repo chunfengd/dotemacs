@@ -50,6 +50,7 @@
    ("C-c RET" imenu)
    ("M-o" kill-ring-save)
    ("C-c C-c" comment-or-uncomment-region)
+   ("s-x" smex)
    ))
 
 (cf-set-key-bindings
