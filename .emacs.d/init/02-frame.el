@@ -192,11 +192,11 @@ specified by HEIGHT."
  ;; windows
  ((string-equal system-type "windows-nt")
   (progn
-    (set-default-font "Consolas:antialias=subpixel")
+    (set-default-font "Consolas:pixelsize=13:antialias=subpixel")
     (set-fontset-font "fontset-default"
 		      'han '("Microsoft Yahei" . "unicode-bmp"))
     (add-to-list 'default-frame-alist
-		 '(font . "Consolas:antialias=subpixel"))
+		 '(font . "Consolas:pixelsize=13:antialias=subpixel"))
     ;;(cf-set-en-font
      ;;'("Consolas" "Monaco" "DejaVu Sans Mono" "Courier New")
      ;;":pixelsize=14:antialias=subpixel")
