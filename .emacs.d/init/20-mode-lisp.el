@@ -5,8 +5,7 @@
    ;;starter-kit-lisp
    ;;starter-kit-eshell
    clojure-mode
-   ;; clojure-test-mode
-   nrepl))
+   ))
 
 (dolist (mode '(scheme emacs-lisp lisp clojure clojurescript))
     ;; (when (> (display-color-cells) 8)
