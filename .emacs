@@ -1,9 +1,9 @@
 
-(cond
- ((string-equal system-type "windows-nt")
-  (progn
-    (setenv "HOME" "d:/emacshome")
-    (setq default-directory "~/"))))
+;; (cond
+;;  ((string-equal system-type "windows-nt")
+;;   (progn
+;;     (setenv "HOME" "d:/emacshome")
+;;     (setq default-directory "~/"))))
 
 ;;(add-to-list 'load-path "~/.emacs.d/site")
 (mapc 'load (directory-files "~/.emacs.d/init" t
