@@ -1,2 +1,2 @@
 
-(setq default-tab-width 8)
+(setq default-tab-width 4)
