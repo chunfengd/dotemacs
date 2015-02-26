@@ -5,6 +5,26 @@
 	     (key-binding (eval `(kbd ,key)))
 	     )))
 
+(defun cf-overlay-key-binding (key)
+  "Keymaps can also be attached to overlays, like yasnippet.
+   From: http://stackoverflow.com/questions/18801018/how-to-find-in-which-map-a-key-binding-is-from-programatically-in-emacs"
+  (mapcar (lambda (keymap) (lookup-key keymap key))
+          (cl-remove-if-not
+           #'keymapp
+           (mapcar (lambda (overlay)
+                     (overlay-get overlay 'keymap))
+                   (overlays-at (point))))))
+
+(defun cf-find-kbd-map (key)
+  "From: http://stackoverflow.com/questions/18801018/how-to-find-in-which-map-a-key-binding-is-from-programatically-in-emacs"
+  (interactive "k")
+  (message "%s"
+   (list
+    (cf-overlay-key-binding key)
+    (minor-mode-key-binding key)
+    (local-key-binding key)
+    (global-key-binding key))))
+
 (defun cf-set-key-bindings (action bind-list &optional map)
   "Set key bindings. 'bind-list' is 2-D list."
   (dolist (pair bind-list)
