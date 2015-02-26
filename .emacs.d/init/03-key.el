@@ -15,9 +15,9 @@
                      (overlay-get overlay 'keymap))
                    (overlays-at (point))))))
 
-(defun cf-find-kbd-map (key)
+(defun cf-find-kbd (key)
   "From: http://stackoverflow.com/questions/18801018/how-to-find-in-which-map-a-key-binding-is-from-programatically-in-emacs"
-  (interactive "k")
+  (interactive "kInput key: ")
   (message "%s"
    (list
     (cf-overlay-key-binding key)
