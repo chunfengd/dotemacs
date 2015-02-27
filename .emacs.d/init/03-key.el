@@ -127,6 +127,18 @@
    )
  minibuffer-local-map)
 
+(cf-set-key-bindings
+ 'global-set-key
+ '(
+   ("C-c C-l" jump-char-forward)
+   ("C-c C-h" jump-char-backward)
+   ;; ("C-c C-l", iy-go-to-or-)
+   ;; ("C-c C-h", iy-go-to-char-backward)
+   ))
+(setq jump-char-use-initial-char nil)
+(setq jump-char-backward-key "C-,")
+(setq jump-char-forward-key "C-.")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; chunfeng edit ;;;;;;;;;;;;;;;;;;;;;;
 ;; customed forward-word
 (defun cf-forward-word (&optional arg)
