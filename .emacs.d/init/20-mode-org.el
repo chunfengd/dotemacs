@@ -6,57 +6,6 @@
 (defconst org-dir-home "~/Dropbox/org")
 (if (file-exists-p org-dir-home)
     (setq org-directory org-dir-home))
-;; (setq org-mobile-inbox-for-pull "~/Dropbox/org/flagged.org")
-;; (setq org-mobile-directory "~/Dropbox/Apps/MobileOrg")
-;; (setq org-mobile-files
-;;       (directory-files "~/Dropbox/org" nil "^.*.org$"))
-;;(setq org-mobile-files '("emacs-note.org" "machine-learning.org"))
-
-;; default org-infojs-options:
-;; ((path . "http://orgmode.org/org-info.js")
-;;  (view . "info")
-;;  (toc . :table-of-contents)
-;;  (ftoc . "0")
-;;  (tdepth . "max")
-;;  (sdepth . "max")
-;;  (mouse . "underline")
-;;  (buttons . "0")
-;;  (ltoc . "1")
-;;  (up . :link-up)
-;;  (home . :link-home))
-(setq cf-default-org-infojs-options
-      '((path . "js/org-info.js")
-        (author . nil)
-        (email . nil)
-        (creator . nil)
-        (view . overview)
-        (toc . t)
-        (tdepth . "max")
-        (sdepth . "max")
-        (mouse . "underline")
-        (buttons . "0")
-        (ltoc . "1")
-        (up . :line-up)
-        (home . :link-home)))
-
-(when (file-exists-p org-dir-home)
-  (require 'org-publish)
-  (setq org-publish-project-alist
-        '(("org-notes"
-           :base-directory "~/Dropbox/org/"
-           :base-extension "org"
-           :publishing-directory "~/Dropbox/org-html/"
-           :recursive t
-           :publishing-function org-publish-org-to-html
-           :headline-levels 4
-           :auto-preamble t)
-          ("org-static"
-           :base-directory "~/Dropbox/org/"
-           :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-           :publishing-directory "~/Dropbox/org-html/"
-           :recursive t
-           :publishing-function org-publish-attachment)
-          ("org" :components ("org-notes" "org-static")))))
 
 (defun cf-org-beginning-of-line ()
   (interactive)
