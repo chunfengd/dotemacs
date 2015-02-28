@@ -7,9 +7,8 @@
      ("C-j" next-line)
      ;;("C-n" tex-terminate-paragraph)
      ("C-c C-o" nil)
-     ("C-c C-c" nil) ;; tex-compile
-     ("C-c C-b" latex-insert-block)
-     ))
+     ("C-c C-c" ace-jump-mode) ;; tex-compile
+     ("C-c C-b" latex-insert-block)))
   ;; (setq tex-command "xelatex")
   (setq tex-dvi-print-command "dvipdf")
   (setq tex-dvi-view-command

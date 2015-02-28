@@ -9,6 +9,6 @@
   (setq js2-basic-offset 2)
   (cf-set-key-bindings
    'local-set-key
-   '(
-     ("C-c C-c" comment-or-uncomment-region))))
+   '(("C-c C-c" ace-jump-mode)
+     ("C-c C-z" comment-or-uncomment-region))))
 (add-hook 'js2-mode-hook 'cf-init-js)

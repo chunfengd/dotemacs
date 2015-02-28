@@ -69,9 +69,9 @@
    ("C-M-w" scroll-other-window-down)
    ("C-c RET" imenu)
    ("M-o" kill-ring-save)
-   ("C-c C-c" comment-or-uncomment-region)
-   ("s-x" smex)
-   ))
+   ("C-c C-z" comment-or-uncomment-region)
+   ;; ("C-c C-c" ace-jump-mode)
+   ("s-x" smex)))
 
 (cf-set-key-bindings
  'global-set-key

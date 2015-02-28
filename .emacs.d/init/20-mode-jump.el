@@ -8,7 +8,7 @@
  '(
    ("C-c C-l" jump-char-forward)
    ("C-c C-h" jump-char-backward)
-   ("C-c C-n" ace-jump-mode)
+   ("C-c C-c" ace-jump-mode)
    ))
 (setq jump-char-use-initial-char nil)
 (setq jump-char-backward-key "C-,")

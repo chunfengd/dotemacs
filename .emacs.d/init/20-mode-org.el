@@ -16,12 +16,15 @@
 
 (defun cf-org-mode-hook-func ()
   (cf-set-key-bindings
-   'define-key
+   'local-set-key
    '(
      ("C-j" next-line)
      ("C-k" previous-line)
      ("C-f" org-kill-line)
      ("C-n" org-return-indent)
+
+     ("C-c C-z" org-ctrl-c-ctrl-c)
+     ("C-c C-c" ace-jump-mode)
 
      ("C-c C-h" org-backward-heading-same-level)
      ("C-c C-j" outline-next-visible-heading)
@@ -54,8 +57,7 @@
      ("M-S-RET" org-table-wrap-region)
 
      ("C-c C-x C-p" org-preview-latex-fragment)
-     )
-   org-mode-map)
+     ))
   (linum-mode 0)
   (org-indent-mode t)
   (flyspell-mode-off)

@@ -40,7 +40,8 @@ char will be used."
      ("C-M-j" paredit-forward-up)
      ("C-M-k" paredit-backward-down)
 
-     ("C-c C-c" paredit-comment-dwim)
+     ("C-c C-c" ace-jump-mode)
+     ("C-c C-z" paredit-comment-dwim)
 
      ("(" nil)
      (")" nil)
