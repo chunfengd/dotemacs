@@ -10,7 +10,7 @@ char will be used."
 ;; shell mode
 (defun cf-shell-mode-hook-func ()
   (cf-set-key-bindings
-   'define-key
+   'local-set-key
    '(
      ("C-d" cf-shell-kill)
      ("C-M-l" nil)
@@ -35,7 +35,11 @@ char will be used."
      ("C-c C-n" nil)
      ("C-c C-p" nil)
      ("C-c C-f" nil)
+
+     ("C-c C-v" comint-interrupt-subjob)
+     ("C-c C-c" ace-jump-mode)
      )
-   shell-mode-map)
+   ;;shell-mode-map
+   )
   (linum-mode 0))
 (add-hook 'shell-mode-hook 'cf-shell-mode-hook-func)
