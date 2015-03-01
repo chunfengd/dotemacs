@@ -27,7 +27,8 @@ char will be used."
  '("gnu"
    (c-offsets-alist
     .
-    ((innamespace . 0)
+    ((c-basic-offset . 4)
+     (innamespace . 0)
      (arglist-intro . 4)
      (arglist-cont-nonempty . 4)
      (arglist-close . 4)
