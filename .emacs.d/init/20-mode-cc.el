@@ -25,10 +25,10 @@ char will be used."
 (c-add-style
  "chunfeng-c-style"
  '("gnu"
+   (c-basic-offset . 4)
    (c-offsets-alist
     .
-    ((c-basic-offset . 4)
-     (innamespace . 0)
+    ((innamespace . 0)
      (arglist-intro . 4)
      (arglist-cont-nonempty . 4)
      (arglist-close . 4)
