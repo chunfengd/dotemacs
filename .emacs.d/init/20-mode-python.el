@@ -11,7 +11,7 @@
   (cf-set-key-bindings
    'local-set-key
    '(("C-c C-c" ace-jump-mode)
-     ("C-c C-z" comment-or-uncomment-region)))
+     ("C-c C-v" comment-or-uncomment-region)))
   (cf-set-key-bindings
    'define-key
    '(("C-j" nil)

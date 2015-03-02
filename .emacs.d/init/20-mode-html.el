@@ -5,7 +5,7 @@
   (cf-set-key-bindings
    'local-set-key
    '(("C-c C-c" ace-jump-mode)
-     ("C-c C-z" comment-or-uncomment-region)
+     ("C-c C-v" comment-or-uncomment-region)
      ("C-c C-x -" html-horizontal-rule)
      ("C-c C-x c" html-checkboxes)
      ("C-c C-x h" html-href-anchor)
