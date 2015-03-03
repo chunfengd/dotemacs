@@ -23,7 +23,7 @@
      ("C-f" org-kill-line)
      ("C-n" org-return-indent)
 
-     ("C-c C-v" org-ctrl-c-ctrl-c)
+     ("C-c C-y" org-ctrl-c-ctrl-c)
      ("C-c C-c" ace-jump-mode)
 
      ("C-c C-h" org-backward-heading-same-level)
