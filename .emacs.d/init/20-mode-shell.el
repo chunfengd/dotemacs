@@ -36,7 +36,7 @@ char will be used."
      ("C-c C-p" nil)
      ("C-c C-f" nil)
 
-     ("C-c C-v" comint-interrupt-subjob)
+     ("C-c C-y" comint-interrupt-subjob)
      ("C-c C-c" ace-jump-mode)
      )
    ;;shell-mode-map

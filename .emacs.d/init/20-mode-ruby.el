@@ -3,7 +3,7 @@
   (cf-set-key-bindings
    'local-set-key
    '(("C-c C-c" ace-jump-mode)
-     ("C-c C-v" comment-or-uncomment-region)))
+     ("C-c C-y" comment-or-uncomment-region)))
   ;; (c-toggle-auto-state)
   (c-toggle-hungry-state 1))
 (add-hook 'ruby-mode-hook 'cf-init-ruby)

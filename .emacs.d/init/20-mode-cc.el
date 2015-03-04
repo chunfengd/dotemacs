@@ -49,7 +49,7 @@ char will be used."
      ("C-c C-b" cf-semantic-ia-fast-jump-back)
      ("C-d" cf-kill-cc)
      ("C-c C-c" ace-jump-mode)
-     ("C-c C-v" comment-or-uncomment-region)))
+     ("C-c C-y" comment-or-uncomment-region)))
   ;; (c-toggle-auto-state)
   (c-toggle-hungry-state 1))
 (add-hook 'c-mode-hook 'cf-init-c)

@@ -69,7 +69,7 @@
    ("C-M-w" scroll-other-window-down)
    ("C-c RET" imenu)
    ("M-o" kill-ring-save)
-   ("C-c C-v" comment-or-uncomment-region)
+   ("C-c C-y" comment-or-uncomment-region)
    ;; ("C-c C-c" ace-jump-mode)
    ("s-x" smex)))
 

@@ -41,7 +41,7 @@ char will be used."
      ("C-M-k" paredit-backward-down)
 
      ("C-c C-c" ace-jump-mode)
-     ("C-c C-v" paredit-comment-dwim)
+     ("C-c C-y" paredit-comment-dwim)
 
      ("(" nil)
      (")" nil)
