@@ -83,6 +83,8 @@
 (show-paren-mode)
 (setq show-paren-style 'mixed)
 
+(delete-selection-mode 1)
+
 (add-hook
  'speedbar-load-hook
  '(lambda ()
