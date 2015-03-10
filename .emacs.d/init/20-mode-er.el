@@ -6,4 +6,5 @@
 (cf-set-key-bindings
  'global-set-key
  '(
-   ("C-=" er/expand-region)))
+   ("C-=" er/expand-region)
+   ("M-t" er/expand-region)))
