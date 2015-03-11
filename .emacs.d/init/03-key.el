@@ -199,4 +199,15 @@ capitalize the word."
   (interactive "r")
   (indent-rigidly start end -1))
 
+(defun cf-eval-and-replace ()
+  "From: http://emacsredux.com/blog/2013/06/21/eval-and-replace/
+   Replace the preceding sexp with its value."
+  (interactive)
+  (backward-kill-sexp)
+  (condition-case nil
+      (prin1 (eval (read (current-kill 0)))
+             (current-buffer))
+    (error (message "Invalid expression")
+           (insert (current-kill 0)))))
+(global-set-key (kbd "C-x C-e") 'cf-eval-and-replace)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; chunfeng edit ;;;;;;;;;;;;;;;;;;;;;;
