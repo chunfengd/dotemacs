@@ -11,4 +11,4 @@
    ("C->" mc/mark-next-like-this)
    ("C-S-c C-<" mc/mark-all-like-this)
    ("C-S-c C-S-r" set-rectangular-region-anchor)
-   ("C-S-c C-S-x" set-rectangular-region-anchor)))
+   ("C-S-c C-S-k" set-rectangular-region-anchor)))
