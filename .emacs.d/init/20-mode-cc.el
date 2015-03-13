@@ -48,6 +48,8 @@ char will be used."
      ("C-c C-f" semantic-ia-fast-jump)
      ("C-c C-b" cf-semantic-ia-fast-jump-back)
      ("C-d" cf-kill-cc)
+     ("C-M-a" backward-paragraph)
+     ("C-M-e" forward-paragraph)
      ("C-c C-c" ace-jump-mode)
      ("C-c C-y" comment-or-uncomment-region)))
   ;; (c-toggle-auto-state)
