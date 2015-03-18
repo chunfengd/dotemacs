@@ -13,7 +13,8 @@
  ;; If there is more than one, they won't work right.
  '(safe-local-variable-values
    (quote
-    ((js2-global-externs list "process" "require" "__dirname")
+    ((js2-basic-offset . 4)
+     (js2-global-externs list "process" "require" "__dirname")
      (js-indent-level . 4))))
  '(tool-bar-mode nil nil (tool-bar)))
 
