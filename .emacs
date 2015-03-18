@@ -4,7 +4,7 @@
 			     "^[a-zA-Z0-9].*.el$"))
 
 (mapc 'load (directory-files "~/.emacs.d/post-init" t
-			     "^[a-zA-Z0-9].*.el$"))
+			     "^e_[a-zA-Z0-9].*.el$"))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
