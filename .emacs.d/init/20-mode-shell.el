@@ -43,3 +43,14 @@ char will be used."
    )
   (linum-mode 0))
 (add-hook 'shell-mode-hook 'cf-shell-mode-hook-func)
+
+(defun cf-term-mode-hook-func ()
+  (linum-mode 0)
+  (setq-local scroll-margin 0)
+  (cf-set-key-bindings
+   'local-set-key
+   '(
+     ("C-c C-y" term-interrupt-subjob)
+     ("C-c C-c" ace-jump-mode)
+     )))
+(add-hook 'term-mode-hook 'cf-term-mode-hook-func)

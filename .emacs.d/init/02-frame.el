@@ -65,8 +65,8 @@
 (setq visible-bell t)
 (setq inhibit-startup-message t)
 (setq sentence-end-double-space nil)
-(setq scroll-margin 3
-      scroll-conservatively 10000)
+(setq-default scroll-margin 3
+              scroll-conservatively 10000)
 (global-font-lock-mode t)
 
 (setq-default indent-tabs-mode nil)
