@@ -57,6 +57,7 @@ char will be used."
    'define-key
    '(("C-y" term-paste)
      ("s-v" term-paste)
-     ("M-x" smex))
+     ("M-x" smex)
+     ("C-c C-y" term-interrupt-subjob))
    term-raw-map))
 (add-hook 'term-mode-hook 'cf-term-mode-hook-func)
