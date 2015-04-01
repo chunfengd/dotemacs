@@ -58,6 +58,7 @@ char will be used."
    '(("C-y" term-paste)
      ("s-v" term-paste)
      ("M-x" smex)
+     ("C-u" universal-argument)
      ("C-c C-y" term-interrupt-subjob))
    term-raw-map))
 (add-hook 'term-mode-hook 'cf-term-mode-hook-func)
