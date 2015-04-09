@@ -63,3 +63,13 @@ char will be used."
      ("C-o" cf-open-copy))
    term-raw-map))
 (add-hook 'term-mode-hook 'cf-term-mode-hook-func)
+
+(defun cf-term ()
+  "start-ansi-term"
+  (interactive)
+  (let ((bf-name "tm")
+        (sh-name "/bin/bash"))
+    (if current-prefix-arg
+        (setq bf-name
+              (read-from-minibuffer "Buffer: " bf-name)))
+    (ansi-term sh-name bf-name)))
