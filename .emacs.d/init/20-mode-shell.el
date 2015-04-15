@@ -67,9 +67,12 @@ char will be used."
 (defun cf-term ()
   "start-ansi-term"
   (interactive)
-  (let ((bf-name "tm")
+  (let (bf-name
         (sh-name "/bin/bash"))
     (if current-prefix-arg
         (setq bf-name
-              (read-from-minibuffer "Buffer: " bf-name)))
-    (ansi-term sh-name bf-name)))
+              (read-from-minibuffer "Buffer (*term*): " bf-name)))
+    (ansi-term sh-name)
+    (if (and bf-name (> (length bf-name) 0))
+        (rename-buffer bf-name)
+      (rename-buffer "*term*"))))
