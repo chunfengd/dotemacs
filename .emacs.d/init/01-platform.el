@@ -36,7 +36,7 @@
     ;;   (list "D:/qt/sdk-4.7.4/include"
     ;;         "D:/qt/mingw-4.4.0/lib/gcc/mingw32/4.4.0/include/c++"))
     (defvar max-flag nil)
-    (defun toggle-frame-maximum ()
+    (defun cf-win-toggle-frame-maximum ()
       "Toggle frame between maximum and norm."
       (interactive)
       (if (null max-flag)
@@ -45,7 +45,7 @@
             (setq max-flag t))
         (w32-send-sys-command 61728)
         (setq max-flag nil)))
-    (global-set-key [f6] 'toggle-frame-maximum)))
+    (global-set-key [f6] 'cf-win-toggle-frame-maximum)))
  ((string-equal system-type "darwin")
   ;; mac os x
   (progn
@@ -75,8 +75,8 @@
       (set-frame-parameter
        nil 'fullscreen
        (when (not (frame-parameter nil 'fullscreen)) 'fullboth)))
-    ;(global-set-key [f6] 'toggle-frame-maximum)
-    (global-set-key [f6] 'toggle-fullscreen)))
+    ;; (global-set-key [f6] 'toggle-fullscreen)
+    (global-set-key [f6] 'toggle-frame-maximized)))
  ((string-equal system-type "gnu/linux")
   (message "linux")
   (progn

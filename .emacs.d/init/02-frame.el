@@ -188,7 +188,7 @@ specified by HEIGHT."
       (cf-restore-frame)
     (cf-maximize-frame-width)))
 
-(global-set-key [f6] 'cf-toggle-frame-maximum-width)
+;; (global-set-key [f6] 'cf-toggle-frame-maximum-width)
 
 (cond
  ;; windows
