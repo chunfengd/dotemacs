@@ -71,8 +71,8 @@ char will be used."
         (sh-name "/bin/bash"))
     (if current-prefix-arg
         (setq bf-name
-              (read-from-minibuffer "Buffer (*term*): " bf-name)))
+              (read-from-minibuffer "Buffer (*tm*): " bf-name)))
     (ansi-term sh-name)
     (if (and bf-name (> (length bf-name) 0))
         (rename-buffer bf-name)
-      (rename-buffer "*term*"))))
+      (rename-buffer "*tm*"))))
