@@ -64,7 +64,7 @@ char will be used."
    term-raw-map))
 (add-hook 'term-mode-hook 'cf-term-mode-hook-func)
 
-(defun cf-term ()
+(defun cf-tm ()
   "start-ansi-term"
   (interactive)
   (let (bf-name
@@ -72,7 +72,9 @@ char will be used."
     (if current-prefix-arg
         (setq bf-name
               (read-from-minibuffer "Buffer (*tm*): " bf-name)))
+    (if (or (not bf-name)
+            (= (length bf-name) 0))
+        (setq bf-name "*tm*"))
+    (setq bf-name (generate-new-buffer-name bf-name))
     (ansi-term sh-name)
-    (if (and bf-name (> (length bf-name) 0))
-        (rename-buffer bf-name)
-      (rename-buffer "*tm*"))))
+    (rename-buffer bf-name)))
