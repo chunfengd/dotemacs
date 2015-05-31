@@ -3,7 +3,7 @@
 (require 'org-install)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 
-(defconst org-dir-home "~/Dropbox/org")
+(defconst org-dir-home "~/org")
 (if (file-exists-p org-dir-home)
     (setq org-directory org-dir-home))
 
@@ -77,6 +77,8 @@
    ("C-c b" org-iswitchb)
    ))
 
+(setq org-agenda-files
+      '("~/org/todo.org"))
 ;; org-mobile-push
 ;; org-mobile-pull
 ;; MobileOrg-staging
