@@ -64,7 +64,7 @@ char will be used."
    term-raw-map))
 (add-hook 'term-mode-hook 'cf-term-mode-hook-func)
 
-(defun cf-tm ()
+(defun tm ()
   "start-ansi-term"
   (interactive)
   (let (bf-name
