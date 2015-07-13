@@ -68,6 +68,7 @@
 (setq-default scroll-margin 3
               scroll-conservatively 10000)
 (global-font-lock-mode t)
+(put 'narrow-to-region 'disabled nil)
 
 (setq-default indent-tabs-mode nil)
 (setq default-tab-width 8)
