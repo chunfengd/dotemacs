@@ -55,7 +55,9 @@ char will be used."
      ))
   (cf-set-key-bindings
    'define-key
-   '(("C-y" term-paste)
+   '(("C-v" scroll-up-command)
+     ("C-w" scroll-down)
+     ("C-y" term-paste)
      ("s-v" term-paste)
      ("M-x" smex)
      ("C-u" universal-argument)
@@ -69,7 +71,7 @@ char will be used."
   (interactive)
   (let (bf-name
         (sh-name "/bin/bash"))
-    (if current-prefix-arg
+    (if t ;;current-prefix-arg
         (setq bf-name
               (read-from-minibuffer "Buffer (*tm*): " bf-name)))
     (if (or (not bf-name)
