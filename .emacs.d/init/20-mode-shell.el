@@ -80,3 +80,14 @@ char will be used."
     (setq bf-name (generate-new-buffer-name bf-name))
     (ansi-term sh-name)
     (rename-buffer bf-name)))
+
+(defun sh ()
+  "start-shell"
+  (interactive)
+  (let (bf-name)
+    (setq bf-name
+          (read-from-minibuffer "Buffer (*shell*): " bf-name))
+    (if (or (not bf-name)
+            (= (length bf-name) 0))
+        (shell)
+      (shell bf-name))))
