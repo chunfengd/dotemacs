@@ -71,6 +71,7 @@
    ("M-o" kill-ring-save)
    ("C-c C-y" comment-or-uncomment-region)
    ;; ("C-c C-c" ace-jump-mode)
+   ("C-x C-z" nil)
    ("s-x" smex)))
 
 (cf-set-key-bindings
