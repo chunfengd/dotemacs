@@ -32,6 +32,12 @@
 	(funcall action (eval `(kbd ,(nth 0 pair))) (nth 1 pair))
       (funcall action map (eval `(kbd ,(nth 0 pair))) (nth 1 pair)))))
 
+(defun cf-dos2unix ()
+  "From: http://www.emacswiki.org/emacs/DosToUnix
+Not exactly but it's easier to remember"
+  (interactive)
+  (set-buffer-file-coding-system 'unix 't))
+
 (defun show-file-name ()
   "Show the full path file name in the minibuffer.
    From: http://stackoverflow.com/questions/3669511/the-function-to-show-current-files-full-path-in-mini-buffer"
