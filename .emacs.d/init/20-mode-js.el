@@ -25,6 +25,21 @@
              (rx (* " ") "," (* " ")) t)))))
 (add-hook 'js2-post-parse-callbacks 'my-add-jslint-declarations)
 
+;; js2-mode-hide-comments
+;; js2-mode-hide-element
+;; js2-mode-hide-functions
+;; js2-mode-hide-warnings-and-errors
+;;
+;; js2-mode-show-all
+;; js2-mode-show-comments
+;; js2-mode-show-element
+;; js2-mode-show-functions
+;; js2-mode-show-node
+;;
+;; js2-mode-toggle-element "C-c C-o"
+;; js2-mode-toggle-hide-comments
+;; js2-mode-toggle-hide-functions
+;; js2-mode-toggle-warnings-and-errors
 (defun cf-init-js ()
   (setq-default js-indent-level 2)
   (setq-default js2-basic-offset 2)
