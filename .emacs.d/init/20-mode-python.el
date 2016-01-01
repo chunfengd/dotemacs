@@ -35,6 +35,7 @@
      ("C-c C-x C-l" py-shift-block-or-clause-right)
      ("C-c C-x C-h" py-shift-block-or-clause-left))
    python-mode-map)
+  (subword-mode)
   (setq python-indent-offset 4)
   ;; (c-toggle-auto-state)
   (c-toggle-hungry-state 1)
