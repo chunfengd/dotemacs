@@ -6,4 +6,5 @@
    'local-set-key
    '(("j" Info-next-reference)
      ("k" Info-prev-reference))))
-(add-hook 'Info-mode-hook 'cf-init-info)
+;; (add-hook 'Info-mode-hook 'cf-init-info)
+
