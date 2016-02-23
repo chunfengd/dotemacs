@@ -1,23 +1,23 @@
-;;; ess
+;; ;;; ess
 
-(cf-install-packages '(ess))
+;; (cf-install-packages '(ess))
 
-;;(add-to-list 'load-path "~/.emacs.d/elpa/auto-complete-1.4")
+;; ;;(add-to-list 'load-path "~/.emacs.d/elpa/auto-complete-1.4")
 
-(require 'ess-site)
+;; (require 'ess-site)
 
-;; ESS will not print the evaluated comands, also speeds up the
-;; evaluation
-(setq ess-eval-visibly nil)
+;; ;; ESS will not print the evaluated comands, also speeds up the
+;; ;; evaluation
+;; (setq ess-eval-visibly nil)
 
-;; if you don't want to be prompted each time you start an interactive
-;; R session
- (setq ess-ask-for-ess-directory nil)
+;; ;; if you don't want to be prompted each time you start an interactive
+;; ;; R session
+;;  (setq ess-ask-for-ess-directory nil)
 
-(defun cf-ess-config-func ()
-  (cf-set-key-bindings
-   'define-key
-   '(("_" nil))
-   ess-mode-map))
+;; (defun cf-ess-config-func ()
+;;   (cf-set-key-bindings
+;;    'define-key
+;;    '(("_" nil))
+;;    ess-mode-map))
 
-(add-hook 'ess-mode-hook 'cf-ess-config-func)
+;; (add-hook 'ess-mode-hook 'cf-ess-config-func)
