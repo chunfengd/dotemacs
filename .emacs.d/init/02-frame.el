@@ -77,6 +77,12 @@
 (global-linum-mode t)
 (if (not (display-graphic-p))
     (setq linum-format "%d ")) ; for margin in terminal
+;; disable linum if creating a buffer from terminal
+(add-hook
+ 'after-change-major-mode-hook
+ '(lambda ()
+    (if (not (display-graphic-p))
+        (linum-mode -1))))
 
 ;; parentheses
 ;; (setq show-paren-mode t) ; does not work
