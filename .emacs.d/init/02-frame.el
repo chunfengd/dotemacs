@@ -1,6 +1,6 @@
 
 (setq server-name "server")
-;;(server-start)
+(server-start)
 
 (setq user-full-name "chunfeng")
 (setq user-mail-address "chunfengd@gmail.com")
