@@ -1,6 +1,6 @@
 
 ;; html
-
+(add-to-list 'auto-mode-alist '("\\.hbs$" . html-mode))
 (defun cf-html-func ()
   (cf-set-key-bindings
    'local-set-key
