@@ -13,7 +13,9 @@
  ;; If there is more than one, they won't work right.
  '(safe-local-variable-values
    (quote
-    ((nxml-child-indent . 4)
+    ((js2-additional-externs "module" "require" "exports" "__dirname")
+     (js2-additional-externs "module" "require" "exports")
+     (nxml-child-indent . 4)
      (sgml-basic-offset . 4)
      (js2-basic-offset . 4)
      (js2-global-externs list "process" "require" "__dirname")
