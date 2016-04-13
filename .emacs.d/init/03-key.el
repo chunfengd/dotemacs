@@ -47,6 +47,7 @@ Not exactly but it's easier to remember"
 (defun copy-path ()
   ""
   (interactive)
+  (message (buffer-file-name))
   (kill-new (buffer-file-name)))
 
 (cf-set-key-bindings
