@@ -44,6 +44,11 @@ Not exactly but it's easier to remember"
   (interactive)
   (message (buffer-file-name)))
 
+(defun copy-file-name ()
+  ""
+  (interactive)
+  (kill-new (buffer-file-name)))
+
 (cf-set-key-bindings
  'global-set-key
  '(
