@@ -38,13 +38,13 @@ Not exactly but it's easier to remember"
   (interactive)
   (set-buffer-file-coding-system 'unix 't))
 
-(defun show-file-name ()
+(defun show-path ()
   "Show the full path file name in the minibuffer.
    From: http://stackoverflow.com/questions/3669511/the-function-to-show-current-files-full-path-in-mini-buffer"
   (interactive)
   (message (buffer-file-name)))
 
-(defun copy-file-name ()
+(defun copy-path ()
   ""
   (interactive)
   (kill-new (buffer-file-name)))
