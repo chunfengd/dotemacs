@@ -47,8 +47,13 @@ Not exactly but it's easier to remember"
 (defun copy-path ()
   ""
   (interactive)
-  (message (buffer-file-name))
-  (kill-new (buffer-file-name)))
+  (let ((path))
+    (setq path buffer-file-name)
+    (if (null path)
+        (setq path default-directory))
+    (if path
+        (message path)
+      (kill-new path))))
 
 (cf-set-key-bindings
  'global-set-key
