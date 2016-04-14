@@ -38,22 +38,20 @@ Not exactly but it's easier to remember"
   (interactive)
   (set-buffer-file-coding-system 'unix 't))
 
-(defun show-path ()
-  "Show the full path file name in the minibuffer.
-   From: http://stackoverflow.com/questions/3669511/the-function-to-show-current-files-full-path-in-mini-buffer"
-  (interactive)
-  (message (buffer-file-name)))
-
-(defun copy-path ()
+(defun cf-get-path ()
   ""
   (interactive)
-  (let ((path))
-    (setq path buffer-file-name)
-    (if (null path)
-        (setq path default-directory))
+  (let ((path
+         (or buffer-file-name default-directory)))
+    (message path)
+    path))
+
+(defun cf-copy-path ()
+  ""
+  (interactive)
+  (let ((path (cf-get-path)))
     (if path
-        (message path)
-      (kill-new path))))
+        (kill-new path))))
 
 (cf-set-key-bindings
  'global-set-key
