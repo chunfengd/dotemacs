@@ -32,6 +32,7 @@
    nxml-mode-map))
 (add-hook 'nxml-mode-hook 'cf-nxml-func)
 
+;; http://web-mode.org/
 (add-to-list 'auto-mode-alist '("\\.html$" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.hbs$" . web-mode))
 (defun cf-web-mode-func()
@@ -43,10 +44,14 @@
   (setq web-mode-block-padding 0)
   (set-face-attribute 'web-mode-html-tag-face nil :foreground "SkyBlue1")
   (setq web-mode-enable-current-element-highlight t)
+  (set-face-attribute 'web-mode-current-element-highlight-face nil :background "honeydew4")
   (setq web-mode-enable-current-column-highlight t)
   (cf-set-key-bindings
    'defind-key
    '(
-     ("C-t" web-mode-mark-and-expand))
+     ("C-t" web-mode-mark-and-expand)
+     ("C-c C-e C-c" web-mode-element-close)
+     ("C-c C-e C-/" web-mode-element-close)
+     )
    web-mode-map))
 (add-hook 'web-mode-hook 'cf-web-mode-func)
