@@ -1,6 +1,6 @@
 
 ;; html
-(add-to-list 'auto-mode-alist '("\\.hbs$" . html-mode))
+;; (add-to-list 'auto-mode-alist '("\\.hbs$" . html-mode))
 (defun cf-html-func ()
   (cf-set-key-bindings
    'local-set-key
@@ -31,3 +31,22 @@
      ("M-h" nil))
    nxml-mode-map))
 (add-hook 'nxml-mode-hook 'cf-nxml-func)
+
+(add-to-list 'auto-mode-alist '("\\.html$" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.hbs$" . web-mode))
+(defun cf-web-mode-func()
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-code-indent-offset 2)
+  (setq web-mode-style-padding 2)
+  (setq web-mode-script-padding 2)
+  (setq web-mode-block-padding 0)
+  (set-face-attribute 'web-mode-html-tag-face nil :foreground "SkyBlue1")
+  (setq web-mode-enable-current-element-highlight t)
+  (setq web-mode-enable-current-column-highlight t)
+  (cf-set-key-bindings
+   'defind-key
+   '(
+     ("C-t" web-mode-mark-and-expand))
+   web-mode-map))
+(add-hook 'web-mode-hook 'cf-web-mode-func)
