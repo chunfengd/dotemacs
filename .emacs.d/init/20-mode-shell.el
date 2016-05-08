@@ -1,4 +1,7 @@
 
+;; bash file
+(add-to-list 'auto-mode-alist '("/\\.bash_[^/]*\\'" . sh-mode))
+
 (defun cf-shell-kill (beg end)
   "If the mark is active, kill region will be used; otherwise, delete
 char will be used."
