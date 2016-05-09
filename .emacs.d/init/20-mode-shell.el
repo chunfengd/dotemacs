@@ -62,7 +62,7 @@ char will be used."
      ("C-w" scroll-down)
      ("C-y" term-paste)
      ("s-v" term-paste)
-     ("M-x" smex)
+     ("M-x" nil)
      ("C-u" universal-argument)
      ("C-c C-y" term-interrupt-subjob)
      ("C-o" cf-open-copy))
