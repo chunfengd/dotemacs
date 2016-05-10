@@ -7,4 +7,4 @@
   (smex-initialize)
   (global-set-key (kbd "M-x") 'smex))
 
-(cf-setup-smex)
+;; (cf-setup-smex)
