@@ -26,13 +26,14 @@
      ("M-y" helm-show-kill-ring)
      ("C-x C-b" helm-mini)
      ("C-x C-f" helm-find-files)
+     ("C-x C-h C-o" helm-occur)
      ))
 
   ;; general
   (setq helm-split-window-in-side-p t)
   (setq helm-move-to-line-cycle-in-source t)
   ;; M-x
-  ;; (setq helm-M-x-fuzzy-match t)
+  (setq helm-M-x-fuzzy-match t)
   ;; Mini
   (setq helm-buffers-fuzzy-matching t
         helm-recentf-fuzzy-match t)
@@ -54,5 +55,20 @@
      )
    helm-find-files-map)
   )
-
 (cf-setup-helm)
+
+
+(defun cf-setup-projectile ()
+  (projectile-global-mode)
+  (setq projectile-completion-system 'helm)
+  (define-key projectile-mode-map (kbd "C-c C-p") 'projectile-command-map)
+  (setq projectile-file-exists-remote-cache-expire nil)
+  (require 'helm-projectile)
+  (helm-projectile-on)
+  (cf-set-key-bindings
+   'define-key
+   '(
+     ("C-f" projectile-find-file)
+     ("C-h" helm-projectile))
+   projectile-command-map))
+(cf-setup-projectile)
