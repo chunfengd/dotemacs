@@ -4,12 +4,30 @@
 (require 'helm)
 (require 'helm-config)
 
-(defun cf-setup-helm ()
-  ;; keys
+(defun test-msg ()
+  (interactive)
+  (message "test"))
+
+(defun cf-bind-helm ()
   (cf-set-key-bindings
    'define-key
-   '(
-     ("C-j" helm-next-line)
+   '(("C-w" helm-previous-page))
+   minibuffer-local-map)
+  (cf-set-key-bindings
+   'define-key
+   '(("C-w" helm-previous-page))
+   helm-generic-files-map)
+  (cf-set-key-bindings
+   'define-key
+   '(("C-w" helm-previous-page))
+   helm-find-files-map)
+  (cf-set-key-bindings
+   'define-key
+   '(("C-w" helm-previous-page))
+   helm-read-file-map)
+  (cf-set-key-bindings
+   'define-key
+   '(("C-j" helm-next-line)
      ("C-k" helm-previous-line)
      ("C-n" helm-execute-persistent-action)
      ("C-M-w" helm-scroll-other-window-down)
@@ -19,7 +37,10 @@
      ;; ("M-U" helm-unmark-all)
      ;; ("C-f" helm-delete-minibuffer-contents)
      )
-   helm-map)
+   helm-map))
+
+(defun cf-setup-helm ()
+  ;; keys
   (cf-set-key-bindings
    'global-set-key
    '(("M-x" helm-M-x)
@@ -57,12 +78,7 @@
 
   (helm-mode 1)
 
-  (cf-set-key-bindings
-   'define-key
-   '(
-     ("C-p" helm-find-files-up-one-level)
-     )
-   helm-find-files-map)
+  (cf-bind-helm)
   )
 (cf-setup-helm)
 
