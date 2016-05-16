@@ -51,6 +51,7 @@
      ("C-x C-p" helm-projectile)
      ("C-x C-d" helm-projectile-find-dir)
      ("C-x C-m" helm-semantic-or-imenu)
+     ("C-x C-r" helm-resume)
      ("C-x C-h C-o" helm-occur)
      ("C-x C-h C-p" helm-projectile-switch-project)
      ("C-x C-h C-r" helm-resume)
