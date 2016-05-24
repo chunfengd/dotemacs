@@ -48,9 +48,9 @@
   (setq web-mode-enable-current-column-highlight t)
   (setq web-mode-enable-sexp-functions t)
   (cf-set-key-bindings
-   'defind-key
+   'define-key
    '(
-     ("C-t" web-mode-mark-and-expand)
+     ("M-t" web-mode-mark-and-expand)
      ("C-c C-e C-c" web-mode-element-close)
      ("C-c C-e C-/" web-mode-element-close)
      )
