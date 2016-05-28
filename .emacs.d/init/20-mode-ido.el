@@ -81,7 +81,8 @@ ido-magic-backward-char."
   (setq ido-use-virtual-buffers t)
   (setq ido-handle-duplicate-virtual-buffers 2)
   (setq ido-max-prospects 10))
-(cf-setup-ido)
+;; (cf-setup-ido)
+
 
 ;; ido-ignore-buffers
 ;; ido-ignore-directories
