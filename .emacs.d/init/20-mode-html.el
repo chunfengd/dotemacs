@@ -45,12 +45,14 @@
   (set-face-attribute 'web-mode-html-tag-face nil :foreground "SkyBlue1")
   (setq web-mode-enable-current-element-highlight t)
   (set-face-attribute 'web-mode-current-element-highlight-face nil :background "honeydew4")
-  (setq web-mode-enable-current-column-highlight t)
+  (setq web-mode-enable-current-column-highlight nil)
   (setq web-mode-enable-sexp-functions t)
   (cf-set-key-bindings
-   'defind-key
+   'define-key
    '(
-     ("C-t" web-mode-mark-and-expand)
+     ("C-t" nil)
+     ("M-t" nil)
+     ;; ("M-t" web-mode-mark-and-expand)
      ("C-c C-e C-c" web-mode-element-close)
      ("C-c C-e C-/" web-mode-element-close)
      )
