@@ -49,7 +49,8 @@
      ("M-h" backward-word)
      ("M-b" org-mark-element)
 
-     ("<C-tab>" nil)
+     ("C-<tab>" org-cycle)
+     ("C-S-<tab>" org-shifttab)
      ("C-a" cf-org-beginning-of-line)
      ("C-c RET" nil)
 

@@ -16,7 +16,7 @@
   (condition-case ex
       (goto-char (scan-lists (point) count depth))
     (error
-      (message "Error: %s" ex)
+      (message "Error in goto-list: %s" ex)
       nil)))
 
 (defun scan-lists-safe (from count depth &optional default)
@@ -48,11 +48,21 @@
         (tag (label->tag label)))
     ;; (message "tag: %s" tag)
     (if val
-            (overlay-put o tag val)
-          (overlay-put o tag t))
+        (overlay-put o tag val)
+      (overlay-put o tag t))
     (overlay-put o 'evaporate t)
     (overlay-put o 'invisible t)
     (overlay-put o 'display `(:string "..."))
+    (overlay-put
+     o 'isearch-open-invisible
+     (lambda (ov)
+       (message "open invisible")
+       (delete-overlay ov)))
+    (overlay-put
+     o 'isearch-open-invisible-temporary
+     (lambda (ov invisible)
+       (overlay-put ov 'invisible invisible)
+       (overlay-put ov 'display (and invisible `(:string "...")))))
     o))
 
 (defun get-overlays (start end &optional label val)
