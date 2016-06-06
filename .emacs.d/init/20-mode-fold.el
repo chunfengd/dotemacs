@@ -202,3 +202,8 @@
 (cf-set-key-bindings
  'global-set-key
  '(("C-S-<tab>" toggle-fold-all)))
+
+;; TODO
+;; 'helm-after-action-hook
+;; 'helm-after-persistent-action-hook
+;; 'occur-mode-find-occurrence-hook
