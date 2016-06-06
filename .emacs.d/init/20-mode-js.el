@@ -43,6 +43,7 @@
 (defun cf-init-js ()
   (setq-default js-indent-level 2)
   (setq-default js2-basic-offset 2)
+  (setq-default js2-strict-inconsistent-return-warning nil)
   (cf-set-key-bindings
    'local-set-key
    '(("C-c C-c" ace-jump-mode)
