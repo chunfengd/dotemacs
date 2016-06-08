@@ -204,6 +204,9 @@
  '(("C-S-<tab>" toggle-fold-all)))
 
 ;; TODO
+;; minor mode
 ;; 'helm-after-action-hook
 ;; 'helm-after-persistent-action-hook
 ;; 'occur-mode-find-occurrence-hook
+;; bug of [{\n},{\n},{\n}]
+;; lightweight-macro
