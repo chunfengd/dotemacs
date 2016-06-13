@@ -1,3 +1,6 @@
+;; http://tuhdo.github.io/helm-intro.html
+;; http://tuhdo.github.io/helm-projectile.html
+;; https://github.com/bbatsov/projectile
 
 (cf-install-packages '(helm))
 
@@ -91,6 +94,7 @@
   ;; (define-key projectile-mode-map (kbd "C-x C-p") 'projectile-command-map)
   (setq projectile-file-exists-remote-cache-expire nil)
   ;; (setq helm-projectile-fuzzy-match nil)
+  (setq projectile-switch-project-action 'helm-projectile)
   (require 'helm-projectile)
   (helm-projectile-on)
   (cf-set-key-bindings
