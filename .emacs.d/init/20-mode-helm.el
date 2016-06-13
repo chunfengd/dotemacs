@@ -95,6 +95,7 @@
   (setq projectile-file-exists-remote-cache-expire nil)
   ;; (setq helm-projectile-fuzzy-match nil)
   (setq projectile-switch-project-action 'helm-projectile)
+  (setq helm-buffers-truncate-lines nil)
   (require 'helm-projectile)
   (helm-projectile-on)
   (cf-set-key-bindings
