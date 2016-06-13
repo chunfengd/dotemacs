@@ -30,6 +30,10 @@
    helm-read-file-map)
   (cf-set-key-bindings
    'define-key
+   '(("C-b" helm-toggle-buffers-details))
+   helm-buffer-map)
+  (cf-set-key-bindings
+   'define-key
    '(("C-j" helm-next-line)
      ("C-k" helm-previous-line)
      ("C-n" helm-execute-persistent-action)
