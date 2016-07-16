@@ -10,6 +10,14 @@ char will be used."
       (kill-region beg end)
     (comint-delchar-or-maybe-eof 1)))
 
+;; sh mode
+(defun cf-sh-mode-hook-func ()
+  (cf-set-key-bindings
+   'define-key
+   '(("C-c C-c" ace-jump-mode))
+   sh-mode-map))
+(add-hook 'sh-mode-hook 'cf-sh-mode-hook-func)
+
 ;; shell mode
 (defun cf-shell-mode-hook-func ()
   (cf-set-key-bindings
