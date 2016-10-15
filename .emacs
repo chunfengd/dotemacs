@@ -13,7 +13,8 @@
  ;; If there is more than one, they won't work right.
  '(safe-local-variable-values
    (quote
-    ((js2-additional-externs "module" "require" "exports" "define")
+    ((js2-additional-externs "module" "require" "exports" "describe" "it")
+     (js2-additional-externs "module" "require" "exports" "define")
      (grep-find-ignored-files "src/main/java/*" "src/main/ext/*" ".sass-cache/*" "node_modules/*" "target/*" ".git/*")
      (js2-additional-externs "module" "require" "exports" "__dirname")
      (js2-additional-externs "module" "require" "exports")
