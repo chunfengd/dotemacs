@@ -54,14 +54,21 @@
     ;;(setq mac-command-modifier 'meta)
     ;;(setq mac-option-modifier nil)
     ;; (setenv "NODE_NO_READLINE" "1")
-    (setq exec-path
-          (delete-dups
-           (append
-            (split-string
-             (shell-command-to-string
-              "$SHELL -l -c 'printf $PATH'")
-             ":")
-            exec-path))) ;; set exec-path from shell path
+    (let ((path-from-shell 
+           (replace-regexp-in-string
+            "[[:space:]\n]*$" "" 
+            (shell-command-to-string "$SHELL -l -c 'echo $PATH'"))))
+      (setenv "PATH" path-from-shell)
+      (setq exec-path (split-string path-from-shell path-separator)))
+    ;; (setq exec-path
+    ;;       (delete-dups
+    ;;        (append
+    ;;         (split-string
+    ;;          (shell-command-to-string
+    ;;           "$SHELL -l -c 'printf $PATH'")
+    ;;          ":")
+    ;;         exec-path)))
+    ;; set exec-path from shell path
     ;; for cedet include dir
     (defconst cf-system-include-dirs
       (list "/opt/local/include"))
