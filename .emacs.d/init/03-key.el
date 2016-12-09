@@ -53,15 +53,29 @@ Not exactly but it's easier to remember"
     (if path
         (kill-new path))))
 
+(defun cf-pre-window ()
+  ""
+  (interactive)
+  (other-window -1))
+
+(defun cf-pre-frame ()
+  ""
+  (interactive)
+  (other-window -1))
+
 (cf-set-key-bindings
  'global-set-key
  '(
    ("<f5>" compile)
    ("<f7>" speedbar-get-focus)
    ("C-x C-o" other-window)
-   ("<C-tab>" other-window)
+   ;; ("<C-tab>" other-window)
    ("C-x C-5 C-o" other-frame)
    ("<M-tab>" other-frame)
+   ("C-<" cf-pre-window)
+   ("C->" other-window)
+   ("C-M-<" cf-pre-frame)
+   ("C-M->" other-frame)
    ("M-q" fill-region)
    ("M-s" ispell-region)
    ("C-z" undo)
