@@ -61,7 +61,7 @@ Not exactly but it's easier to remember"
 (defun cf-pre-frame ()
   ""
   (interactive)
-  (other-window -1))
+  (other-frame -1))
 
 (cf-set-key-bindings
  'global-set-key
