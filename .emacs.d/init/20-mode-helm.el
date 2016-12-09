@@ -87,6 +87,11 @@
   (helm-mode 1)
 
   (cf-bind-helm)
+
+  ;; (setq helm-grep-default-command
+  ;;       "ack-grep -Hn --color --smart-case --no-group %e %p %f"
+  ;;       helm-grep-default-recurse-command
+  ;;       "ack-grep -H --color --smart-case --no-group %e %p %f")
   )
 (cf-setup-helm)
 
