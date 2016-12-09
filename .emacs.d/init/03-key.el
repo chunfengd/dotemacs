@@ -242,3 +242,15 @@ capitalize the word."
       (setq list (cdr list))
       (setq buffer (car list))))
   (message "Refreshed open files"))
+
+(defun cf-exec-cmd-on-current-file (command)
+  "run a command on the current file"
+  (shell-command
+   (format "open -a %s %s" command
+           (shell-quote-argument (buffer-file-name)))))
+
+(defun cf-open-webstorm ()
+  (interactive)
+  (cf-exec-cmd-on-current-file "webstorm"))
+
+(cf-set-key-bindings 'global-set-key '(("C-<f9>" cf-open-webstorm)))
