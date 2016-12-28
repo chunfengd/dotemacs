@@ -23,9 +23,6 @@
      ("C-f" org-kill-line)
      ("C-n" org-return-indent)
 
-     ("C-c C-y" org-ctrl-c-ctrl-c)
-     ("C-c C-c" ace-jump-mode)
-
      ("C-c C-h" org-backward-heading-same-level)
      ("C-c C-j" outline-next-visible-heading)
      ("C-c C-k" outline-previous-visible-heading)
@@ -49,6 +46,10 @@
      ("M-h" backward-word)
      ("M-b" org-mark-element)
 
+     ("C-c C-c" ace-jump-mode)
+     ("C-c C-y" org-ctrl-c-ctrl-c) ;; used to be 'C-c C-c'
+     ("C-c C-f" org-kill-note-or-show-branches) ;; used to be 'C-c C-k'
+
      ("C-<tab>" org-cycle)
      ("C-S-<tab>" org-shifttab)
      ("C-a" cf-org-beginning-of-line)
@@ -58,6 +59,9 @@
      ("M-S-RET" org-table-wrap-region)
 
      ("C-c C-x C-p" org-preview-latex-fragment)
+
+     ("C-c [" nil) ;; org-agenda-file-to-front
+     ("C-c ]" nil) ;; org-remove-file
      ))
   (linum-mode 0)
   (org-indent-mode t)
