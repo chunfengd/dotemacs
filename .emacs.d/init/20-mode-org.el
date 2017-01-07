@@ -63,6 +63,23 @@
      ("C-c [" nil) ;; org-agenda-file-to-front
      ("C-c ]" nil) ;; org-remove-file
      ))
+  (cf-set-key-bindings
+   'define-key
+   '(
+     ("C-M-h" (lambda () (interactive)
+                (org-eval-in-calendar '(calendar-backward-day 1))))
+     ("C-M-l" (lambda () (interactive)
+                (org-eval-in-calendar '(calendar-forward-day 1))))
+     ("C-M-k" (lambda () (interactive)
+                (org-eval-in-calendar '(calendar-backward-week 1))))
+     ("C-M-j" (lambda () (interactive)
+                (org-eval-in-calendar '(calendar-forward-week 1))))
+     ("C-M-S-h" (lambda () (interactive)
+                (org-eval-in-calendar '(calendar-backward-month 1))))
+     ("C-M-S-l" (lambda () (interactive)
+                (org-eval-in-calendar '(calendar-forward-month 1))))
+     )
+   org-read-date-minibuffer-local-map)
   (linum-mode 0)
   (org-indent-mode t)
   (flyspell-mode-off)
