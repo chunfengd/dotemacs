@@ -106,8 +106,8 @@
   (setq projectile-switch-project-action 'helm-projectile)
   (setq projectile-enable-caching t)
   (setq helm-buffers-truncate-lines nil)
-  (require 'helm-projectile)
-  (helm-projectile-on)
+  ;; (require 'helm-projectile)
+  ;; (helm-projectile-on)
   (cf-set-key-bindings
    'define-key
    '(
