@@ -1,2 +1,2 @@
-.emacs.d/post-init/e_*.el
+post-init/e_*.el
 .DS_Store
