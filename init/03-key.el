@@ -67,6 +67,7 @@ Not exactly but it's easier to remember"
  'global-set-key
  '(
    ("<f5>" compile)
+   ("<M-f6>" cf-toggle-frame-maximum)
    ("<f7>" speedbar-get-focus)
    ("C-x C-o" other-window)
    ;; ("<C-tab>" other-window)
