@@ -2,7 +2,7 @@
 (cf-install-packages '(js2-mode))
 
 ;; (autoload 'js2-mode "js2" nil t)
-(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.js$" . js-mode))
 
 ;; from https://yoo2080.wordpress.com/2012/03/15/js2-mode-setup-recommendation/
 (defun my-add-jslint-declarations ()
