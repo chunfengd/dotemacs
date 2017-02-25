@@ -107,7 +107,9 @@
   (setq projectile-enable-caching t)
   (setq helm-buffers-truncate-lines nil)
   ;; (require 'helm-projectile)
-  ;; (helm-projectile-on)
+  (condition-case nil
+      (helm-projectile-on)
+    (error nil))
   (cf-set-key-bindings
    'define-key
    '(
