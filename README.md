@@ -9,27 +9,7 @@ my emacs config
 source init.sh
 ```
 # packages
-* ace-jump-mode *
-* auto-complete
-* cider
-* clojure-mode
-* dash
-* epl *
-* expand-region *
-* ido-completing-read+
-* ido-ubiquitous
-* js2-mode
-* julia-mode
-* jump-char
-* multiple-cursors *
-* paredit
-* pkg-info
-* popup
-* python-mode
-* queue
-* restclient *
-* scss-mode *
-* seq
-* smex
-* spinner
-* yaml-mode *
+* js3-mode
+```
+emacs --batch -f batch-byte-compile ./lib/js3-mode/*.el
+```
