@@ -7,10 +7,13 @@
 ;; [var]flycheck-checker: checker used for current buffer
 ;;
 
+(defvar cf-dotemacs-home)
+(defvar flycheck-global-modes)
+
 (defun cf-setup-flycheck ()
   (add-to-list 'load-path (concat cf-dotemacs-home "lib/flycheck"))
   (require 'flycheck)
-  (add-hook 'after-init-hook #'global-flycheck-mode)
+  (add-hook 'after-init-hook 'global-flycheck-mode)
   (setq flycheck-global-modes
         '(emacs-lisp-mode js-mode))
   (setq-default flycheck-disabled-checkers
