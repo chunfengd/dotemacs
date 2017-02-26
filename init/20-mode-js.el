@@ -76,4 +76,5 @@
 
 (cf-js-setup)
 ;; (cf-js2-setup)
+;; (cf-js3-setup)
 
