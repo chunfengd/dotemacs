@@ -19,7 +19,7 @@
   ;; js2-mode-toggle-hide-comments
   ;; js2-mode-toggle-hide-functions
   ;; js2-mode-toggle-warnings-and-errors
-  (autoload 'js2-mode "js2-mode" nil t)
+  (cf-install-package-file 'js2-mode (concat cf-dotemacs-home "lib/js2-mode/"))
   (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
   (setq-default js2-basic-offset 2)
   (setq-default js2-strict-inconsistent-return-warning nil)

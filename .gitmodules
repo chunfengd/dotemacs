@@ -7,3 +7,6 @@
 [submodule "lib/exec-path-from-shell"]
 	path = lib/exec-path-from-shell
 	url = https://github.com/purcell/exec-path-from-shell.git
+[submodule "lib/js2-mode"]
+	path = lib/js2-mode
+	url = https://github.com/mooz/js2-mode.git

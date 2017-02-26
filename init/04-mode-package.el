@@ -26,3 +26,7 @@
     (when (not (package-installed-p p))
       (package-install p))))
 
+(defun cf-install-package-file (package path)
+  "Install a package from local path"
+  (when (not (package-installed-p package))
+    (package-install-file path)))
