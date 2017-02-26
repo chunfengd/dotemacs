@@ -100,8 +100,7 @@ Not exactly but it's easier to remember"
    ("M-o" kill-ring-save)
    ("C-c C-y" comment-or-uncomment-region)
    ;; ("C-c C-c" ace-jump-mode)
-   ("C-x C-z" nil)
-   ("s-x" smex)))
+   ("C-x C-z" nil)))
 
 (cf-set-key-bindings
  'global-set-key
