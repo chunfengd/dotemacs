@@ -198,6 +198,49 @@ specified by HEIGHT."
 ;; (global-set-key [f6] 'cf-toggle-frame-maximum)
 
 (cond
+ ((string-equal system-type "windows-nt")
+  ;; windows
+  (progn
+    (defvar max-flag nil)
+    (defun cf-win-toggle-frame-maximum ()
+      "Toggle frame between maximum and norm."
+      (interactive)
+      (if (null max-flag)
+          (progn
+            (w32-send-sys-command 61488)
+            (setq max-flag t))
+        (w32-send-sys-command 61728)
+        (setq max-flag nil)))
+    (global-set-key [f6] 'cf-win-toggle-frame-maximum)))
+ ((string-equal system-type "darwin")
+  ;; mac os x
+  (progn
+    (defun toggle-fullscreen ()
+      "Toggle full screen. From: http://emacswiki.org/emacs/FullScreen."
+      (interactive)
+      (set-frame-parameter
+       nil 'fullscreen
+       (when (not (frame-parameter nil 'fullscreen)) 'fullboth)))
+    ;; (global-set-key [f6] 'toggle-fullscreen)
+    (global-set-key (kbd "M-<f6>") 'toggle-frame-maximized)
+    (global-set-key (kbd "<f6>") 'cf-toggle-frame-maximum)))
+ ((string-equal system-type "gnu/linux")
+  (message "linux")
+  (progn
+    (defun fullscreen (&optional f)
+      (interactive)
+      (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+                             '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0))
+      (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+                             '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
+    (defun toggle-frame-maxium ()
+      (interactive)
+      (when (eq window-system 'x)
+        (set-frame-parameter nil 'fullscreen
+         (when (not (frame-parameter nil 'fullscreen)) 'fullboth))))
+    (global-set-key [f6] 'toggle-frame-maximum))))
+
+(cond
  ;; windows
  ((string-equal system-type "windows-nt")
   (progn
