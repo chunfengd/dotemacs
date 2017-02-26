@@ -1,41 +1,14 @@
 ;; platform specific
 
-(defun cf-set-path (dir)
-  (setenv "PATH" dir))
-
-(defun cf-append-path (dir)
-  (let (deli)
-    (setq deli
-        (if (string-equal system-type "windows-nt")
-            (eval ";")
-          (eval ":")))
-    (setenv "PATH" (concat (getenv "PATH") deli dir))
-    (add-to-list 'exec-path (expand-file-name dir))))
-
-(defun cf-push-front-path (dir)
-  (let (deli)
-    (setq deli
-        (if (string-equal system-type "windows-nt")
-            (eval ";")
-          (eval ":")))
-    (setenv "PATH" (concat dir deli (getenv "PATH")))
-    (add-to-list 'exec-path (expand-file-name dir))))
+(add-to-list 'load-path (concat cf-dotemacs-home "lib/exec-path-from-shell"))
+(require 'exec-path-from-shell)
 
 (cond
  ((string-equal system-type "windows-nt")
   ;; windows
   (progn
-    ;; (cf-set-path "D:/qt/sdk-4.7.4/bin")
-    ;; (cf-append-path "D:/qt/mingw-4.4.0/bin")
-    ;; (cf-append-path (concat (getenv "systemroot") "/system32"))
-    ;; (cf-append-path "D:/cc/depends22_x86")
-    ;; (cf-append-path "D:/run")
-    ;; (cf-append-path "C:/texlive/2011/bin/win32")
-    ;; (setenv "QMAKESPEC" "win32-g++")
-    ;; (defconst cf-system-include-dirs
-    ;;   (list "D:/qt/sdk-4.7.4/include"
-    ;;         "D:/qt/mingw-4.4.0/lib/gcc/mingw32/4.4.0/include/c++"))
     (defvar max-flag nil)
+    (exec-path-from-shell-initialize)
     (defun cf-win-toggle-frame-maximum ()
       "Toggle frame between maximum and norm."
       (interactive)
@@ -54,28 +27,7 @@
     ;;(setq mac-command-modifier 'meta)
     ;;(setq mac-option-modifier nil)
     ;; (setenv "NODE_NO_READLINE" "1")
-    (let ((path-from-shell 
-           (replace-regexp-in-string
-            "[[:space:]\n]*$" "" 
-            (shell-command-to-string "$SHELL -l -c 'echo $PATH'"))))
-      (setenv "PATH" path-from-shell)
-      (setq exec-path (split-string path-from-shell path-separator)))
-    ;; (setq exec-path
-    ;;       (delete-dups
-    ;;        (append
-    ;;         (split-string
-    ;;          (shell-command-to-string
-    ;;           "$SHELL -l -c 'printf $PATH'")
-    ;;          ":")
-    ;;         exec-path)))
-    ;; set exec-path from shell path
-    ;; for cedet include dir
-    (defconst cf-system-include-dirs
-      (list "/opt/local/include"))
-    (defconst cf-macports-lisp-dir
-      "/opt/local/share/emacs/site-lisp/")
-    (if (file-exists-p cf-macports-lisp-dir)
-        (add-to-list 'load-path cf-macports-lisp-dir))
+    (exec-path-from-shell-initialize)
     (defun toggle-fullscreen ()
       "Toggle full screen. From: http://emacswiki.org/emacs/FullScreen."
       (interactive)

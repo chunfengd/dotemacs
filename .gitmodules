@@ -1,3 +1,9 @@
 [submodule "lib/js3-mode"]
 	path = lib/js3-mode
 	url = https://github.com/thomblake/js3-mode.git
+[submodule "lib/flycheck"]
+	path = lib/flycheck
+	url = https://github.com/flycheck/flycheck.git
+[submodule "lib/exec-path-from-shell"]
+	path = lib/exec-path-from-shell
+	url = https://github.com/purcell/exec-path-from-shell.git
