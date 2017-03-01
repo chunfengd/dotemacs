@@ -57,7 +57,7 @@
 (defun cf-json-setup ()
   (cf-install-package-file 'json-mode "lib/json-mode/"))
 
-;; (cf-js-setup)
+(cf-js-setup)
 (cf-js2-setup)
 ;; (cf-js3-setup)
 (cf-json-setup)
