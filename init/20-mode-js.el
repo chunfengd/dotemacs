@@ -53,7 +53,11 @@
                 (auto-complete-mode 1))))
   (add-to-list 'auto-mode-alist '("\\.js$" . js3-mode)))
 
+;; json-mode
+(defun cf-json-setup ()
+  (cf-install-package-file 'json-mode "lib/json-mode/"))
+
 ;; (cf-js-setup)
 (cf-js2-setup)
 ;; (cf-js3-setup)
-
+(cf-json-setup)

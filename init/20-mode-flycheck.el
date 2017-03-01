@@ -13,7 +13,7 @@
   (cf-install-package-file 'flycheck "lib/flycheck/")
   (add-hook 'after-init-hook 'global-flycheck-mode)
   (setq flycheck-global-modes
-        '(emacs-lisp-mode js-mode js2-mode))
+        '(emacs-lisp-mode js-mode js2-mode json-mode))
   (setq-default flycheck-disabled-checkers
                 '(emacs-lisp-checkdoc)))
 
