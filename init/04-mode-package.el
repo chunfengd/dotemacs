@@ -6,6 +6,8 @@
 
 (require 'package)
 
+(defvar cf-dotemacs-home)
+
 ;; (add-to-list 'package-archives
 ;;              '("marmalade" . "https://marmalade-repo.org/packages/"))
 ;; (add-to-list 'package-archives
@@ -30,4 +32,4 @@
 (defun cf-install-package-file (package path)
   "Install a package from local path"
   (when (not (package-installed-p package))
-    (package-install-file path)))
+    (package-install-file (concat cf-dotemacs-home path))))

@@ -2,7 +2,6 @@
 (defun cf-js-setup ()
   (setq-default js-indent-level 2))
 
-
 (defun cf-js2-setup ()
   ;; js2-mode-hide-comments
   ;; js2-mode-hide-element
@@ -19,44 +18,24 @@
   ;; js2-mode-toggle-hide-comments
   ;; js2-mode-toggle-hide-functions
   ;; js2-mode-toggle-warnings-and-errors
-  (cf-install-package-file 'js2-mode (concat cf-dotemacs-home "lib/js2-mode/"))
+  (cf-install-package-file 'js2-mode "lib/js2-mode/")
   (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
   (setq-default js2-basic-offset 2)
-  (setq-default js2-strict-inconsistent-return-warning nil)
+  ;; this will hide errors & warnings
+  (setq-default js2-mode-show-parse-errors nil)
+  (setq-default js2-mode-show-strict-warnings nil)
+  ;; (setq-default js2-strict-inconsistent-return-warning nil)
   (defun cf-init-js ()
     (electric-indent-mode -1)
     (cf-set-key-bindings
      'local-set-key
      '(("C-c C-c" ace-jump-mode)
        ("C-c C-y" comment-or-uncomment-region))))
-  (add-hook 'js2-mode-hook 'cf-init-js)
-  
-  ;; from https://yoo2080.wordpress.com/2012/03/15/js2-mode-setup-recommendation/
-  (add-hook
-   'js2-post-parse-callbacks
-   (lambda ()
-     (when (> (buffer-size) 0)
-       (let ((btext
-              (replace-regexp-in-string
-               (rx ":" (* " ") "true") " "
-               (replace-regexp-in-string
-                (rx (+ (char "\n\t\r "))) " "
-                ;; only scans first 1000 characters
-                (save-restriction
-                  (widen)
-                  (buffer-substring-no-properties
-                   (point-min) (min (1+ 1000) (point-max)))) t t))))
-         (mapc (apply-partially 'add-to-list 'js2-additional-externs)
-               (split-string
-                (if (string-match (rx "/*" (* " ") "global" (* " ")
-                                      (group (*? nonl)) (* " ") "*/")
-                                  btext)
-                    (match-string-no-properties 1 btext) "")
-                (rx (* " ") "," (* " ")) t)))))))
+  (add-hook 'js2-mode-hook 'cf-init-js))
 
 ;; js3-mode
 (defun cf-js3-setup ()
-  (add-to-list 'load-path (concat cf-dotemacs-home "lib/js3-mode"))
+  (add-to-list 'load-path "lib/js3-mode")
   (autoload 'js3-mode "js3-mode" nil t)
   (eval-after-load "js3-mode"
     (add-hook 'js3-mode-hook
@@ -74,7 +53,7 @@
                 (auto-complete-mode 1))))
   (add-to-list 'auto-mode-alist '("\\.js$" . js3-mode)))
 
-(cf-js-setup)
-;; (cf-js2-setup)
+;; (cf-js-setup)
+(cf-js2-setup)
 ;; (cf-js3-setup)
 

@@ -1,5 +1,5 @@
 
-(defconst cf-dotemacs-home (file-name-directory load-file-name)
+(defvar cf-dotemacs-home (file-name-directory load-file-name)
   "HOME of dotemacs repo")
 
 (message (concat "cf-dotemacs-home: " cf-dotemacs-home))

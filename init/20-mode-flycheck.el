@@ -7,11 +7,10 @@
 ;; [var]flycheck-checker: checker used for current buffer
 ;;
 
-(defvar cf-dotemacs-home)
 (defvar flycheck-global-modes)
 
 (defun cf-setup-flycheck ()
-  (cf-install-package-file 'flycheck (concat cf-dotemacs-home "lib/flycheck/"))
+  (cf-install-package-file 'flycheck "lib/flycheck/")
   (add-hook 'after-init-hook 'global-flycheck-mode)
   (setq flycheck-global-modes
         '(emacs-lisp-mode js-mode))
