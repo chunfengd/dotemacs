@@ -20,7 +20,7 @@
   ;; js2-mode-toggle-warnings-and-errors
   (cf-install-package-file 'js2-mode "lib/js2-mode/")
   (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-  (setq-default js2-basic-offset 2)
+  (setq-default js-indent-level 2)
   ;; this will hide errors & warnings
   (setq-default js2-mode-show-parse-errors nil)
   (setq-default js2-mode-show-strict-warnings nil)
