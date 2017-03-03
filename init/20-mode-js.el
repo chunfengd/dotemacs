@@ -35,7 +35,7 @@
 
 ;; js3-mode
 (defun cf-js3-setup ()
-  (add-to-list 'load-path "lib/js3-mode")
+  (add-to-list 'load-path (cf-path "lib/js3-mode"))
   (autoload 'js3-mode "js3-mode" nil t)
   (eval-after-load "js3-mode"
     (add-hook 'js3-mode-hook

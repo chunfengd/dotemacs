@@ -1,6 +1,6 @@
 ;; platform specific
 
-(add-to-list 'load-path (concat cf-dotemacs-home "lib/exec-path-from-shell"))
+(add-to-list 'load-path (cf-path "lib/exec-path-from-shell"))
 (require 'exec-path-from-shell)
 
 (cond

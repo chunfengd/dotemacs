@@ -13,3 +13,6 @@
 [submodule "lib/json-mode"]
 	path = lib/json-mode
 	url = https://github.com/joshwnj/json-mode.git
+[submodule "lib/dash-at-point"]
+	path = lib/dash-at-point
+	url = https://github.com/stanaka/dash-at-point.git
