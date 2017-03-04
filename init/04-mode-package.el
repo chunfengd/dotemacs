@@ -9,7 +9,7 @@
 ;; (add-to-list 'package-archives
 ;;              '("marmalade" . "https://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/"))
+             '("melpa-stable" . "https://stable.melpa.org/packages/"))
 
 ;; Org-mode's repository
 (add-to-list 'package-archives
@@ -31,3 +31,27 @@
   "Install a package from local path"
   (when (not (package-installed-p package))
     (package-install-file (cf-path path))))
+
+(defun cf-install-package-file-force (path)
+  "Install a package from local path"
+  (package-install-file (cf-path path)))
+
+(defun cf-install-files (package package-name dir files &optional force)
+  "Work around for melpa, which allows multiple packages
+ in one repository"
+  (when (or force (not (package-installed-p package)))
+    (let ((src-dir (cf-path dir))
+          (dst-dir (cf-path (concat "tmp/" package-name "/"))))
+      ;; delete and recreate temp dst-dir
+      (shell-command-to-string
+       (format "[ -e %s ] && rm -rf %s; mkdir -p %s"
+               dst-dir dst-dir dst-dir))
+      ;; copy files into dst-dir
+      (mapc (lambda (f)
+              (let ((from (concat src-dir f))
+                    (to (concat dst-dir f)))
+                (shell-command-to-string
+                 (format "cp %s %s" from to))))
+            files)
+      ;; install package from dst-dir
+      (package-install-file dst-dir))))

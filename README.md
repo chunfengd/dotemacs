@@ -42,3 +42,14 @@ $ source init.sh
 ### helm-projectile
 
 * link: https://github.com/bbatsov/helm-projectile
+
+### projectile
+
+* link: https://github.com/bbatsov/projectile
+
+### helm, helm-core & async
+
+* links
+
+  - https://github.com/jwiegley/emacs-async.git
+  - https://github.com/emacs-helm/helm

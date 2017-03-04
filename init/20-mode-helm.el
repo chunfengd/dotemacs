@@ -2,51 +2,17 @@
 ;; http://tuhdo.github.io/helm-projectile.html
 ;; https://github.com/bbatsov/projectile
 
-(cf-install-packages '(helm))
-
-(require 'helm)
-(require 'helm-config)
-
-(defun test-msg ()
-  (interactive)
-  (message "test"))
-
-(defun cf-bind-helm ()
-  (cf-set-key-bindings
-   'define-key
-   '(("C-w" helm-previous-page))
-   minibuffer-local-map)
-  (cf-set-key-bindings
-   'define-key
-   '(("C-w" helm-previous-page))
-   helm-generic-files-map)
-  (cf-set-key-bindings
-   'define-key
-   '(("C-w" helm-previous-page))
-   helm-find-files-map)
-  (cf-set-key-bindings
-   'define-key
-   '(("C-w" helm-previous-page))
-   helm-read-file-map)
-  (cf-set-key-bindings
-   'define-key
-   '(("C-b" helm-toggle-buffers-details))
-   helm-buffer-map)
-  (cf-set-key-bindings
-   'define-key
-   '(("C-j" helm-next-line)
-     ("C-k" helm-previous-line)
-     ("C-n" helm-execute-persistent-action)
-     ("C-M-w" helm-scroll-other-window-down)
-     ("C-w" helm-previous-page)
-     ("C-t" helm-toggle-visible-mark)
-     ;; ("M-a" helm-mark-all)
-     ;; ("M-U" helm-unmark-all)
-     ;; ("C-f" helm-delete-minibuffer-contents)
-     )
-   helm-map))
-
 (defun cf-setup-helm ()
+
+  (cf-install-package-file 'async "lib/async/")
+  (cf-install-files 'helm-core "helm-core" "lib/helm/"
+                    '("helm-core-pkg.el" "helm.el" "helm-lib.el"
+                      "helm-source.el" "helm-multi-match.el"))
+  (cf-install-package-file 'helm "lib/helm/")
+
+  (require 'helm)
+  (require 'helm-config)
+
   ;; keys
   (cf-set-key-bindings
    'global-set-key
@@ -86,6 +52,40 @@
 
   (helm-mode 1)
 
+  (defun cf-bind-helm ()
+    (cf-set-key-bindings
+     'define-key
+     '(("C-w" helm-previous-page))
+     minibuffer-local-map)
+    (cf-set-key-bindings
+     'define-key
+     '(("C-w" helm-previous-page))
+     helm-generic-files-map)
+    (cf-set-key-bindings
+     'define-key
+     '(("C-w" helm-previous-page))
+     helm-find-files-map)
+    (cf-set-key-bindings
+     'define-key
+     '(("C-w" helm-previous-page))
+     helm-read-file-map)
+    (cf-set-key-bindings
+     'define-key
+     '(("C-b" helm-toggle-buffers-details))
+     helm-buffer-map)
+    (cf-set-key-bindings
+     'define-key
+     '(("C-j" helm-next-line)
+       ("C-k" helm-previous-line)
+       ("C-n" helm-execute-persistent-action)
+       ("C-M-w" helm-scroll-other-window-down)
+       ("C-w" helm-previous-page)
+       ("C-t" helm-toggle-visible-mark)
+       ;; ("M-a" helm-mark-all)
+       ;; ("M-U" helm-unmark-all)
+       ;; ("C-f" helm-delete-minibuffer-contents)
+       )
+     helm-map))
   (cf-bind-helm)
 
   ;; (setq helm-grep-default-command
