@@ -19,3 +19,6 @@
 [submodule "lib/helm-projectile"]
 	path = lib/helm-projectile
 	url = https://github.com/bbatsov/helm-projectile.git
+[submodule "lib/projectile"]
+	path = lib/projectile
+	url = https://github.com/bbatsov/projectile.git

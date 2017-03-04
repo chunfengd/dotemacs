@@ -97,6 +97,7 @@
 
 
 (defun cf-setup-projectile ()
+  (cf-install-package-file 'projectile "lib/projectile/")
   (cf-install-package-file 'helm-projectile "lib/helm-projectile/")
   (projectile-global-mode)
   (setq projectile-find-dir-includes-top-level t)
