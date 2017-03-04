@@ -16,3 +16,6 @@
 [submodule "lib/dash-at-point"]
 	path = lib/dash-at-point
 	url = https://github.com/stanaka/dash-at-point.git
+[submodule "lib/helm-projectile"]
+	path = lib/helm-projectile
+	url = https://github.com/bbatsov/helm-projectile.git
