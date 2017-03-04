@@ -98,9 +98,8 @@
 
 (defun cf-setup-projectile ()
   (projectile-global-mode)
+  (setq projectile-find-dir-includes-top-level t)
   (setq projectile-completion-system 'helm)
-  (define-key projectile-mode-map (kbd "C-c C-p") 'projectile-command-map)
-  ;; (define-key projectile-mode-map (kbd "C-x C-p") 'projectile-command-map)
   (setq projectile-file-exists-remote-cache-expire nil)
   ;; (setq helm-projectile-fuzzy-match nil)
   (setq projectile-switch-project-action 'helm-projectile)
@@ -110,11 +109,13 @@
   (condition-case nil
       (helm-projectile-on)
     (error nil))
+  (define-key projectile-mode-map (kbd "C-c C-p") 'projectile-command-map)
   (cf-set-key-bindings
    'define-key
    '(
      ("C-f" projectile-find-file)
      ("C-h" helm-projectile)
-     ("C-p" helm-projectile-switch-project))
+     ("C-p" helm-projectile-switch-project)
+     ("C-g" helm-projectile-find-file-dwim))
    projectile-command-map))
 (cf-setup-projectile)
