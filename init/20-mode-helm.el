@@ -5,6 +5,9 @@
 (defun cf-setup-helm ()
 
   (cf-install-package-file 'async "lib/async/")
+  ;; recipe of helm-core & helm
+  ;; https://github.com/melpa/melpa/blob/master/recipes/helm-core
+  ;; https://github.com/melpa/melpa/blob/master/recipes/helm
   (cf-install-files 'helm-core "helm-core" "lib/helm/"
                     '("helm-core-pkg.el" "helm.el" "helm-lib.el"
                       "helm-source.el" "helm-multi-match.el"))
