@@ -32,6 +32,9 @@
      ("C-x C-h C-p" helm-projectile-switch-project)
      ("C-x C-h C-r" helm-resume)
      ("C-x C-h C-m" helm-all-mark-rings)
+     ("C-x C-h C-g" helm-projectile-ag)
+     ("C-x C-h C-k" helm-projectile-ack)
+     ("C-x C-h C-a" helm-do-ag)
      ))
 
   ;; general
@@ -96,8 +99,10 @@
   ;;       helm-grep-default-recurse-command
   ;;       "ack-grep -H --color --smart-case --no-group %e %p %f")
   )
-(cf-setup-helm)
 
+(defun cf-setup-helm-ag ()
+  (cf-install-package-file 'helm-ag "lib/helm-ag/")
+  )
 
 (defun cf-setup-projectile ()
   (cf-install-package-file 'projectile "lib/projectile/")
@@ -123,4 +128,8 @@
      ("C-p" helm-projectile-switch-project)
      ("C-g" helm-projectile-find-file-dwim))
    projectile-command-map))
+
+
+(cf-setup-helm)
+(cf-setup-helm-ag)
 (cf-setup-projectile)

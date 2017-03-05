@@ -28,3 +28,6 @@
 [submodule "lib/helm"]
 	path = lib/helm
 	url = https://github.com/emacs-helm/helm.git
+[submodule "lib/helm-ag"]
+	path = lib/helm-ag
+	url = https://github.com/syohex/emacs-helm-ag.git
