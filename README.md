@@ -45,7 +45,10 @@ $ source init.sh
 
 ### projectile
 
-* link: https://github.com/bbatsov/projectile
+* link:
+
+  - https://beyondgrep.com/install/
+  - https://github.com/bbatsov/projectile
 
 ### helm, helm-core & async
 
@@ -53,3 +56,10 @@ $ source init.sh
 
   - https://github.com/jwiegley/emacs-async.git
   - https://github.com/emacs-helm/helm
+
+### helm-ag
+
+* links:
+
+  - https://github.com/ggreer/the_silver_searcher#installing
+  - https://github.com/syohex/emacs-helm-ag
