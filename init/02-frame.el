@@ -48,6 +48,13 @@
                     (cursor-color . "grey80")
                     (mouse-color . "dark orange")))))))
 
+(defun cf-reset-frame-rect ()
+  "Reset the current frame to its original size"
+  (interactive)
+  (let ((cur-frame (selected-frame)))
+    (set-frame-size cur-frame 80 42)
+    (set-frame-position cur-frame 650 100)))
+
 (global-hl-line-mode t)
 (if (display-graphic-p)
     (set-face-background hl-line-face "grey20"))
@@ -222,8 +229,8 @@ specified by HEIGHT."
        nil 'fullscreen
        (when (not (frame-parameter nil 'fullscreen)) 'fullboth)))
     ;; (global-set-key [f6] 'toggle-fullscreen)
-    (global-set-key (kbd "M-<f6>") 'toggle-frame-maximized)
-    (global-set-key (kbd "<f6>") 'cf-toggle-frame-maximum)))
+    (global-set-key (kbd "<f6>") 'toggle-frame-maximized)
+    (global-set-key (kbd "M-<f6>") 'cf-reset-frame-rect)))
  ((string-equal system-type "gnu/linux")
   (message "linux")
   (progn
