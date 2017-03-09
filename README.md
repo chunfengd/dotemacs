@@ -63,3 +63,7 @@ $ source init.sh
 
   - https://github.com/ggreer/the_silver_searcher#installing
   - https://github.com/syohex/emacs-helm-ag
+
+### markdown
+
+* link: https://github.com/jrblevin/markdown-mode
