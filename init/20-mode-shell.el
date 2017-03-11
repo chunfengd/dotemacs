@@ -14,7 +14,7 @@ char will be used."
 (defun cf-sh-mode-hook-func ()
   (cf-set-key-bindings
    'define-key
-   '(("C-c C-c" ace-jump-mode))
+   '()
    sh-mode-map))
 (add-hook 'sh-mode-hook 'cf-sh-mode-hook-func)
 
@@ -46,9 +46,6 @@ char will be used."
      ("C-c C-n" nil)
      ("C-c C-p" nil)
      ("C-c C-f" nil)
-
-     ("C-c C-y" comint-interrupt-subjob)
-     ("C-c C-c" ace-jump-mode)
      )
    ;;shell-mode-map
    )
@@ -61,8 +58,6 @@ char will be used."
   (cf-set-key-bindings
    'local-set-key
    '(
-     ("C-c C-y" term-interrupt-subjob)
-     ("C-c C-c" ace-jump-mode)
      ))
   (cf-set-key-bindings
    'define-key

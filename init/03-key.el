@@ -98,8 +98,7 @@ Not exactly but it's easier to remember"
    ("C-M-w" scroll-other-window-down)
    ("C-c RET" imenu)
    ("M-o" kill-ring-save)
-   ("C-c C-y" comment-or-uncomment-region)
-   ;; ("C-c C-c" ace-jump-mode)
+   ("C-c C-c" comment-or-uncomment-region)
    ("C-x C-z" nil)))
 
 (cf-set-key-bindings
@@ -124,7 +123,7 @@ Not exactly but it's easier to remember"
    ;;("M-n" indent-new-comment-line)
    ("M-n" auto-complete)
    ("M-p" downcase-word)
-   ("M-f" kill-sentence)
+   ;; ("M-f" kill-sentence)
 
    ("C-M-h" backward-sexp)
    ("C-M-j" forward-list)
@@ -134,7 +133,8 @@ Not exactly but it's easier to remember"
    ("C-M-b" mark-defun)
    ("C-M-n" indent-new-comment-line)
    ("C-M-p" reposition-window)
-   ("C-M-f" kill-sexp)))
+   ;; ("C-M-f" kill-sexp)
+   ))
 
 (cf-set-key-bindings
  'global-set-key

@@ -34,3 +34,6 @@
 [submodule "lib/md"]
 	path = lib/md
 	url = https://github.com/jrblevin/markdown-mode.git
+[submodule "lib/avy"]
+	path = lib/avy
+	url = https://github.com/abo-abo/avy.git

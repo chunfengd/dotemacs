@@ -46,8 +46,6 @@
      ("M-h" backward-word)
      ("M-b" org-mark-element)
 
-     ("C-c C-c" ace-jump-mode)
-     ("C-c C-y" org-ctrl-c-ctrl-c) ;; used to be 'C-c C-c'
      ("C-c C-f" org-kill-note-or-show-branches) ;; used to be 'C-c C-k'
 
      ("C-<tab>" org-cycle)

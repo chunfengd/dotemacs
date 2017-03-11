@@ -29,8 +29,7 @@
     (electric-indent-mode -1)
     (cf-set-key-bindings
      'local-set-key
-     '(("C-c C-c" ace-jump-mode)
-       ("C-c C-y" comment-or-uncomment-region))))
+     '()))
   (add-hook 'js2-mode-hook 'cf-init-js))
 
 ;; js3-mode

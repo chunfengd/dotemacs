@@ -67,3 +67,7 @@ $ source init.sh
 ### markdown
 
 * link: https://github.com/jrblevin/markdown-mode
+
+### avy
+
+* link: https://github.com/abo-abo/avy.git

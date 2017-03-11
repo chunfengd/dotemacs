@@ -10,8 +10,7 @@
 (defun cf-init-python ()
   (cf-set-key-bindings
    'local-set-key
-   '(("C-c C-c" ace-jump-mode)
-     ("C-c C-y" comment-or-uncomment-region)))
+   '())
   (cf-set-key-bindings
    'define-key
    '(("C-j" nil)
