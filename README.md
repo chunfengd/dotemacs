@@ -75,3 +75,9 @@ $ source init.sh
 ### highlight-indentation
 
 * link: https://github.com/antonj/Highlight-Indentation-for-Emacs
+
+### python-mode
+
+* link: https://github.com/emacsmirror/python-mode
+
+* node: this submodule ignores dirty

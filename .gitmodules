@@ -43,3 +43,7 @@
 [submodule "lib/expand-region"]
 	path = lib/expand-region
 	url = https://github.com/magnars/expand-region.el.git
+[submodule "lib/python-mode"]
+	path = lib/python-mode
+	url = https://github.com/emacsmirror/python-mode.git
+        ignore = dirty
