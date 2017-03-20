@@ -71,3 +71,7 @@ $ source init.sh
 ### avy
 
 * link: https://github.com/abo-abo/avy.git
+
+### highlight-indentation
+
+* link: https://github.com/antonj/Highlight-Indentation-for-Emacs

@@ -37,3 +37,6 @@
 [submodule "lib/avy"]
 	path = lib/avy
 	url = https://github.com/abo-abo/avy.git
+[submodule "lib/highlight-indetation"]
+	path = lib/highlight-indetation
+	url = https://github.com/antonj/Highlight-Indentation-for-Emacs.git
