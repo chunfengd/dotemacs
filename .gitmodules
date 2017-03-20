@@ -40,3 +40,6 @@
 [submodule "lib/highlight-indetation"]
 	path = lib/highlight-indetation
 	url = https://github.com/antonj/Highlight-Indentation-for-Emacs.git
+[submodule "lib/expand-region"]
+	path = lib/expand-region
+	url = https://github.com/magnars/expand-region.el.git
