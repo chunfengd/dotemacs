@@ -13,9 +13,9 @@
      ("M-f M-j" avy-goto-char-2)
      ("M-f M-k" avy-goto-char)
 
-     ("M-f M-l" avy-goto-char-in-line)
+     ("M-f M-d" avy-goto-char-in-line)
 
-     ("M-f M-h" avy-goto-line)
+     ("M-f M-l" avy-goto-line)
      )))
 
 (cf-setup-avy)
