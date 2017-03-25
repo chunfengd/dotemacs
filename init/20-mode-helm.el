@@ -33,7 +33,7 @@
      ("C-x C-h C-r" helm-resume)
      ("C-x C-h C-m" helm-all-mark-rings)
      ("C-x C-h C-g" helm-projectile-ag)
-     ("C-x C-h C-k" helm-projectile-ack)
+     ("C-x C-h C-k" helm-projectile-grep)
      ("C-x C-h C-a" helm-do-ag)
      ))
 
