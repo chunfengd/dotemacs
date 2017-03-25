@@ -100,3 +100,9 @@ $ source init.sh
 ### clojure-mode
 
 * link: https://github.com/clojure-emacs/clojure-mode
+
+### paredit-mode
+
+* links
+  - https://www.emacswiki.org/emacs/ParEdit
+  - https://mumble.net/~campbell/git/paredit.git
