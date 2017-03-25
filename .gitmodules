@@ -62,3 +62,6 @@
 [submodule "lib/paredit"]
 	path = lib/paredit
 	url = https://mumble.net/~campbell/git/paredit.git
+[submodule "lib/auto-complete"]
+	path = lib/auto-complete
+	url = https://github.com/auto-complete/auto-complete.git

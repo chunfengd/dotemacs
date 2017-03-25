@@ -106,3 +106,9 @@ $ source init.sh
 * links
   - https://www.emacswiki.org/emacs/ParEdit
   - https://mumble.net/~campbell/git/paredit.git
+
+### auto-complete
+
+* links
+  - https://github.com/auto-complete/auto-complete
+  - https://github.com/auto-complete/auto-complete/blob/master/doc/manual.md
