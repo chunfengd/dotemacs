@@ -92,3 +92,7 @@ $ source init.sh
 
   - http://web-mode.org/
   - https://github.com/fxbois/web-mode
+
+### scss-mode
+
+* link: https://github.com/antonj/scss-mode

@@ -53,3 +53,6 @@
 [submodule "lib/web-mode"]
 	path = lib/web-mode
 	url = https://github.com/fxbois/web-mode.git
+[submodule "lib/scss-mode"]
+	path = lib/scss-mode
+	url = https://github.com/antonj/scss-mode.git
