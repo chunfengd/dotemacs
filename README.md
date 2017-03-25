@@ -96,3 +96,7 @@ $ source init.sh
 ### scss-mode
 
 * link: https://github.com/antonj/scss-mode
+
+### clojure-mode
+
+* link: https://github.com/clojure-emacs/clojure-mode

@@ -56,3 +56,6 @@
 [submodule "lib/scss-mode"]
 	path = lib/scss-mode
 	url = https://github.com/antonj/scss-mode.git
+[submodule "lib/clojure-mode"]
+	path = lib/clojure-mode
+	url = https://github.com/clojure-emacs/clojure-mode

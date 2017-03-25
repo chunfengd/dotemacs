@@ -53,29 +53,34 @@ char will be used."
 (eval-after-load 'paredit '(cf-paredit-key))
 
 ;; clojure
-(add-hook 'nrepl-mode-hook 'subword-mode)
-;(add-hook 'nrepl-mode-hook 'rainbow-delimiters-mode)
+(defun cf-clojure-mode-setup ()
+  (cf-install-package-file 'clojure-mode "lib/clojure-mode/")
+  (add-hook 'nrepl-mode-hook 'subword-mode)
+  ;;(add-hook 'nrepl-mode-hook 'rainbow-delimiters-mode)
 
-(defun cf-clojure-match-next-def ()
-  "Scans the buffer backwards for the next top-level definition.
+  (defun cf-clojure-match-next-def ()
+    "Scans the buffer backwards for the next top-level definition.
 Called by `imenu--generic-function'."
-  (when (re-search-backward "^\\s *(def\\S *[ \n\t]+" nil t)
-    (save-excursion
-      (goto-char (match-end 0))
-      (when (looking-at "#?\\^")
-        (let (forward-sexp-function) ; using the built-in one
-          (forward-sexp)))           ; skip the metadata
-      (re-search-forward "[^ \n\t)]+"))))
+    (when (re-search-backward "^\\s *(def\\S *[ \n\t]+" nil t)
+      (save-excursion
+        (goto-char (match-end 0))
+        (when (looking-at "#?\\^")
+          (let (forward-sexp-function) ; using the built-in one
+            (forward-sexp)))           ; skip the metadata
+        (re-search-forward "[^ \n\t)]+"))))
 
-(defun cf-clojure-mode-func ()
-  (cf-set-key-bindings
-   'define-key
-   '(
-     ("{" nil)
-     ("}" nil)
-     )
-   clojure-mode-map)
-  (setq-local imenu-create-index-function
-              (lambda ()
-                (imenu--generic-function '((nil cf-clojure-match-next-def 0))))))
-(add-hook 'clojure-mode-hook 'cf-clojure-mode-func)
+  (defun cf-clojure-mode-func ()
+    (cf-set-key-bindings
+     'define-key
+     '(
+       ("{" nil)
+       ("}" nil)
+       )
+     clojure-mode-map)
+    (setq-local imenu-create-index-function
+                (lambda ()
+                  (imenu--generic-function
+                   '((nil cf-clojure-match-next-def 0))))))
+  (add-hook 'clojure-mode-hook 'cf-clojure-mode-func))
+
+(cf-clojure-mode-setup)
