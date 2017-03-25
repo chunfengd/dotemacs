@@ -50,3 +50,6 @@
 [submodule "lib/multiple-cursors"]
 	path = lib/multiple-cursors
 	url = https://github.com/magnars/multiple-cursors.el.git
+[submodule "lib/web-mode"]
+	path = lib/web-mode
+	url = https://github.com/fxbois/web-mode.git

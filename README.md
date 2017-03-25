@@ -85,3 +85,10 @@ $ source init.sh
 ### multiple-cursors
 
 * link: https://github.com/magnars/multiple-cursors.el
+
+### web-mode
+
+* links:
+
+  - http://web-mode.org/
+  - https://github.com/fxbois/web-mode
