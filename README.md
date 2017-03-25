@@ -81,3 +81,7 @@ $ source init.sh
 * link: https://github.com/emacsmirror/python-mode
 
 * node: this submodule ignores dirty
+
+### multiple-cursors
+
+* link: https://github.com/magnars/multiple-cursors.el

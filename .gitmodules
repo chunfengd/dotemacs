@@ -47,3 +47,6 @@
 	path = lib/python-mode
 	url = https://github.com/emacsmirror/python-mode.git
         ignore = dirty
+[submodule "lib/multiple-cursors"]
+	path = lib/multiple-cursors
+	url = https://github.com/magnars/multiple-cursors.el.git
