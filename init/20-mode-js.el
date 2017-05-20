@@ -1,4 +1,30 @@
 
+(defun cf-node-modules-path-setup ()
+  ;; From: https://github.com/codesuki/add-node-modules-path
+  (defvar add-node-modules-path-debug nil
+    "Enable verbose output when non nil.")
+
+  (defun add-node-modules-path ()
+    "Search the current buffer's parent directories for `node_modules/.bin`.
+If it's found, then add it to the `exec-path'."
+    (let* ((root (locate-dominating-file
+                  (or (buffer-file-name) default-directory)
+                  "node_modules"))
+           (path (and root
+                      (expand-file-name "node_modules/.bin/" root))))
+      (if root
+          (progn
+            (make-local-variable 'exec-path)
+            (add-to-list 'exec-path path)
+            (when add-node-modules-path-debug
+              (message (concat "added " path  " to exec-path"))))
+        (when add-node-modules-path-debug
+          (message (concat "node_modules not found in " root))))))
+  (eval-after-load 'js-mode
+    '(add-hook 'js-mode-hook #'add-node-modules-path))
+  (eval-after-load 'js2-mode
+  '(add-hook 'js2-mode-hook #'add-node-modules-path)))
+
 (defun cf-js-setup ()
   (setq-default js-indent-level 2))
 
@@ -56,6 +82,7 @@
 (defun cf-json-setup ()
   (cf-install-package-file 'json-mode "lib/json-mode/"))
 
+(cf-node-modules-path-setup)
 (cf-js-setup)
 (cf-js2-setup)
 ;; (cf-js3-setup)
