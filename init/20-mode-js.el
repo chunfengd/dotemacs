@@ -50,6 +50,7 @@ If it's found, then add it to the `exec-path'."
   ;; this will hide errors & warnings
   (setq-default js2-mode-show-parse-errors nil)
   (setq-default js2-mode-show-strict-warnings nil)
+  (setq-default js2-bounce-indent-p t)
   ;; (setq-default js2-strict-inconsistent-return-warning nil)
   (defun cf-init-js ()
     (electric-indent-mode -1)
