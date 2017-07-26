@@ -22,7 +22,7 @@ open a new line."
      ("C-t" set-mark-command)
      ("C-o" cf-disply-other-copy))
    dired-mode-map))
-(setq dired-listing-switches "-lnoh")
+(setq dired-listing-switches "-alnoh")
 (defun cf-set-ls (parameter)
   "Set ls parameter in dired mode"
   (interactive "s")
