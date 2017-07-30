@@ -78,17 +78,6 @@
                 (org-eval-in-calendar '(calendar-forward-month 1))))
      )
    org-read-date-minibuffer-local-map)
-  (cf-set-key-bindings
-   'define-key
-   '(
-     ("j" org-agenda-next-line)
-     ("k" org-agenda-previous-line)
-     ("J" org-agenda-next-item)
-     ("K" org-agenda-previous-item)
-     ("g" org-agenda-goto-date)
-     ("G" org-agenda-clock-goto)
-     )
-   org-agenda-mode-map)
   (linum-mode 0)
   (org-indent-mode t)
   (flyspell-mode-off)
@@ -108,9 +97,29 @@
    ("C-c b" org-iswitchb)
    ))
 
+;; for agenda
+(defun cf-org-agenda-mode-hook-func ()
+  (cf-set-key-bindings
+   'define-key
+   '(
+     ("j" org-agenda-next-line)
+     ("k" org-agenda-previous-line)
+     ("J" org-agenda-next-item)
+     ("K" org-agenda-previous-item)
+     ("g" org-agenda-goto-date)
+     ("G" org-agenda-clock-goto)
+     )
+   org-agenda-mode-map))
+(add-hook 'org-agenda-mode-hook 'cf-org-agenda-mode-hook-func)
+(setq org-todo-keyword-faces
+      '(("TODO" . org-warning)
+        ("IN-PROGRESS" . "yellow")
+        ("DONE" . "green")
+        ("HOLD" . "red")
+        ("CANCELLED" . "purple1")))
 (setq org-agenda-custom-commands
       '(("d" "Daily agenda and all TODOs"
-         ((agenda "")
+         ((agenda "" ((org-agenda-ndays 2)))
           (alltodo ""
                    ((org-agenda-skip-function
                      '(or (org-agenda-skip-entry-if 'scheduled 'deadline)))
