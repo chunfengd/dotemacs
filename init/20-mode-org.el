@@ -3,9 +3,9 @@
 (require 'org-install)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 
-(defconst org-dir-home "~/org")
-(if (file-exists-p org-dir-home)
-    (setq org-directory org-dir-home))
+;; (defconst org-dir-home "~/org")
+;; (if (file-exists-p org-dir-home)
+;;     (setq org-directory org-dir-home))
 
 (defun cf-org-beginning-of-line ()
   (interactive)
@@ -78,6 +78,17 @@
                 (org-eval-in-calendar '(calendar-forward-month 1))))
      )
    org-read-date-minibuffer-local-map)
+  (cf-set-key-bindings
+   'define-key
+   '(
+     ("j" org-agenda-next-line)
+     ("k" org-agenda-previous-line)
+     ("J" org-agenda-next-item)
+     ("K" org-agenda-previous-item)
+     ("g" org-agenda-goto-date)
+     ("G" org-agenda-clock-goto)
+     )
+   org-agenda-mode-map)
   (linum-mode 0)
   (org-indent-mode t)
   (flyspell-mode-off)
@@ -97,8 +108,12 @@
    ("C-c b" org-iswitchb)
    ))
 
-(setq org-agenda-files
-      '("~/org/todo.org"))
-;; org-mobile-push
-;; org-mobile-pull
-;; MobileOrg-staging
+(setq org-agenda-custom-commands
+      '(("d" "Daily agenda and all TODOs"
+         ((agenda "")
+          (alltodo ""
+                   ((org-agenda-skip-function
+                     '(or (org-agenda-skip-entry-if 'scheduled 'deadline)))
+                    (org-agenda-overriding-header "Tasks without time:"))))
+         ;; ((org-agenda-compact-blocks t))
+         )))
