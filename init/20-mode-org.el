@@ -119,10 +119,11 @@
         ("CANCELLED" . "purple1")))
 (setq org-agenda-custom-commands
       '(("d" "Daily agenda and all TODOs"
-         ((agenda "" ((org-agenda-ndays 2)))
+         ((agenda "" ((org-agenda-ndays 1)))
           (alltodo ""
                    ((org-agenda-skip-function
                      '(or (org-agenda-skip-entry-if 'scheduled 'deadline)))
                     (org-agenda-overriding-header "Tasks without time:"))))
          ;; ((org-agenda-compact-blocks t))
          )))
+(setq org-deadline-warning-days 10)
