@@ -15,6 +15,7 @@ open a new line."
    '(
      ("j" dired-next-line)
      ("k" dired-previous-line)
+     ("r" revert-buffer)
      ("C-j" dired-next-line)
      ("C-k" dired-previous-line)
      ("C-p" nil)
