@@ -114,6 +114,7 @@
 (setq org-todo-keyword-faces
       '(("TODO" . org-warning)
         ("IN-PROGRESS" . "yellow")
+        ("PROGRESS" . "yellow")
         ("DONE" . "green")
         ("HOLD" . "red")
         ("CANCELLED" . "purple1")))
