@@ -5,7 +5,7 @@
 (defun cf-path (path)
   (expand-file-name path cf-dotemacs-home))
 
-(message (concat "cf-dotemacs-home: " cf-dotemacs-home))
+(message "cf-dotemacs-home: %s" cf-dotemacs-home)
 
 (mapc 'load
       (directory-files (cf-path "init")
