@@ -3,7 +3,7 @@
   "HOME of dotemacs repo")
 
 (defun cf-path (path)
-  (concat cf-dotemacs-home path))
+  (expand-file-name path cf-dotemacs-home))
 
 (message (concat "cf-dotemacs-home: " cf-dotemacs-home))
 
