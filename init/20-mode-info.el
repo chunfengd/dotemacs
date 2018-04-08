@@ -9,5 +9,6 @@
      ("h" backward-char)
      ("l" forward-char)
      ("b" Info-history-back)
-     ("?" Info-help))))
+     ;; ("?" Info-help)
+     )))
 (add-hook 'Info-mode-hook 'cf-init-info)
