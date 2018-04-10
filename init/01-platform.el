@@ -1,13 +1,14 @@
 ;; platform specific
 
-(add-to-list 'load-path (cf-path "lib/exec-path-from-shell"))
-(require 'exec-path-from-shell)
+;; (add-to-list 'load-path (cf-path "lib/exec-path-from-shell"))
+;; (require 'exec-path-from-shell)
 
 (cond
  ((string-equal system-type "windows-nt")
   ;; windows
   (progn
-    (exec-path-from-shell-initialize)))
+    ;;(exec-path-from-shell-initialize)
+    ))
  ((string-equal system-type "darwin")
   ;; mac os x
   (progn
@@ -16,7 +17,8 @@
     ;;(setq mac-command-modifier 'meta)
     ;;(setq mac-option-modifier nil)
     ;; (setenv "NODE_NO_READLINE" "1")
-    (exec-path-from-shell-initialize)))
+    ;; (exec-path-from-shell-initialize)
+    ))
  ((string-equal system-type "gnu/linux")
   (message "linux")
   (progn

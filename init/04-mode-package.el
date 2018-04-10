@@ -15,8 +15,12 @@
 (add-to-list 'package-archives
              '("org" . "http://orgmode.org/elpa/") t)
 
+;; local repo
+(add-to-list 'package-archives
+             `("cf-melpa" . ,(cf-path "../cf-melpa/packages")))
+
 (setq package-enable-at-startup nil)
-    (package-initialize)
+(package-initialize)
 
 (when (not package-archive-contents)
   (package-refresh-contents))
@@ -55,3 +59,14 @@
             files)
       ;; install package from dst-dir
       (package-install-file dst-dir))))
+
+;; (require 'exec-path-from-shell)
+;; (cond
+;;  ((string-equal system-type "windows-nt")
+;;   ;; windows
+;;   (progn
+;;     (exec-path-from-shell-initialize)))
+;;  ((string-equal system-type "darwin")
+;;   ;; mac os x
+;;   (progn
+;;     (exec-path-from-shell-initialize))))
