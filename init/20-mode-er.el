@@ -4,7 +4,7 @@
 ;; (cf-install-packages '(expand-region))
 
 (defun cf-expand-region-setup ()
-  (cf-install-package-file 'expand-region "lib/expand-region/")
+  ;; (cf-install-package-file 'expand-region "lib/expand-region/")
   (cf-set-key-bindings
    'global-set-key
    '(
@@ -12,4 +12,6 @@
      ("M-t" er/expand-region)
      )))
 
-(cf-expand-region-setup)
+(if (package-installed-p 'expand-region)
+    (cf-expand-region-setup)
+  (message "expand-region not installed"))

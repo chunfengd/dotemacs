@@ -1,7 +1,7 @@
 
 
 (defun cf-setup-md ()
-  (cf-install-package-file 'markdown-mode "lib/md/")
+  ;; (cf-install-package-file 'markdown-mode "lib/md/")
   (defun cf-md-mode-hook ()
     (cf-set-key-bindings
      'define-key
@@ -15,4 +15,6 @@
      markdown-mode-map))
   (add-hook 'markdown-mode-hook 'cf-md-mode-hook))
 
-(cf-setup-md)
+(if (package-installed-p 'markdown-mode)
+    (cf-setup-md)
+  (message "md not installed"))

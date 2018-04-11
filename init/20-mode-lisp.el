@@ -1,8 +1,6 @@
 
 (defun cf-paredit-setup ()
 
-  (cf-install-package-file 'paredit "lib/paredit/")
-
   (dolist (mode '(scheme emacs-lisp lisp clojure clojurescript))
     ;; (when (> (display-color-cells) 8)
     ;;   (font-lock-add-keywords (intern (concat (symbol-name mode) "-mode"))
@@ -48,11 +46,12 @@ char will be used."
 
   (eval-after-load 'paredit '(cf-paredit-key)))
 
-(cf-paredit-setup)
+(if (package-installed-p 'paredit)
+    (cf-paredit-setup)
+  (message "paredit not installed"))
 
 ;; clojure
 (defun cf-clojure-mode-setup ()
-  (cf-install-package-file 'clojure-mode "lib/clojure-mode/")
   (add-hook 'nrepl-mode-hook 'subword-mode)
   ;;(add-hook 'nrepl-mode-hook 'rainbow-delimiters-mode)
 
@@ -81,4 +80,6 @@ Called by `imenu--generic-function'."
                    '((nil cf-clojure-match-next-def 0))))))
   (add-hook 'clojure-mode-hook 'cf-clojure-mode-func))
 
-(cf-clojure-mode-setup)
+(if (package-installed-p 'clojure-mode)
+    (cf-clojure-mode-setup)
+  (message "clojure-mode not installed"))

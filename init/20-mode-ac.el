@@ -1,8 +1,6 @@
 
 ;; ac
 (defun cf-ac-setup ()
-  (cf-install-package-file 'auto-complete "lib/auto-complete/")
-
   (ac-config-default)
   (cf-set-key-bindings
    'define-key
@@ -24,4 +22,6 @@
   (setq ac-quick-help-delay 0.5)
   (setq ac-use-fuzzy nil))
 
-(cf-ac-setup)
+(if (package-installed-p 'auto-complete)
+    (cf-ac-setup)
+  (message "auto-complete not installed"))

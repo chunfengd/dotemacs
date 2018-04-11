@@ -1,10 +1,7 @@
 
 ;; multiple-cursors
 
-;; (cf-install-packages '(multiple-cursors))
-
 (defun cf-multiple-cursors-setup ()
-  (cf-install-package-file 'multiple-cursors "lib/multiple-cursors/")
   (setq mc/list-file (cf-path "mc-list.el"))
   (setq mc/always-run-for-all t)
   (cf-set-key-bindings
@@ -18,4 +15,6 @@
      ("C-S-c C-S-r" set-rectangular-region-anchor)
      ("C-S-c C-S-k" set-rectangular-region-anchor))))
 
-(cf-multiple-cursors-setup)
+(if (package-installed-p 'multiple-cursors)
+    (cf-multiple-cursors-setup)
+  (message "multiple-cursors not installed"))

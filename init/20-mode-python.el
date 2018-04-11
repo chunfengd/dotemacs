@@ -1,6 +1,5 @@
 
 (defun cf-python-setup ()
-  (cf-install-package-file 'python-mode "lib/python-mode/")
   (autoload 'python-mode "python-mode" "Python Mode." t)
   (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
   (add-to-list 'interpreter-mode-alist '("python" . python-mode))
@@ -42,4 +41,6 @@
     (highlight-indentation-current-column-mode))
   (add-hook 'python-mode-hook 'cf-init-python))
 
-(cf-python-setup)
+(if (package-installed-p 'python-mode)
+    (cf-python-setup)
+  (message "python-mode not installed"))

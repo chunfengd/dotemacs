@@ -31,42 +31,16 @@
     (when (not (package-installed-p p))
       (package-install p))))
 
-(defun cf-install-package-file (package path)
-  "Install a package from local path"
-  (when (not (package-installed-p package))
-    (package-install-file (cf-path path))))
-
-(defun cf-install-package-file-force (path)
-  "Install a package from local path"
-  (package-install-file (cf-path path)))
-
-(defun cf-install-files (package package-name dir files &optional force)
-  "Work around for melpa, which allows multiple packages
- in one repository"
-  (when (or force (not (package-installed-p package)))
-    (let ((src-dir (cf-path dir))
-          (dst-dir (cf-path (concat "tmp/" package-name "/"))))
-      ;; delete and recreate temp dst-dir
-      (shell-command-to-string
-       (format "[ -e %s ] && rm -rf %s; mkdir -p %s"
-               dst-dir dst-dir dst-dir))
-      ;; copy files into dst-dir
-      (mapc (lambda (f)
-              (let ((from (concat src-dir f))
-                    (to (concat dst-dir f)))
-                (shell-command-to-string
-                 (format "cp %s %s" from to))))
-            files)
-      ;; install package from dst-dir
-      (package-install-file dst-dir))))
-
-;; (require 'exec-path-from-shell)
-;; (cond
-;;  ((string-equal system-type "windows-nt")
-;;   ;; windows
-;;   (progn
-;;     (exec-path-from-shell-initialize)))
-;;  ((string-equal system-type "darwin")
-;;   ;; mac os x
-;;   (progn
-;;     (exec-path-from-shell-initialize))))
+(if (package-installed-p 'exec-path-from-shell)
+    (progn
+     (require 'exec-path-from-shell)
+     (cond
+      ((string-equal system-type "windows-nt")
+       ;; windows
+       (progn
+         (exec-path-from-shell-initialize)))
+      ((string-equal system-type "darwin")
+       ;; mac os x
+       (progn
+         (exec-path-from-shell-initialize)))))
+  (message "exec-path-from-shell not installed"))

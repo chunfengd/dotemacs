@@ -3,16 +3,6 @@
 ;; https://github.com/bbatsov/projectile
 
 (defun cf-setup-helm ()
-
-  (cf-install-package-file 'async "lib/async/")
-  ;; recipe of helm-core & helm
-  ;; https://github.com/melpa/melpa/blob/master/recipes/helm-core
-  ;; https://github.com/melpa/melpa/blob/master/recipes/helm
-  (cf-install-files 'helm-core "helm-core" "lib/helm/"
-                    '("helm-core-pkg.el" "helm.el" "helm-lib.el"
-                      "helm-source.el" "helm-multi-match.el"))
-  (cf-install-package-file 'helm "lib/helm/")
-
   (require 'helm)
   (require 'helm-config)
 
@@ -100,13 +90,10 @@
   ;;       "ack-grep -H --color --smart-case --no-group %e %p %f")
   )
 
-(defun cf-setup-helm-ag ()
-  (cf-install-package-file 'helm-ag "lib/helm-ag/")
-  )
+;; (defun cf-setup-helm-ag ()
+;;   )
 
 (defun cf-setup-projectile ()
-  (cf-install-package-file 'projectile "lib/projectile/")
-  (cf-install-package-file 'helm-projectile "lib/helm-projectile/")
   (projectile-global-mode)
   (setq projectile-find-dir-includes-top-level t)
   (setq projectile-completion-system 'helm)
@@ -129,7 +116,13 @@
      ("C-g" helm-projectile-find-file-dwim))
    projectile-command-map))
 
-
-(cf-setup-helm)
-(cf-setup-helm-ag)
-(cf-setup-projectile)
+(if (and (package-installed-p 'helm-core)
+         (package-installed-p 'helm)
+         (package-installed-p 'async))
+    (cf-setup-helm)
+  (message "helm-core, helm or async not installed"))
+;; (cf-setup-helm-ag)
+(if (and (package-installed-p 'projectile)
+         (package-installed-p 'helm-projectile))
+    (cf-setup-projectile)
+  (message "projectile or helm-projectile not installed"))
