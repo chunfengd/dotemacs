@@ -31,7 +31,6 @@
 (add-hook 'nxml-mode-hook 'cf-nxml-func)
 
 (defun cf-web-mode-setup ()
-  (cf-install-package-file 'web-mode "lib/web-mode/")
   (add-to-list 'auto-mode-alist '("\\.html$" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.hbs$" . web-mode))
   (defun cf-web-mode-func()
@@ -58,4 +57,6 @@
      web-mode-map))
   (add-hook 'web-mode-hook 'cf-web-mode-func))
 
-(cf-web-mode-setup)
+(if (package-installed-p 'web-mode)
+    (cf-web-mode-setup)
+  (message "web-mode not installed"))

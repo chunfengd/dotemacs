@@ -1,7 +1,6 @@
 ;; jump-char
 
 (defun cf-setup-avy ()
-  (cf-install-package-file 'avy "lib/avy/")
   (cf-set-key-bindings
    'global-set-key
    '(
@@ -18,4 +17,6 @@
      ("M-f M-l" avy-goto-line)
      )))
 
-(cf-setup-avy)
+(if (package-installed-p 'avy)
+    (cf-setup-avy)
+  (message "avy not installed"))

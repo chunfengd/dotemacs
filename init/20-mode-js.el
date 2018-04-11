@@ -44,7 +44,6 @@ If it's found, then add it to the `exec-path'."
   ;; js2-mode-toggle-hide-comments
   ;; js2-mode-toggle-hide-functions
   ;; js2-mode-toggle-warnings-and-errors
-  (cf-install-package-file 'js2-mode "lib/js2-mode/")
   (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
   (setq-default js-indent-level 2)
   ;; this will hide errors & warnings
@@ -61,7 +60,6 @@ If it's found, then add it to the `exec-path'."
 
 ;; js3-mode
 (defun cf-js3-setup ()
-  (add-to-list 'load-path (cf-path "lib/js3-mode"))
   (autoload 'js3-mode "js3-mode" nil t)
   (eval-after-load "js3-mode"
     (add-hook 'js3-mode-hook
@@ -81,10 +79,16 @@ If it's found, then add it to the `exec-path'."
 
 ;; json-mode
 (defun cf-json-setup ()
-  (cf-install-package-file 'json-mode "lib/json-mode/"))
+  )
 
 (cf-node-modules-path-setup)
 (cf-js-setup)
-(cf-js2-setup)
-;; (cf-js3-setup)
-(cf-json-setup)
+(if (package-installed-p 'js2-mode)
+    (cf-js2-setup)
+  (message "js2-mode not installed"))
+;; (if (package-installed-p 'js3-mode)
+;;     (cf-js3-setup)
+;;   (message "js3-mode not installed"))
+(if (package-installed-p 'json-mode)
+    (cf-json-setup)
+  (message "json-mode not installed"))
