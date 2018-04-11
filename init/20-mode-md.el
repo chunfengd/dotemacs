@@ -1,7 +1,6 @@
 
 
 (defun cf-setup-md ()
-  ;; (cf-install-package-file 'markdown-mode "lib/md/")
   (defun cf-md-mode-hook ()
     (cf-set-key-bindings
      'define-key

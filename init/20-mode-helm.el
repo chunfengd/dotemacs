@@ -90,8 +90,8 @@
   ;;       "ack-grep -H --color --smart-case --no-group %e %p %f")
   )
 
-;; (defun cf-setup-helm-ag ()
-;;   )
+(defun cf-setup-helm-ag ()
+  )
 
 (defun cf-setup-projectile ()
   (projectile-global-mode)
@@ -121,7 +121,9 @@
          (package-installed-p 'async))
     (cf-setup-helm)
   (message "helm-core, helm or async not installed"))
-;; (cf-setup-helm-ag)
+(if (package-installed-p 'helm-ag)
+    (cf-setup-helm-ag)
+  (message "helm-ag not installed"))
 (if (and (package-installed-p 'projectile)
          (package-installed-p 'helm-projectile))
     (cf-setup-projectile)

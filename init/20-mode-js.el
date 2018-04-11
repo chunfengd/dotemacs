@@ -79,7 +79,6 @@ If it's found, then add it to the `exec-path'."
 
 ;; json-mode
 (defun cf-json-setup ()
-  ;; (cf-install-package-file 'json-mode "lib/json-mode/")
   )
 
 (cf-node-modules-path-setup)
