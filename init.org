@@ -86,7 +86,7 @@ Therefore, we need to initialize our packages manually.
 * General
 ** About Me
 #+BEGIN_SRC emacs-lisp
-(customize-set-variable 'user-full-name "chunfengd")
+(customize-set-variable 'user-full-name "Chunfeng Dai")
 ;; (customize-set-variable 'user-mail-address "")
 #+END_SRC
 ** Frame
@@ -654,3 +654,20 @@ From: http://blog.plover.com/prog/revert-all.html
          (exec-path-from-shell-initialize)))))
   (message "exec-path-from-shell not installed"))
 #+END_SRC
+* License
+My Emacs configurations written in Org mode.
+
+Copyright (c) 2013-2018 Chunfeng Dai
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
