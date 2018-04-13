@@ -37,7 +37,7 @@ After cloning from [[https://github.com/xiongtx/.emacs.d][GitHub]], there is no 
   restart Emacs, or
 ** tangle command line
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :tangle no
 emacs --batch \
       --load "/Applications/Emacs.app/Contents/Resources/lisp/org/ob-tangle.elc" \
       --eval "(org-babel-tangle-file \"~/dev/dotemacs/init.org\")"
@@ -420,7 +420,7 @@ Therefore, we need to initialize our packages manually.
 
 *** Daemon Server
 
-#+BEGIN_SRC emacs-lisp tangle: no
+#+BEGIN_SRC emacs-lisp :tangle no
 (setq server-name "server")
 (server-start)
 #+END_SRC
