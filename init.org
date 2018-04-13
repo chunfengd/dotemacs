@@ -16,7 +16,7 @@ This is an Emacs configuration file written in Org-mode. It is adapted
 from Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init.org][config file]] and Tianxiang Xiong's [[https://github.com/xiongtx/.emacs.d/blob/master/init.org][config]]
 on GitHub.
 
-* Emacs Home Path
+* Dotemacs Path
 
 ** Define =cf-path=
 
@@ -111,15 +111,221 @@ Therefore, we need to initialize our packages manually.
 * About Me
 
 #+BEGIN_SRC emacs-lisp
-
-;; (customize-set-variable 'user-full-name "Chunfeng Dai")
+(customize-set-variable 'user-full-name "chunfengd")
 ;; (customize-set-variable 'user-mail-address "")
-
 #+END_SRC
 
-* Platform
+* General
 
-** mac key
+** Frame
+
+*** Frame Alist
+#+BEGIN_SRC emacs-lisp
+(defvar cf-default-frame-alist
+  '(
+    ;; (width . 150)
+    (width . 80)
+    (height . 42)
+    ))
+(cond
+ ((string-equal system-type "windows-nt")
+  (progn
+    (add-to-list 'initial-frame-alist '(left . 650))
+    ;; (add-to-list 'initial-frame-alist '(top . 100))
+    (setq default-frame-alist
+          (append cf-default-frame-alist
+                  '((background-color . "black")
+                    (foreground-color . "grey75")
+                    (border-color . "white")
+                    (cursor-color . "grey80")
+                    (mouse-color . "dark orange"))))))
+ ((string-equal system-type "darwin")
+  (progn
+    (add-to-list 'initial-frame-alist '(left . 650))
+    (add-to-list 'initial-frame-alist '(top . 100))
+    (setq default-frame-alist
+          (append cf-default-frame-alist
+                  '((width . 80)
+                    (height . 42)
+                    (background-color . "black")
+                    (foreground-color . "grey75")
+                    (border-color . "white")
+                    (cursor-color . "purple")
+                    (mouse-color . "dark orange"))))))
+ ((string-equal system-type "gnu/linux")
+  (progn
+    (add-to-list 'initial-frame-alist '(left . 650))
+    (setq default-frame-alist
+          (append cf-default-frame-alist
+                  '((background-color . "black")
+                    (foreground-color . "grey75")
+                    (border-color . "white")
+                    (cursor-color . "grey80")
+                    (mouse-color . "dark orange")))))))
+#+END_SRC
+
+*** =hl-line=
+
+#+BEGIN_SRC emacs-lisp
+(global-hl-line-mode t)
+(if (display-graphic-p)
+    (set-face-background hl-line-face "grey20"))
+#+END_SRC
+
+*** Toggle Frame Maximum
+
+#+BEGIN_SRC emacs-lisp
+(cond
+ ((string-equal system-type "windows-nt")
+  ;; windows
+  (progn
+    (defvar max-flag nil)
+    (defun cf-win-toggle-frame-maximum ()
+      "Toggle frame between maximum and norm."
+      (interactive)
+      (if (null max-flag)
+          (progn
+            (w32-send-sys-command 61488)
+            (setq max-flag t))
+        (w32-send-sys-command 61728)
+        (setq max-flag nil)))
+    (global-set-key [f6] 'cf-win-toggle-frame-maximum)))
+ ((string-equal system-type "darwin")
+  ;; mac os x
+  (progn
+    (defun toggle-fullscreen ()
+      "Toggle full screen. From: http://emacswiki.org/emacs/FullScreen."
+      (interactive)
+      (set-frame-parameter
+       nil 'fullscreen
+       (when (not (frame-parameter nil 'fullscreen)) 'fullboth)))
+    ;; (global-set-key [f6] 'toggle-fullscreen)
+    (defun cf-reset-frame-rect ()
+      "Reset the current frame to its original size"
+      (interactive)
+      (let ((cur-frame (selected-frame)))
+        (set-frame-size cur-frame 80 42)
+        (set-frame-position cur-frame 650 100)))
+    (global-set-key (kbd "<f6>") 'toggle-frame-maximized)
+    (global-set-key (kbd "M-<f6>") 'cf-reset-frame-rect)))
+ ((string-equal system-type "gnu/linux")
+  (message "linux")
+  (progn
+    (defun fullscreen (&optional f)
+      (interactive)
+      (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+                             '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0))
+      (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+                             '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
+    (defun toggle-frame-maxium ()
+      (interactive)
+      (when (eq window-system 'x)
+        (set-frame-parameter nil 'fullscreen
+         (when (not (frame-parameter nil 'fullscreen)) 'fullboth))))
+    (global-set-key [f6] 'toggle-frame-maximum))))
+#+END_SRC
+
+*** Speed Bar
+
+#+BEGIN_SRC emacs-lisp
+(add-hook
+ 'speedbar-load-hook
+ '(lambda ()
+    (add-to-list 'speedbar-frame-parameters '(width . 35))
+    (setq speedbar-show-unknown-files t)))
+#+END_SRC
+
+*** Menu Bar
+
+#+BEGIN_SRC emacs-lisp
+(dolist (mode '(menu-bar-mode tool-bar-mode scroll-bar-mode))
+  (when (fboundp mode) (funcall mode -1)))
+;; (menu-bar-no-scroll-bar)
+;; (menu-bar-mode 0)
+#+END_SRC
+
+*** Frame Title
+
+#+BEGIN_SRC emacs-lisp
+(when window-system
+  (setq frame-title-format '(buffer-file-name "%f" ("%b"))))
+#+END_SRC
+
+*** Fill Column
+
+#+BEGIN_SRC emacs-lisp
+(setq default-fill-column 70)
+#+END_SRC
+
+*** Column Number & =linum=
+
+#+BEGIN_SRC emacs-lisp
+(setq-default column-number-mode t)
+;; linum
+(global-linum-mode t)
+(if (not (display-graphic-p))
+    (setq linum-format "%d ")) ; for margin in terminal
+;; disable linum if creating a buffer from terminal
+(add-hook
+ 'after-change-major-mode-hook
+ '(lambda ()
+    (if (not (display-graphic-p))
+        (linum-mode -1))))
+#+END_SRC
+
+*** Scroll
+
+#+BEGIN_SRC emacs-lisp
+(setq-default scroll-margin 3
+              scroll-conservatively 10000)
+#+END_SRC
+
+** Font
+
+*** Font Lock
+
+#+BEGIN_SRC emacs-lisp
+(global-font-lock-mode t)
+#+END_SRC
+
+*** Default Font
+#+BEGIN_SRC emacs-lisp
+(cond
+ ;; windows
+ ((string-equal system-type "windows-nt")
+  (progn
+    (set-default-font "Consolas:pixelsize=14:antialias=subpixel")
+    (set-fontset-font "fontset-default"
+		      'han '("Microsoft Yahei" . "unicode-bmp"))
+    (add-to-list 'default-frame-alist
+		 '(font . "Consolas:pixelsize=14:antialias=subpixel"))))
+ ((string-equal system-type "darwin")
+  (progn
+    (setq default-directory "~/")
+    (if (display-graphic-p)
+        (set-fontset-font
+         t 'han (font-spec :name "Songti SC")))))
+ ;; linux
+ ((string-equal system-type "gnu/linux")))
+#+END_SRC
+
+*** Font Util
+
+#+BEGIN_SRC emacs-lisp
+(defun cf-font-exist (font)
+  (if (null (x-list-fonts font))
+      nil t))
+(defun cf-make-font-string (font-name font-size)
+  (if (and (stringp font-size)
+	   (equal ":" (string (elt font-size 0)))
+	   )
+      (format "%s%s" font-name font-size)
+    (format "%s %s" font-name font-size)))
+#+END_SRC
+
+** Misc
+
+*** Mac Key
 
 #+BEGIN_SRC emacs-lisp
 (cond
@@ -143,14 +349,83 @@ Therefore, we need to initialize our packages manually.
     (defconst cf-system-include-dirs nil))))
 #+END_SRC
 
-* Daemon Server
+*** Parentheses
+
+#+BEGIN_SRC emacs-lisp
+;; (setq show-paren-mode t) ; does not work
+(setq show-paren-mode nil)
+(show-paren-mode)
+(setq show-paren-style 'mixed)
+#+END_SRC
+
+*** Indent Tab
+
+#+BEGIN_SRC emacs-lisp
+(setq-default indent-tabs-mode nil)
+(setq default-tab-width 8)
+#+END_SRC
+
+*** Backup Files
+
+#+BEGIN_SRC emacs-lisp
+(setq-default make-backup-files nil)
+#+END_SRC
+
+*** =visible-bell=
+#+BEGIN_SRC emacs-lisp
+(setq visible-bell t)
+#+END_SRC
+
+*** Narrow
+#+BEGIN_SRC emacs-lisp
+(put 'narrow-to-region 'disabled nil)
+#+END_SRC
+
+*** =delete-selection-mode=
+
+#+BEGIN_SRC emacs-lisp
+(delete-selection-mode 1)
+#+END_SRC
+
+*** =inhibit-startup-message=
+#+BEGIN_SRC emacs-lisp
+(setq inhibit-startup-message t)
+#+END_SRC
+
+*** =sentence-end-double-space=
+
+#+BEGIN_SRC emacs-lisp
+(setq sentence-end-double-space nil)
+#+END_SRC
+
+*** Uniquify Buffer Name
+
+#+BEGIN_SRC emacs-lisp
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+#+END_SRC
+
+*** Diff
+
+#+BEGIN_SRC emacs-lisp
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+(setq diff-switches "-u")
+#+END_SRC
+
+*** Save Place
+
+#+BEGIN_SRC emacs-lisp
+(setq save-place-file (concat user-emacs-directory "places"))
+#+END_SRC
+
+*** Daemon Server
 
 #+BEGIN_SRC emacs-lisp tangle: no
 (setq server-name "server")
 (server-start)
 #+END_SRC
 
-* exec-path-from-shell
+*** exec-path-from-shell
 
 #+BEGIN_SRC emacs-lisp
 (if (package-installed-p 'exec-path-from-shell)
