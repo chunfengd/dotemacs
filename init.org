@@ -54,7 +54,6 @@ function to ~after-save-hook~ to tangle the =init.org= after saving.
   (when (equal (buffer-file-name) (cf-path "init.org"))
     (org-babel-tangle)))
 
-(add-hook 'after-save-hook '(lambda () (message "after save")))
 (add-hook 'after-save-hook 'cf-tangle-init-file)
 #+END_SRC
 
