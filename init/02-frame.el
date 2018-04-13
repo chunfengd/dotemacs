@@ -1,9 +1,6 @@
 
-(setq server-name "server")
-(server-start)
-
-(setq user-full-name "chunfeng")
-(setq user-mail-address "chunfengd@gmail.com")
+;; (setq server-name "server")
+;; (server-start)
 
 (defvar cf-default-frame-alist
   '(

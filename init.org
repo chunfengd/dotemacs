@@ -1,0 +1,170 @@
+#+BABEL: :cache yes
+#+PROPERTY: header-args :tangle yes :comments org
+
+#+TITLE: Emacs Configuration File
+#+AUTHOR: Chunfeng Dai
+
+# Adapted from Lars Tveito's and Tianxiang Xiong's excellent
+# configuration files.
+# See:
+#   - https://github.com/larstvei/dot-emacs/blob/master/init.org
+#   - https://github.com/xiongtx/.emacs.d/blob/master/init.org
+
+* Introduction
+
+This is an Emacs configuration file written in Org-mode. It is adapted
+from Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init.org][config file]] and Tianxiang Xiong's [[https://github.com/xiongtx/.emacs.d/blob/master/init.org][config]]
+on GitHub.
+
+* Emacs Home Path
+
+** Define =cf-path=
+
+#+BEGIN_SRC emacs-lisp
+(defvar cf-dotemacs-home (file-name-directory load-file-name))
+
+(defun cf-path (path)
+  (expand-file-name path cf-dotemacs-home))
+#+END_SRC
+
+* Tangling
+
+After cloning from [[https://github.com/xiongtx/.emacs.d][GitHub]], there is no =init.el= file, only an
+=init.org= file (this file). To produce an =init.el= file, either:
+
+- Open =init.org= and use =C-c C-v t= to call ~org-babel-tangle~, which
+  extracts code blocks from the current file into =init.el=, then
+  restart Emacs, or
+** tangle command line
+
+#+BEGIN_SRC sh
+emacs --batch \
+      --load "/Applications/Emacs.app/Contents/Resources/lisp/org/ob-tangle.elc" \
+      --eval "(org-babel-tangle-file \"~/dev/dotemacs/init.org\")"
+#+END_SRC
+
+** Automatic tangling
+
+To avoid having to tangle manually each time a change is made, we can add a
+function to ~after-save-hook~ to tangle the =init.org= after saving.
+
+#+BEGIN_SRC emacs-lisp
+(defun cf-tangle-init-file ()
+  "Tangle the current buffer if it is the init.org file."
+  (when (equal (buffer-file-name) (cf-path "init.org"))
+    (org-babel-tangle)))
+
+(add-hook 'after-save-hook '(lambda () (message "after save")))
+(add-hook 'after-save-hook 'cf-tangle-init-file)
+#+END_SRC
+
+* Package Management
+** Require Package
+#+BEGIN_SRC emacs-lisp
+(require 'package)
+#+END_SRC
+
+** =package-archives=
+
+*** Local Archive
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'package-archives
+           `("cf-melpa" . ,(cf-path "../cf-melpa/packages")))
+#+END_SRC
+
+*** Melpa
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+#+END_SRC
+
+*** Org
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'package-archives
+           '("org" . "http://orgmode.org/elpa/") t)
+#+END_SRC
+
+*** Misc
+
+#+BEGIN_SRC emacs-lisp
+;; (add-to-list 'package-archives
+;;              '("marmalade" . "https://marmalade-repo.org/packages/"))
+#+END_SRC
+
+** Initialize Package
+
+If the variable =package-enable-at-startup= is non-nil, package
+initialization occurs after the init file is loaded, but before
+=after-init-hook=. We want to load packages /before/ the init file is
+loaded, because we'll be referencing packages in the init file.
+Therefore, we need to initialize our packages manually.
+
+#+BEGIN_SRC emacs-lisp
+(customize-set-variable 'package-enable-at-startup nil)
+(package-initialize)
+#+END_SRC
+
+** install missing packages
+
+* About Me
+
+#+BEGIN_SRC emacs-lisp
+
+;; (customize-set-variable 'user-full-name "Chunfeng Dai")
+;; (customize-set-variable 'user-mail-address "")
+
+#+END_SRC
+
+* Platform
+
+** mac key
+
+#+BEGIN_SRC emacs-lisp
+(cond
+ ((string-equal system-type "windows-nt")
+  ;; windows
+  (progn
+    ))
+ ((string-equal system-type "darwin")
+  ;; mac os x
+  (progn
+    (setq mac-option-key-is-meta nil)
+    (setq mac-command-key-is-meta t)
+    ;;(setq mac-command-modifier 'meta)
+    ;;(setq mac-option-modifier nil)
+    ;; (setenv "NODE_NO_READLINE" "1")
+    ;; (exec-path-from-shell-initialize)
+    ))
+ ((string-equal system-type "gnu/linux")
+  (message "linux")
+  (progn
+    (defconst cf-system-include-dirs nil))))
+#+END_SRC
+
+* Daemon Server
+
+#+BEGIN_SRC emacs-lisp tangle: no
+(setq server-name "server")
+(server-start)
+#+END_SRC
+
+* exec-path-from-shell
+
+#+BEGIN_SRC emacs-lisp
+(if (package-installed-p 'exec-path-from-shell)
+    (progn
+     (require 'exec-path-from-shell)
+     (cond
+      ((string-equal system-type "windows-nt")
+       ;; windows
+       (progn
+         (exec-path-from-shell-initialize)))
+      ((string-equal system-type "darwin")
+       ;; mac os x
+       (progn
+         (exec-path-from-shell-initialize)))))
+  (message "exec-path-from-shell not installed"))
+#+END_SRC

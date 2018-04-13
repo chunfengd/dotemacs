@@ -1,4 +1,6 @@
-#!/bin/bash
 
-echo "Add the following line into ~/.emacs:"
-echo "(load \"$PWD/dotemacs.el\")"
+# tangle command line
+
+emacs --batch \
+      --load "/Applications/Emacs.app/Contents/Resources/lisp/org/ob-tangle.elc" \
+      --eval "(org-babel-tangle-file \"~/dev/dotemacs/init.org\")"
