@@ -11,6 +11,9 @@
 #   - https://github.com/xiongtx/.emacs.d/blob/master/init.org
 
 * Introduction
+:PROPERTIES:
+:header-args: :tangle no
+:END:
 This is an Emacs configuration file written in Org-mode. It is adapted
 from Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init.org][config file]] and Tianxiang Xiong's [[https://github.com/xiongtx/.emacs.d/blob/master/init.org][config]]
 on GitHub.
@@ -653,6 +656,1558 @@ From: http://blog.plover.com/prog/revert-all.html
        (progn
          (exec-path-from-shell-initialize)))))
   (message "exec-path-from-shell not installed"))
+#+END_SRC
+*** Default major mode
+#+BEGIN_SRC emacs-lisp
+(setq default-major-mode 'text-mode)
+#+END_SRC
+* text-mode
+** Auto Fill
+#+BEGIN_SRC emacs-lisp
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+#+END_SRC
+** Pro File
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.pro$" . text-mode))
+#+END_SRC
+* lisp-interaction-mode
+#+BEGIN_SRC emacs-lisp
+(add-hook 'lisp-interaction-mode-hook
+	  '(lambda ()
+	     (local-set-key (kbd "C-j") 'next-line)
+	     (local-set-key (kbd "C-M-m") 'eval-print-last-sexp)
+	     ))
+#+END_SRC
+* auto-complete
+#+BEGIN_SRC emacs-lisp
+(defun cf-ac-setup ()
+  (ac-config-default)
+  (cf-set-key-bindings
+   'define-key
+   '(
+     ("TAB" nil)
+     ("RET" nil)
+     ;;("M-/" ac-expand)
+     ("M-m" ac-complete)
+     ("M-n" ac-expand)
+     ("M-j" ac-next)
+     ("M-k" ac-previous)
+     )
+   ac-complete-mode-map)
+
+  (define-key ac-mode-map (kbd "M-n") 'auto-complete)
+  ;;(define-key ac-mode-map (kbd "M-m") 'auto-complete)
+
+  (setq ac-auto-start 4)
+  (setq ac-quick-help-delay 0.5)
+  (setq ac-use-fuzzy nil))
+(if (package-installed-p 'auto-complete)
+    (cf-ac-setup)
+  (message "auto-complete not installed"))
+#+END_SRC
+* cc-mode
+#+BEGIN_SRC emacs-lisp
+(defun cf-kill-cc (beg end)
+  "If the mark is active, kill region will be used; otherwise, delete
+char will be used."
+  (interactive (list (point) (mark)))
+  (if mark-active
+      (kill-region beg end)
+    (c-electric-delete-forward nil)))
+
+(add-to-list 'auto-mode-alist '("\\.vs$" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.fs$" . c++-mode))
+(defun cf-semantic-ia-fast-jump-back ()
+  "zz from: http://emacser.com/cedet.htm"
+  (interactive)
+  (if (ring-empty-p (oref semantic-mru-bookmark-ring ring))
+      (error "Semantic Bookmark ring is currently empty"))
+  (let* ((ring (oref semantic-mru-bookmark-ring ring))
+	 (alist (semantic-mrub-ring-to-assoc-list ring))
+	 (first (cdr (car alist))))
+    (if (semantic-equivalent-tag-p (oref first tag)
+				   (semantic-current-tag))
+	(setq first (cdr (car (cdr alist)))))
+    (semantic-mrub-switch-tags first)))
+(c-add-style
+ "chunfeng-c-style"
+ '("gnu"
+   (c-basic-offset . 4)
+   (c-offsets-alist
+    .
+    ((innamespace . 0)
+     (arglist-intro . 4)
+     (arglist-cont-nonempty . 4)
+     (arglist-close . 4)
+     ))))
+(setq c-default-style "chunfeng-c-style")
+(defun cf-init-c ()
+  (cf-set-key-bindings
+   'local-set-key
+   '(
+     ("M-l" c-forward-into-nomenclature)
+     ("M-h" c-backward-into-nomenclature)
+     ("C-M-h" backward-sexp)
+     ("C-M-b" c-mark-function)
+     ("C-c C-j" senator-next-tag)
+     ("C-c C-k" senator-previous-tag)
+     ("C-c C-t" semantic-analyze-proto-impl-toggle)
+     ("C-c C-f" semantic-ia-fast-jump)
+     ("C-c C-b" cf-semantic-ia-fast-jump-back)
+     ("C-d" cf-kill-cc)
+     ("C-M-a" backward-paragraph)
+     ("C-M-e" forward-paragraph)))
+  ;; (c-toggle-auto-state)
+  (c-toggle-hungry-state 1))
+(add-hook 'c-mode-hook 'cf-init-c)
+(add-hook 'c++-mode-hook 'cf-init-c)
+(add-hook 'java-mode-hook 'cf-init-c)
+
+(add-hook 'objc-mode-hook 'cf-init-c)
+(defun cf-init-objc ()
+  (cf-set-key-bindings
+   'local-set-key
+   '(("C-M-h" nil))))
+(add-hook 'objc-mode-hook 'cf-init-objc)
+#+END_SRC
+* cedet
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+#+BEGIN_SRC emacs-lisp
+;; cedet
+
+;(cf-install-packages '(cedet))
+;(require 'cedet)
+
+(defconst cedet-home "~/.emacs.d/site-byte/cedet")
+(defconst cedet-pro-home "~/.emacs.d/cedet-pro")
+
+(setq byte-compile-warnings nil)
+
+(defconst cf-user-include-dirs
+  (list ".." "../frame" "../src" "../include"
+	"../.." "../../frame" "../../src" "../../include"
+	"../../.." "../../../frame" "../../../src" "../../../include"))
+
+(defun cf-semantic-folding-key-binding ()
+  (cf-set-key-bindings
+   'define-key
+   '(
+     ("C-c C-," semantic-tag-folding-fold-block)
+     ("C-c C-." semantic-tag-folding-show-block)
+     ("C-c C--" semantic-tag-folding-fold-all)
+     ("C-c C-=" semantic-tag-folding-show-all)
+     )
+   semantic-tag-folding-mode-map))
+
+(defun cf-semantic-tag-key-binding ()
+  (cf-set-key-bindings
+   'define-key
+   '(
+     ("f" semantic-ia-fast-jump)
+     ("b" cf-semantic-ia-fast-jump-back)
+     )
+   senator-prefix-map))
+
+(defun cf-load-cedet ()
+  ""
+  (interactive)
+  (add-to-list 'load-path (concat cedet-home "/common"))
+  (require 'cedet)
+  (require 'semantic-ia)
+  (require 'semantic-gcc)
+  ;;(load-file "~/.emacs.d/site-byte/cedet/common/cedet.el")
+  (semantic-load-enable-code-helpers)
+  (semantic-load-enable-minimum-features)
+  ;;(semantic-load-enable-guady-code-helpers)
+  ;;(semantic-load-enable-excessive-code-helpers)
+  ;;(semantic-load-enable-semantic-debugging-helpers)
+  (require 'semanticdb)
+  (global-semanticdb-minor-mode 1)
+  ;;(require 'semanticdb-global)
+  ;;(semanticdb-enable-gnu-global-databases 'c-mode)
+  ;;(semanticdb-enable-gnu-global-databases 'c++-mode)
+  (global-ede-mode 1)
+  (let ((include-dirs cf-user-include-dirs))
+    (if (string-equal system-type "windows-nt")
+	(setq include-dirs
+	      (append include-dirs cf-system-include-dirs)))
+    (mapc (lambda (dir)
+	    (semantic-add-system-include dir 'c++-mode)
+	    (semantic-add-system-include dir 'c-mode))
+	  include-dirs))
+  (require 'semantic-tag-folding nil 'noerror)
+  (global-semantic-tag-folding-mode 1)
+  (cf-semantic-folding-key-binding)
+  (cf-semantic-tag-key-binding)
+  (if (file-exists-p cedet-pro-home)
+      (mapc 'load
+            (directory-files cedet-pro-home t
+                             "^[a-zA-Z0-9].*.el$"))))
+
+;; (if (file-exists-p cedet-home)
+;;     (cf-load-cedet))
+#+END_SRC
+* cmake
+#+BEGIN_SRC emacs-lisp
+(autoload 'cmake-mode "cmake-mode" "Cmake Mode" t)
+(add-to-list 'auto-mode-alist '("CMakeLists\\.txt$" . cmake-mode))
+(add-to-list 'auto-mode-alist '("\\.cmake$" . cmake-mode))
+#+END_SRC
+* dash-at-pt
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+#+BEGIN_SRC emacs-lisp
+(defun cf-dash-at-pt ()
+  (add-to-list 'load-path (cf-path "lib/dash-at-point"))
+  (autoload 'dash-at-point "dash-at-point"
+    "Search the word at point with Dash." t nil)
+  (cf-set-key-bindings
+     'global-set-key
+     '(("s-<f1>" dash-at-point)
+       ("M-<f1>" dash-at-point-with-docset))))
+
+;; (cf-dash-at-pt)
+#+END_SRC
+* dired
+** display in other window or copy selected
+#+BEGIN_SRC emacs-lisp
+(defun cf-disply-other-copy (beg end)
+  "If the mark is active, copy region will be used; otherwise,
+open a new line."
+  (interactive (list (point) (mark)))
+  (if mark-active
+      (kill-ring-save beg end)
+    (dired-display-file)))
+#+END_SRC
+** key binding
+#+BEGIN_SRC emacs-lisp
+(defun cf-dired-key-binding ()
+  (cf-set-key-bindings
+   'define-key
+   '(
+     ("j" dired-next-line)
+     ("k" dired-previous-line)
+     ("r" revert-buffer)
+     ("C-j" dired-next-line)
+     ("C-k" dired-previous-line)
+     ("C-p" nil)
+     ("C-n" nil)
+     ("C-t" set-mark-command)
+     ("C-o" cf-disply-other-copy))
+   dired-mode-map))
+(add-hook 'dired-mode-hook 'cf-dired-key-binding)
+#+END_SRC
+** Listing Parameters
+#+BEGIN_SRC emacs-lisp
+(setq dired-listing-switches "-alnoh")
+(defun cf-set-ls (parameter)
+  "Set ls parameter in dired mode"
+  (interactive "s")
+  (setq dired-listing-switches parameter))
+#+END_SRC
+* expand-region
+#+BEGIN_SRC emacs-lisp
+(defun cf-expand-region-setup ()
+  (cf-set-key-bindings
+   'global-set-key
+   '(
+     ("C-=" er/expand-region)
+     ("M-t" er/expand-region)
+     )))
+
+(if (package-installed-p 'expand-region)
+    (cf-expand-region-setup)
+  (message "expand-region not installed"))
+#+END_SRC
+* flycheck
+#+BEGIN_SRC emacs-lisp
+(defvar flycheck-global-modes)
+
+(defun cf-setup-flycheck ()
+  (add-hook 'after-init-hook 'global-flycheck-mode)
+  (setq flycheck-global-modes
+        '(emacs-lisp-mode js-mode js2-mode json-mode))
+  (setq-default flycheck-disabled-checkers
+                '(emacs-lisp-checkdoc)))
+
+(if (package-installed-p 'flycheck)
+    (cf-setup-flycheck)
+  (message "flycheck not installed"))
+#+END_SRC
+** functions
+- =flycheck-verify-setup= (=C-c ! v=): to check whether flycheck setup
+  is complete
+- (=C-c ! n=) & (=C-c ! p=): to jump back and forth between erroneous
+  places
+- (=C-c ! l=): to pop up a list of all errors in the current buffer
+- =flycheck-select-checker=: to use this as the 1st for current buffer
+- =flycheck-buffer= (=C-c ! c=): to check manually
+- =[var]flycheck-checker=: checker used for current buffer
+* Folding
+** Main Code
+#+BEGIN_SRC emacs-lisp
+(setq default-label 'cycle-fold)
+
+(defun goto-list (count depth)
+  (condition-case ex
+      (goto-char (scan-lists (point) count depth))
+    (error
+      (message "Error in goto-list: %s" ex)
+      nil)))
+
+(defun scan-lists-safe (from count depth &optional default)
+  (condition-case ex
+      (scan-lists from count depth)
+    (error
+      (message "Error in scan-lists: %s" ex)
+      default)))
+
+(defun get-bol (pos)
+  (save-excursion (goto-char (or pos (point)))
+                  (beginning-of-line)
+                  (point)))
+
+(defun get-eol (pos)
+  (save-excursion (goto-char (or pos (point)))
+                  (end-of-line)
+                  (point)))
+
+(defun my-filter (condp lst)
+  (delq nil
+        (mapcar (lambda (x) (and (funcall condp x) x)) lst)))
+
+(defun label->tag (label)
+  (intern (concat "tag-" (symbol-name (or label default-label)))))
+
+(defun create-overlay (start end &optional label val)
+  (let ((o (make-overlay start end))
+        (tag (label->tag label)))
+    ;; (message "tag: %s" tag)
+    (if val
+        (overlay-put o tag val)
+      (overlay-put o tag t))
+    (overlay-put o 'evaporate t)
+    (overlay-put o 'invisible t)
+    (overlay-put o 'display `(:string "..."))
+    (overlay-put
+     o 'isearch-open-invisible
+     (lambda (ov)
+       (message "open invisible")
+       (delete-overlay ov)))
+    (overlay-put
+     o 'isearch-open-invisible-temporary
+     (lambda (ov invisible)
+       (overlay-put ov 'invisible invisible)
+       (overlay-put ov 'display (and invisible `(:string "...")))))
+    o))
+
+(defun get-overlays (start end &optional label val)
+  (let ((tag (label->tag label))
+        (os (overlays-in start end)))
+    (if (null tag)
+        os
+      (my-filter (lambda (o)
+                   (if (null val)
+                       (overlay-get o tag)
+                     (equal (overlay-get o tag) val)))
+                 os))))
+
+(defun delete-overlays (start end &optional label val)
+  (dolist (o (get-overlays start end label val))
+    (delete-overlay o)))
+
+(defun cal-fold-region-at (&optional pos)
+  (interactive)
+  (let* ((start (or pos (point)))
+         (eol (get-eol start))
+         (end (scan-lists start 1 0)))
+    (if (> (- end eol) 1)
+        (list (cons :start eol)
+              (cons :end (1- end))))))
+
+(defun cal-fold-region-line (&optional pos)
+  (interactive)
+  (let* ((p (or pos (point)))
+         (bol (get-bol p))
+         (eol (get-eol p))
+         (end (scan-lists-safe bol 1 0 (min (1+ bol) eol))))
+    (while (< end eol)
+      (setq end (scan-lists-safe end 1 0 (min (1+ end) eol))))
+    (if (> end eol)
+        (cal-fold-region-at (scan-lists end -1 0)))))
+
+(defun current-fold-state (&optional pos)
+  (interactive)
+  (let ((range (cal-fold-region-line pos)))
+    (if range
+        (let* ((start (cdr (assoc :start range)))
+               (end (cdr (assoc :end range)))
+               (os (get-overlays start end)))
+          ;; (message "%s %s %s" start end os)
+          (if os
+              (if (and (null (cdr os))
+                       (equal start (overlay-start (car os)))
+                       (equal end (overlay-end (car os))))
+                  :folded
+                :mis-folded)
+            :unfolded))
+      :no-fold)))
+
+(defun fold-at (&optional pos)
+  (interactive)
+  (let ((range (cal-fold-region-at pos)))
+    (if range
+        (create-overlay (cdr (assoc :start range))
+                        (cdr (assoc :end range))))))
+
+(defun fold-line (&optional pos)
+  (interactive)
+  (let ((range (cal-fold-region-line pos)))
+    (if range
+        (create-overlay (cdr (assoc :start range))
+                        (cdr (assoc :end range))))))
+
+(defun fold-at-end (&optional pos)
+  (interactive)
+  (save-excursion
+    (goto-list -1 0)
+    (fold-at (point))))
+
+(defun unfold-line (&optional pos)
+  (interactive)
+  (let ((range (cal-fold-region-line pos)))
+    (if range
+        (delete-overlays (cdr (assoc :start range))
+                         (cdr (assoc :end range))))))
+
+(defun fold-children (&optional pos)
+  (interactive)
+  (save-excursion
+    (let ((range (cal-fold-region-line pos)))
+      (when range
+        (goto-char (cdr (assoc :start range)))
+        (while (goto-list 1 0)
+          (fold-at-end))))))
+
+(defun toggle-fold-line (&optional pos)
+  (interactive)
+  (let ((status (current-fold-state)))
+    (cond
+     ((eq status :no-fold) nil)
+     ((eq status :unfolded) (fold-line pos))
+     ((eq status :mis-folded)
+      (unfold-line pos)
+      (unless (eq last-command 'toggle-fold-line)
+        (fold-line pos)))
+     ((eq status :folded)
+      (unfold-line pos)
+      (fold-children pos))
+     (t :default))))
+
+(defun toggle-fold-all ()
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (if (and (eq last-command 'toggle-fold-all)
+             (get-overlays (point-min) (point-max)))
+        (delete-overlays (point-min) (point-max))
+      (progn (delete-overlays (point-min) (point-max))
+             (while (goto-list 1 0)
+               (fold-at-end))))))
+#+END_SRC
+** Key Binding
+#+BEGIN_SRC emacs-lisp
+(cf-set-key-bindings
+ 'global-set-key
+ '(("C-<tab>" toggle-fold-line)
+   ("C-S-<tab>" toggle-fold-all)))
+#+END_SRC
+** Example
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+#+BEGIN_SRC emacs-lisp
+'(a b c
+    (d
+     e)
+    (f g)
+    (h
+     (i j))
+    ((k l
+        (m n)
+        (p q) (r s))
+     o))
+#+END_SRC
+** Test
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+#+BEGIN_SRC emacs-lisp
+(message "****************** start *******************")
+(message "label->tag: %s" (label->tag 'test))
+(message "label->tag === 'tag-test: %s" (eq (label->tag 'test) 'tag-test))
+(message "delete-overlays: %s" (delete-overlays 1 100 'test))
+(message "create-overlay: %s" (create-overlay 1 10 'test))
+(message "get-overlays: %s" (get-overlays 1 100 'test))
+(message "delete-overlays: %s" (delete-overlays 1 100 'test))
+(message "get-overlays: %s" (get-overlays 1 100 'test))
+(message "****************** end *******************")
+
+(overlay-put o 'face `(:background "grey50"))
+(overlay-put o 'face nil)
+(overlay-put o 'display `(:string "(...)"))
+(overlay-put o 'display nil)
+#+END_SRC
+** Todo
+- minor mode
+- 'helm-after-action-hook
+- 'helm-after-persistent-action-hook
+- 'occur-mode-find-occurrence-hook
+- bug of [{\n},{\n},{\n}]
+- lightweight-macro
+* Graphviz Dot Mode
+#+BEGIN_SRC emacs-lisp
+(defun cf-graphviz-mode ()
+  ""
+  (setq graphviz-dot-indent-width 2)
+  (setq graphviz-dot-auto-indent-on-semi nil))
+(add-hook 'graphviz-dot-mode-hook 'cf-graphviz-mode)
+#+END_SRC
+* helm
+- http://tuhdo.github.io/helm-intro.html
+- http://tuhdo.github.io/helm-projectile.html
+- https://github.com/bbatsov/projectile
+** Setup helm
+#+BEGIN_SRC emacs-lisp
+(defun cf-setup-helm ()
+  (require 'helm)
+  (require 'helm-config)
+
+  ;; keys
+  (cf-set-key-bindings
+   'global-set-key
+   '(("M-x" helm-M-x)
+     ("M-y" helm-show-kill-ring)
+     ("C-x C-b" helm-mini)
+     ("C-x C-f" helm-find-files)
+     ;; ("C-x C-h C-p" helm-projectile)
+     ("C-x C-p" helm-projectile)
+     ("C-x C-d" helm-projectile-find-dir)
+     ("C-x C-m" helm-semantic-or-imenu)
+     ("C-x C-r" helm-resume)
+     ("C-x C-h C-o" helm-occur)
+     ("C-x C-h C-p" helm-projectile-switch-project)
+     ("C-x C-h C-r" helm-resume)
+     ("C-x C-h C-m" helm-all-mark-rings)
+     ("C-x C-h C-g" helm-projectile-ag)
+     ("C-x C-h C-k" helm-projectile-grep)
+     ("C-x C-h C-a" helm-do-ag)
+     ))
+
+  ;; general
+  ;; open helm buffer inside current window
+  (setq helm-split-window-in-side-p t)
+  ;; (setq helm-move-to-line-cycle-in-source t)
+  ;; M-x
+  (setq helm-M-x-fuzzy-match t)
+  ;; Mini
+  (setq helm-buffers-fuzzy-matching t
+        helm-recentf-fuzzy-match t)
+  ;; imenu
+  (setq helm-semantic-fuzzy-match t
+        helm-imenu-fuzzy-match    t)
+  (setq helm-ff-file-name-history-use-recentf t)
+  ;; (helm-autoresize-mode t)
+  ;; ;; 40% of current frame height
+  ;; (setq helm-autoresize-max-height 40)
+  ;; (setq helm-ff-search-library-in-sexp t)
+  ;; (setq helm-scroll-amount 8)
+
+  (helm-mode 1)
+
+  (defun cf-bind-helm ()
+    (cf-set-key-bindings
+     'define-key
+     '(("C-w" helm-previous-page))
+     minibuffer-local-map)
+    (cf-set-key-bindings
+     'define-key
+     '(("C-w" helm-previous-page))
+     helm-generic-files-map)
+    (cf-set-key-bindings
+     'define-key
+     '(("C-w" helm-previous-page))
+     helm-find-files-map)
+    (cf-set-key-bindings
+     'define-key
+     '(("C-w" helm-previous-page))
+     helm-read-file-map)
+    (cf-set-key-bindings
+     'define-key
+     '(("C-b" helm-toggle-buffers-details))
+     helm-buffer-map)
+    (cf-set-key-bindings
+     'define-key
+     '(("C-j" helm-next-line)
+       ("C-k" helm-previous-line)
+       ("C-n" helm-execute-persistent-action)
+       ("C-M-w" helm-scroll-other-window-down)
+       ("C-w" helm-previous-page)
+       ("C-t" helm-toggle-visible-mark)
+       ;; ("M-a" helm-mark-all)
+       ;; ("M-U" helm-unmark-all)
+       ;; ("C-f" helm-delete-minibuffer-contents)
+       )
+     helm-map))
+  (cf-bind-helm)
+
+  ;; (setq helm-grep-default-command
+  ;;       "ack-grep -Hn --color --smart-case --no-group %e %p %f"
+  ;;       helm-grep-default-recurse-command
+  ;;       "ack-grep -H --color --smart-case --no-group %e %p %f")
+  )
+
+(if (and (package-installed-p 'helm-core)
+         (package-installed-p 'helm)
+         (package-installed-p 'async))
+    (cf-setup-helm)
+  (message "helm-core, helm or async not installed"))
+#+END_SRC
+** Setup projectile
+#+BEGIN_SRC emacs-lisp
+(defun cf-setup-projectile ()
+  (projectile-global-mode)
+  (setq projectile-find-dir-includes-top-level t)
+  (setq projectile-completion-system 'helm)
+  (setq projectile-file-exists-remote-cache-expire nil)
+  ;; (setq helm-projectile-fuzzy-match nil)
+  (setq projectile-switch-project-action 'helm-projectile)
+  (setq projectile-enable-caching t)
+  (setq helm-buffers-truncate-lines nil)
+  ;; (require 'helm-projectile)
+  (condition-case nil
+      (helm-projectile-on)
+    (error nil))
+  (define-key projectile-mode-map (kbd "C-c C-p") 'projectile-command-map)
+  (cf-set-key-bindings
+   'define-key
+   '(
+     ("C-f" projectile-find-file)
+     ("C-h" helm-projectile)
+     ("C-p" helm-projectile-switch-project)
+     ("C-g" helm-projectile-find-file-dwim))
+   projectile-command-map))
+
+(if (and (package-installed-p 'projectile)
+         (package-installed-p 'helm-projectile))
+    (cf-setup-projectile)
+  (message "projectile or helm-projectile not installed"))
+#+END_SRC
+** Setup helm-ag
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+#+BEGIN_SRC emacs-lisp
+(defun cf-setup-helm-ag () )
+
+(if (package-installed-p 'helm-ag)
+    (cf-setup-helm-ag)
+  (message "helm-ag not installed"))
+#+END_SRC
+* highlight-indentation
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+#+BEGIN_SRC emacs-lisp
+(defun cf-highlight-indetation-setup ()
+  ;; (autoload 'js3-mode "js3-mode" nil t)
+  (require 'highlight-indentation)
+  ;; (setq highlight-indent-offset 2)
+  (if (display-graphic-p)
+      (set-face-background
+       'highlight-indentation-face "grey20"))
+  (if (display-graphic-p)
+      (set-face-background
+       'highlight-indentation-current-column-face "grey12")))
+
+(if (package-installed-p 'highlight-indentation)
+    (cf-highlight-indetation-setup)
+  (message "highlight-indetation not installed"))
+#+END_SRC
+* html
+** html-mode
+#+BEGIN_SRC emacs-lisp
+;; (add-to-list 'auto-mode-alist '("\\.hbs$" . html-mode))
+(defun cf-html-func ()
+  (cf-set-key-bindings
+   'local-set-key
+   '(("C-c C-x -" html-horizontal-rule)
+     ("C-c C-x c" html-checkboxes)
+     ("C-c C-x h" html-href-anchor)
+     ("C-c C-x i" html-image)
+     ("C-c C-x l" html-list-item)
+     ("C-c C-x n" html-name-anchor)
+     ("C-c C-x o" html-ordered-list)
+     ("C-c C-x r" html-radio-buttons)
+     ("C-c C-x u" html-unordered-list))
+   ;; html-mode-map
+   )
+  (cf-set-key-bindings
+   'define-key
+   '(("C-c C-/" sgml-close-tag))
+   sgml-mode-map))
+(add-hook 'html-mode-hook 'cf-html-func)
+#+END_SRC
+** nxml-mode
+#+BEGIN_SRC emacs-lisp
+(defun cf-nxml-func()
+  (cf-set-key-bindings
+   'define-key
+   '(
+     ("C-c C-e" sgml-close-tag)
+     ("M-h" nil))
+   nxml-mode-map))
+(add-hook 'nxml-mode-hook 'cf-nxml-func)
+#+END_SRC
+** web-mode
+#+BEGIN_SRC emacs-lisp
+(defun cf-web-mode-setup ()
+  (add-to-list 'auto-mode-alist '("\\.html$" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.hbs$" . web-mode))
+  (defun cf-web-mode-func()
+    (setq web-mode-markup-indent-offset 2)
+    (setq web-mode-css-indent-offset 2)
+    (setq web-mode-code-indent-offset 2)
+    (setq web-mode-style-padding 2)
+    (setq web-mode-script-padding 2)
+    (setq web-mode-block-padding 0)
+    (set-face-attribute 'web-mode-html-tag-face nil :foreground "SkyBlue1")
+    (setq web-mode-enable-current-element-highlight t)
+    (set-face-attribute 'web-mode-current-element-highlight-face nil :background "honeydew4")
+    (setq web-mode-enable-current-column-highlight nil)
+    (setq web-mode-enable-sexp-functions t)
+    (cf-set-key-bindings
+     'define-key
+     '(
+       ("C-t" nil)
+       ("M-t" nil)
+       ;; ("M-t" web-mode-mark-and-expand)
+       ("C-c C-e C-c" web-mode-element-close)
+       ("C-c C-e C-/" web-mode-element-close)
+       )
+     web-mode-map))
+  (add-hook 'web-mode-hook 'cf-web-mode-func))
+(if (package-installed-p 'web-mode)
+    (cf-web-mode-setup)
+  (message "web-mode not installed"))
+#+END_SRC
+* imenu
+#+BEGIN_SRC emacs-lisp
+(setq imenu-auto-rescan nil)
+#+END_SRC
+* info
+#+BEGIN_SRC emacs-lisp
+(defun cf-init-info ()
+  (cf-set-key-bindings
+   'local-set-key
+   '(("j" next-line)
+     ("k" previous-line)
+     ("h" backward-char)
+     ("l" forward-char)
+     ("b" Info-history-back)
+     ;; ("?" Info-help)
+     )))
+(add-hook 'Info-mode-hook 'cf-init-info)
+#+END_SRC
+* java
+#+BEGIN_SRC emacs-lisp
+(defun cf-java-func ()
+  (cf-set-key-bindings
+   'local-set-key
+   '(
+     ("C-M-h" backward-sexp)
+     ("C-M-b" c-mark-function)
+     ("C-M-a" nil)
+     ("C-M-e" nil)
+     ("M-k" c-beginning-of-defun)
+     ("M-j" c-end-of-defun)
+     ("C-d" nil)
+     )))
+(add-hook 'java-mode-hook 'cf-java-func)
+#+END_SRC
+* js
+** node-modules-path-setup
+From: https://github.com/codesuki/add-node-modules-path
+#+BEGIN_SRC emacs-lisp
+(defun cf-node-modules-path-setup ()
+  (defvar add-node-modules-path-debug nil
+    "Enable verbose output when non nil.")
+
+  (defun add-node-modules-path ()
+    "Search the current buffer's parent directories for `node_modules/.bin`.
+If it's found, then add it to the `exec-path'."
+    (let* ((root (locate-dominating-file
+                  (or (buffer-file-name) default-directory)
+                  "node_modules"))
+           (path (and root
+                      (expand-file-name "node_modules/.bin/" root))))
+      (if root
+          (progn
+            (make-local-variable 'exec-path)
+            (add-to-list 'exec-path path)
+            (when add-node-modules-path-debug
+              (message (concat "added " path  " to exec-path"))))
+        (when add-node-modules-path-debug
+          (message (concat "node_modules not found in " root))))))
+  (eval-after-load 'js-mode
+    '(add-hook 'js-mode-hook #'add-node-modules-path))
+  (eval-after-load 'js2-mode
+  '(add-hook 'js2-mode-hook #'add-node-modules-path)))
+(cf-node-modules-path-setup)
+#+END_SRC
+** js-mode
+#+BEGIN_SRC emacs-lisp
+(defun cf-js-setup ()
+  (setq-default js-indent-level 2))
+(cf-js-setup)
+#+END_SRC
+** js2-mode
+#+BEGIN_SRC emacs-lisp
+(defun cf-js2-setup ()
+  ;; js2-mode-hide-comments
+  ;; js2-mode-hide-element
+  ;; js2-mode-hide-functions
+  ;; js2-mode-hide-warnings-and-errors
+  ;;
+  ;; js2-mode-show-all
+  ;; js2-mode-show-comments
+  ;; js2-mode-show-element
+  ;; js2-mode-show-functions
+  ;; js2-mode-show-node
+  ;;
+  ;; js2-mode-toggle-element "C-c C-o"
+  ;; js2-mode-toggle-hide-comments
+  ;; js2-mode-toggle-hide-functions
+  ;; js2-mode-toggle-warnings-and-errors
+  (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+  (setq-default js-indent-level 2)
+  ;; this will hide errors & warnings
+  (setq-default js2-mode-show-parse-errors nil)
+  (setq-default js2-mode-show-strict-warnings nil)
+  (setq-default js2-bounce-indent-p t)
+  ;; (setq-default js2-strict-inconsistent-return-warning nil)
+  (defun cf-init-js ()
+    (electric-indent-mode -1)
+    (cf-set-key-bindings
+     'local-set-key
+     '()))
+  (add-hook 'js2-mode-hook 'cf-init-js))
+
+(if (package-installed-p 'js2-mode)
+    (cf-js2-setup)
+  (message "js2-mode not installed"))
+#+END_SRC
+** js3-mode
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+#+BEGIN_SRC emacs-lisp
+(defun cf-js3-setup ()
+  (autoload 'js3-mode "js3-mode" nil t)
+  (eval-after-load "js3-mode"
+    (add-hook 'js3-mode-hook
+              (lambda ()
+                (setq js3-auto-indent-p nil
+                      js3-curly-indent-offset 0
+                      js3-enter-indents-newline t
+                      js3-expr-indent-offset 2
+                      js3-indent-on-enter-key t
+                      js3-lazy-commas t
+                      js3-lazy-dots t
+                      js3-lazy-operators t
+                      js3-paren-indent-offset 2
+                      js3-square-indent-offset 4)
+                (auto-complete-mode 1))))
+  (add-to-list 'auto-mode-alist '("\\.js$" . js3-mode)))
+(if (package-installed-p 'js3-mode)
+    (cf-js3-setup)
+  (message "js3-mode not installed"))
+#+END_SRC
+** json-mode
+#+BEGIN_SRC emacs-lisp
+(defun cf-json-setup ())
+(if (package-installed-p 'json-mode)
+    (cf-json-setup)
+  (message "json-mode not installed"))
+#+END_SRC
+* jump (avy)
+#+BEGIN_SRC emacs-lisp
+(defun cf-setup-avy ()
+  (cf-set-key-bindings
+   'global-set-key
+   '(
+     ("M-f" nil)
+
+     ("M-f M-f" avy-goto-word-1)
+     ("M-f M-g" avy-goto-word-0)
+
+     ("M-f M-j" avy-goto-char-2)
+     ("M-f M-k" avy-goto-char)
+
+     ("M-f M-d" avy-goto-char-in-line)
+
+     ("M-f M-l" avy-goto-line)
+     )))
+
+(if (package-installed-p 'avy)
+    (cf-setup-avy)
+  (message "avy not installed"))
+#+END_SRC
+* latex
+** tex-mode
+#+BEGIN_SRC emacs-lisp
+(defun cf-init-latex-mode ()
+  (cf-set-key-bindings
+   'local-set-key
+   '(
+     ("C-j" next-line)
+     ;;("C-n" tex-terminate-paragraph)
+     ("C-c C-o" nil)
+     ("C-c C-b" latex-insert-block)))
+  ;; (setq tex-command "xelatex")
+  (setq tex-dvi-print-command "dvipdf")
+  (setq tex-dvi-view-command
+	'(cond
+	  ((eq window-system 'x) "xdvi")
+	  ((eq window-system 'w32) "yap")
+	  ((eq window-system 'ns) "xdvi")
+	  (t "dvi3tty * | cat -s")))
+  (outline-minor-mode)
+  )
+(add-hook 'tex-mode-hook 'cf-init-latex-mode)
+#+END_SRC
+** bibtex-mode
+#+BEGIN_SRC emacs-lisp
+(defun cf-bibtex-mode ()
+  (cf-set-key-bindings
+   'local-set-key
+   '(
+     ("C-j" nil)
+     ("C-c C-j" bibtex-pop-next)
+     ("C-c C-k" bibtex-pop-previous)
+     ("C-M-h" nil)
+     ("C-M-l" nil)
+     ("C-M-b" bibtex-mark-entry)
+     ("M-n" ispell-complete-word)
+     ("M-m" ispell-complete-word)
+     )
+   )
+  (outline-minor-mode)
+  )
+(add-hook 'bibtex-mode-hook 'cf-bibtex-mode)
+#+END_SRC
+* lisp
+** paredit
+#+BEGIN_SRC emacs-lisp
+(defun cf-paredit-setup ()
+
+  (dolist (mode '(scheme emacs-lisp lisp clojure clojurescript))
+    ;; (when (> (display-color-cells) 8)
+    ;;   (font-lock-add-keywords (intern (concat (symbol-name mode) "-mode"))
+    ;;                           '(("(\\|)" . 'esk-paren-face))))
+    (add-hook (intern (concat (symbol-name mode) "-mode-hook"))
+              'paredit-mode))
+
+  (defun cf-paredit-kill (beg end)
+    "If the mark is active, kill region will be used; otherwise, delete
+char will be used."
+    (interactive (list (point) (mark)))
+    (if mark-active
+        (kill-region beg end)
+      (paredit-forward-delete 1)))
+
+  (defun cf-paredit-key ()
+    (cf-set-key-bindings
+     'define-key
+     '(
+       ("C-j" next-line)
+       ("C-k" previous-line)
+       ("C-f" paredit-kill)
+       ("C-n" paredit-newline)
+       ;; ("C-d" cf-paredit-kill)
+       ("C-d" nil)
+
+       ("C-M-b" nil)
+       ("C-M-f" nil)
+       ("C-M-h" paredit-backward)
+       ("C-M-l" paredit-forward)
+       ("C-M-j" paredit-forward-up)
+       ("C-M-k" paredit-backward-down)
+
+       ("(" nil)
+       (")" nil)
+       ("[" nil)
+       ("]" nil)
+       ("{" nil)
+       ("}" nil)
+       ("\"" nil)
+       )
+     paredit-mode-map))
+
+  (eval-after-load 'paredit '(cf-paredit-key)))
+
+(if (package-installed-p 'paredit)
+    (cf-paredit-setup)
+  (message "paredit not installed"))
+#+END_SRC
+** clojure
+#+BEGIN_SRC emacs-lisp
+(defun cf-clojure-mode-setup ()
+  (add-hook 'nrepl-mode-hook 'subword-mode)
+  ;;(add-hook 'nrepl-mode-hook 'rainbow-delimiters-mode)
+
+  (defun cf-clojure-match-next-def ()
+    "Scans the buffer backwards for the next top-level definition.
+Called by `imenu--generic-function'."
+    (when (re-search-backward "^\\s *(def\\S *[ \n\t]+" nil t)
+      (save-excursion
+        (goto-char (match-end 0))
+        (when (looking-at "#?\\^")
+          (let (forward-sexp-function) ; using the built-in one
+            (forward-sexp)))           ; skip the metadata
+        (re-search-forward "[^ \n\t)]+"))))
+
+  (defun cf-clojure-mode-func ()
+    (cf-set-key-bindings
+     'define-key
+     '(
+       ("{" nil)
+       ("}" nil)
+       )
+     clojure-mode-map)
+    (setq-local imenu-create-index-function
+                (lambda ()
+                  (imenu--generic-function
+                   '((nil cf-clojure-match-next-def 0))))))
+  (add-hook 'clojure-mode-hook 'cf-clojure-mode-func))
+
+(if (package-installed-p 'clojure-mode)
+    (cf-clojure-mode-setup)
+  (message "clojure-mode not installed"))
+#+END_SRC
+* multiple-cursors
+#+BEGIN_SRC emacs-lisp
+(defun cf-multiple-cursors-setup ()
+  (setq mc/list-file (cf-path "mc-list.el"))
+  (setq mc/always-run-for-all t)
+  (cf-set-key-bindings
+   'global-set-key
+   '(
+     ("C-S-c C-S-c" mc/edit-lines)
+     ("C-M-_" mc/mark-previous-like-this)
+     ("C-M-+" mc/mark-next-like-this)
+     ("C-M-|" mc/mark-all-like-this)
+     ("C-S-c C-<" mc/mark-all-like-this)
+     ("C-S-c C-S-r" set-rectangular-region-anchor)
+     ("C-S-c C-S-k" set-rectangular-region-anchor))))
+
+(if (package-installed-p 'multiple-cursors)
+    (cf-multiple-cursors-setup)
+  (message "multiple-cursors not installed"))
+#+END_SRC
+* markdown
+#+BEGIN_SRC emacs-lisp
+(defun cf-setup-md ()
+  (defun cf-md-mode-hook ()
+    (cf-set-key-bindings
+     'define-key
+     '(
+       ("C-c C-j" markdown-next-visible-heading)
+       ("C-c C-k" markdown-previous-visible-heading)
+       ("C-c C-l" markdown-forward-same-level)
+       ("C-c C-h" markdown-backward-same-level)
+       ("C-c C-u" markdown-up-heading)
+       )
+     markdown-mode-map))
+  (add-hook 'markdown-mode-hook 'cf-md-mode-hook))
+
+(if (package-installed-p 'markdown-mode)
+    (cf-setup-md)
+  (message "md not installed"))
+#+END_SRC
+* org-mode
+** init
+#+BEGIN_SRC emacs-lisp
+(require 'org-install)
+(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+#+END_SRC
+** cf-org-beginning-of-line
+#+BEGIN_SRC emacs-lisp
+(defun cf-org-beginning-of-line ()
+  (interactive)
+  (setq pos-temp (point))
+  (back-to-indentation)
+  (if (= (point) pos-temp)
+      (org-beginning-of-line 1)))
+#+END_SRC
+** org-mode-hook
+#+BEGIN_SRC emacs-lisp
+(defun cf-org-mode-hook-func ()
+  (cf-set-key-bindings
+   'local-set-key
+   '(
+     ("C-j" next-line)
+     ("C-k" previous-line)
+     ("C-f" org-kill-line)
+     ("C-n" org-return-indent)
+
+     ("C-c C-h" org-backward-heading-same-level)
+     ("C-c C-j" outline-next-visible-heading)
+     ("C-c C-k" outline-previous-visible-heading)
+     ("C-c C-l" org-forward-heading-same-level)
+
+     ("C-c C-b" nil)
+     ("C-c C-n" org-goto)
+     ("C-c C-p" nil)
+     ("C-c C-f" nil)
+
+     ("C-c C-v C-h" org-metaleft)
+     ("C-c C-v C-l" org-metaright)
+     ("C-c C-v C-k" org-metaup)
+     ("C-c C-v C-j" org-metadown)
+
+     ("C-c C-x C-h" org-shiftmetaleft)
+     ("C-c C-x C-l" org-shiftmetaright)
+     ("C-c C-x C-k" org-shiftmetaup)
+     ("C-c C-x C-j" org-shiftmetadown)
+
+     ("M-h" backward-word)
+     ("M-b" org-mark-element)
+
+     ("C-c C-f" org-kill-note-or-show-branches) ;; used to be 'C-c C-k'
+
+     ("C-<tab>" org-cycle)
+     ("C-S-<tab>" org-shifttab)
+     ("C-a" cf-org-beginning-of-line)
+     ("C-c RET" nil)
+
+     ("C-S-i" org-table-previous-field)
+     ("M-S-RET" org-table-wrap-region)
+
+     ("C-c C-x C-p" org-preview-latex-fragment)
+
+     ("C-c [" nil) ;; org-agenda-file-to-front
+     ("C-c ]" nil) ;; org-remove-file
+     ))
+  (cf-set-key-bindings
+   'define-key
+   '(
+     ("C-M-h" (lambda () (interactive)
+                (org-eval-in-calendar '(calendar-backward-day 1))))
+     ("C-M-l" (lambda () (interactive)
+                (org-eval-in-calendar '(calendar-forward-day 1))))
+     ("C-M-k" (lambda () (interactive)
+                (org-eval-in-calendar '(calendar-backward-week 1))))
+     ("C-M-j" (lambda () (interactive)
+                (org-eval-in-calendar '(calendar-forward-week 1))))
+     ("C-M-S-h" (lambda () (interactive)
+                (org-eval-in-calendar '(calendar-backward-month 1))))
+     ("C-M-S-l" (lambda () (interactive)
+                (org-eval-in-calendar '(calendar-forward-month 1))))
+     )
+   org-read-date-minibuffer-local-map)
+  (linum-mode 0)
+  (org-indent-mode t)
+  (flyspell-mode-off)
+  (setq org-src-fontify-natively t)
+  (setq org-edit-src-content-indentation 0)
+  ;; (setq org-infojs-options cf-default-org-infojs-options)
+  (setq org-export-html-use-infojs t) ; alternative: when-configured, nil
+  (setq org-latex-preview-ltxpng-directory "/tmp/ltxpng/")
+  )
+(add-hook 'org-mode-hook 'cf-org-mode-hook-func)
+#+END_SRC
+** GTD keys
+#+BEGIN_SRC emacs-lisp
+(cf-set-key-bindings
+ 'global-set-key
+ '(
+   ("C-c c" org-capture)
+   ("C-c a" org-agenda)
+   ("C-c b" org-iswitchb)
+   ))
+#+END_SRC
+** agenda-hook
+#+BEGIN_SRC emacs-lisp
+(defun cf-org-agenda-mode-hook-func ()
+  (cf-set-key-bindings
+   'define-key
+   '(
+     ("j" org-agenda-next-line)
+     ("k" org-agenda-previous-line)
+     ("J" org-agenda-next-item)
+     ("K" org-agenda-previous-item)
+     ("g" org-agenda-goto-date)
+     ("G" org-agenda-clock-goto)
+     )
+   org-agenda-mode-map))
+(add-hook 'org-agenda-mode-hook 'cf-org-agenda-mode-hook-func)
+#+END_SRC
+** Agenda Custom Commands
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-custom-commands
+      '(("d" "Daily agenda and all TODOs"
+         ((agenda "" ((org-agenda-ndays 1)))
+          (alltodo ""
+                   ((org-agenda-skip-function
+                     '(or (org-agenda-skip-entry-if 'scheduled 'deadline)))
+                    (org-agenda-overriding-header "Tasks without time:"))))
+         ;; ((org-agenda-compact-blocks t))
+         )))
+#+END_SRC
+** Todo Keyword Faces
+#+BEGIN_SRC emacs-lisp
+(setq org-todo-keyword-faces
+      '(("TODO" . org-warning)
+        ("IN-PROGRESS" . "yellow")
+        ("PROG" . "yellow")
+        ("PROGRESS" . "yellow")
+        ("DONE" . "green")
+        ("HOLD" . "red")
+        ("CANCELLED" . "purple1")))
+#+END_SRC
+** Deadline Warning Days
+#+BEGIN_SRC emacs-lisp
+(setq org-deadline-warning-days 10)
+#+END_SRC
+* outline
+#+BEGIN_SRC emacs-lisp
+(setq outline-minor-mode-prefix (kbd "C-c C-o"))
+(defun cf-outline-minor-mode ()
+  (cf-set-key-bindings
+   'local-set-key
+   '(
+     ("C-c C-=" show-all)
+     ("C-c C--" hide-body)
+     ("C-c C-[" hide-subtree)
+     ("C-c C-]" show-subtree)
+     ("C-c C-," hide-entry)
+     ("C-c C-." show-entry)
+     ("C-c C-j" outline-next-visible-heading)
+     ("C-c C-k" outline-previous-visible-heading)
+     ("C-c C-h" outline-backward-same-level)
+     ("C-c C-l" outline-forward-same-level)
+     ("C-c C-u" outline-up-heading)
+     )
+   )
+  )
+(add-hook 'outline-minor-mode-hook 'cf-outline-minor-mode)
+#+END_SRC
+* python
+#+BEGIN_SRC emacs-lisp
+(defun cf-python-setup ()
+  (autoload 'python-mode "python-mode" "Python Mode." t)
+  (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
+  (add-to-list 'interpreter-mode-alist '("python" . python-mode))
+
+  (setq abbrev-file-name "~/.emacs.d/abbrev_defs")
+
+  (defun cf-init-python ()
+    (cf-set-key-bindings
+     'local-set-key
+     '())
+    (cf-set-key-bindings
+     'define-key
+     '(("C-j" nil)
+       ("C-n" py-newline-and-indent)
+       ("C-m" nil)
+       ("C-M-h" nil)
+       ("C-M-b" py-mark-def-or-class)
+       ("M-j" py-forward-block-or-clause)
+       ("M-k" py-backward-block-or-clause)
+       ("C-M-j" py-forward-block-or-clause)
+       ("C-M-k" py-backward-block-or-clause)
+       ("C-M-a" nil)
+       ("C-M-e" nil)
+       ("C-c C-v" nil)
+       ("C-c C-x" nil)
+       ("C-c C-m" nil)
+       ("C-c C-v C-l" py-shift-right)
+       ("C-c C-v C-h" py-shift-left)
+       ("C-c C-i C-l" py-shift-right)
+       ("C-c C-i C-h" py-shift-left)
+       ("C-c C-x C-l" py-shift-block-or-clause-right)
+       ("C-c C-x C-h" py-shift-block-or-clause-left))
+     python-mode-map)
+    (subword-mode)
+    (setq python-indent-offset 4)
+    ;; (c-toggle-auto-state)
+    (c-toggle-hungry-state 1)
+    (highlight-indentation-mode)
+    (highlight-indentation-current-column-mode))
+  (add-hook 'python-mode-hook 'cf-init-python))
+
+(if (package-installed-p 'python-mode)
+    (cf-python-setup)
+  (message "python-mode not installed"))
+#+END_SRC
+* restclient
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+#+BEGIN_SRC emacs-lisp
+(defun cf-restclient-setup ()
+  (defun cf-init-restclient ()
+    (cf-set-key-bindings
+     'local-set-key
+     '(
+       ("C-c C-h" restclient-http-send-current)
+       ("C-c C-k" restclient-jump-prev)
+       ("C-c C-j" restclient-jump-next))))
+  (add-hook 'restclient-mode-hook 'cf-init-restclient)
+  )
+#+END_SRC
+* ruby
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("RakeFile" . ruby-mode))
+(defun cf-init-ruby ()
+  (cf-set-key-bindings
+   'local-set-key
+   '())
+  ;; (c-toggle-auto-state)
+  (c-toggle-hungry-state 1))
+(add-hook 'ruby-mode-hook 'cf-init-ruby)
+#+END_SRC
+* scss
+#+BEGIN_SRC emacs-lisp
+(defun cf-scss-mode-setup ()
+  (setq scss-compile-at-save nil)
+  (defun cf-init-scss ()
+    (message "init-scss")
+    (cf-set-key-bindings
+     'local-set-key
+     '())
+    (setq css-indent-offset 2))
+  (add-hook 'scss-mode-hook 'cf-init-scss))
+
+(if (package-installed-p 'scss-mode)
+    (cf-scss-mode-setup)
+  (message "scss-mode not installed"))
+#+END_SRC
+* shell
+** sh mode
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("/\\.bash_[^/]*\\'" . sh-mode))
+
+(defun cf-shell-kill (beg end)
+  "If the mark is active, kill region will be used; otherwise, delete
+char will be used."
+  (interactive (list (point) (mark)))
+  (if mark-active
+      (kill-region beg end)
+    (comint-delchar-or-maybe-eof 1)))
+
+;; sh mode
+(defun cf-sh-mode-hook-func ()
+  (cf-set-key-bindings
+   'define-key
+   '()
+   sh-mode-map))
+(add-hook 'sh-mode-hook 'cf-sh-mode-hook-func)
+#+END_SRC
+** shell mode
+#+BEGIN_SRC emacs-lisp
+(defun cf-shell-mode-hook-func ()
+  (cf-set-key-bindings
+   'local-set-key
+   '(
+     ("C-d" cf-shell-kill)
+     ("C-M-l" nil)
+     ;;("C-c h" comint-history-isearch-backward)
+     ;;("M-s" comint-history-isearch-search)
+     ("C-c h" comint-history-isearch-backward-regexp)
+
+     ("M-j" comint-next-input)
+     ("M-k" comint-previous-input)
+     ("M-h" backward-word)
+     ("C-M-j" comint-next-matching-input-from-input)
+     ("C-M-k" comint-previous-matching-input-from-input)
+     ("M-n" nil)
+     ("M-p" nil)
+
+     ("C-c C-h" shell-backward-command)
+     ("C-c C-l" shell-forward-command)
+     ("C-c C-j" comint-next-prompt)
+     ("C-c C-k" comint-previous-prompt)
+
+     ("C-c C-b" nil)
+     ("C-c C-n" nil)
+     ("C-c C-p" nil)
+     ("C-c C-f" nil)
+     )
+   ;;shell-mode-map
+   )
+  (linum-mode 0))
+(add-hook 'shell-mode-hook 'cf-shell-mode-hook-func)
+#+END_SRC
+** term mode
+#+BEGIN_SRC emacs-lisp
+(defun cf-term-mode-hook-func ()
+  (linum-mode 0)
+  (setq-local scroll-margin 0)
+  (cf-set-key-bindings
+   'local-set-key
+   '(
+     ))
+  (cf-set-key-bindings
+   'define-key
+   '(("C-v" scroll-up-command)
+     ("C-w" scroll-down)
+     ("C-y" term-paste)
+     ("s-v" term-paste)
+     ("M-x" nil)
+     ("C-u" universal-argument)
+     ("C-c C-y" term-interrupt-subjob)
+     ("C-o" cf-open-copy))
+   term-raw-map))
+(add-hook 'term-mode-hook 'cf-term-mode-hook-func)
+#+END_SRC
+** tm function
+#+BEGIN_SRC emacs-lisp
+(defun tm ()
+  "start-ansi-term"
+  (interactive)
+  (let (bf-name
+        (sh-name "/bin/bash"))
+    (if t ;;current-prefix-arg
+        (setq bf-name
+              (read-from-minibuffer "Buffer (*tm*): " bf-name)))
+    (if (or (not bf-name)
+            (= (length bf-name) 0))
+        (setq bf-name "*tm*"))
+    (setq bf-name (generate-new-buffer-name bf-name))
+    (ansi-term sh-name)
+    (rename-buffer bf-name)))
+#+END_SRC
+** sh function
+#+BEGIN_SRC emacs-lisp
+(defun sh ()
+  "start-shell"
+  (interactive)
+  (let (bf-name)
+    (setq bf-name
+          (read-from-minibuffer "Buffer (*shell*): " bf-name))
+    (if (or (not bf-name)
+            (= (length bf-name) 0))
+        (shell)
+      (shell bf-name))))
+#+END_SRC
+* speedbar
+#+BEGIN_SRC emacs-lisp
+(defun cf-speedbar-key-hook-func ()
+  (cf-set-key-bindings
+   'define-key
+   '(
+    ("j" speedbar-next)
+    ("k" speedbar-prev)
+    ("C-M-j" speedbar-forward-list)
+    ("C-M-k" speedbar-backward-list)
+    ("M-j" speedbar-restricted-next)
+    ("M-k" speedbar-restricted-prev)
+    )
+   speedbar-key-map)
+  (cf-set-key-bindings
+   'define-key
+   '(
+     ("k" speedbar-prev)
+     ("d" speedbar-buffer-kill-buffer)
+     )
+   speedbar-buffers-key-map)
+  (linum-mode 0))
+(add-hook 'speedbar-reconfigure-keymaps-hook
+          'cf-speedbar-key-hook-func)
+(eval-after-load "speedbar-mode"
+  '(progn
+     (linum-mode 0)))
+#+END_SRC
+* spell
+#+BEGIN_SRC emacs-lisp
+(setq-default ispell-program-name "aspell")
+#+END_SRC
+* tramp
+#+BEGIN_SRC emacs-lisp
+(require 'tramp)
+(setq tramp-default-method "scp")
+;;(custom-set-variables '(tramp-verbose 6))
+(eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
+#+END_SRC
+* view
+#+BEGIN_SRC emacs-lisp
+(defun cf-view-key-binding ()
+  (cf-set-key-bindings
+   'define-key
+   '(
+     ;; ("C-j" View-scroll-line-forward)
+     ("C-j" nil)
+     )
+   view-mode-map
+   )
+  )
+(add-hook 'view-mode-hook 'cf-view-key-binding)
+#+END_SRC
+* Find Library File
+Functions and bindings to make library files more easy to examine and
+change.
+#+BEGIN_SRC emacs-lisp
+(defun find-library-file (library)
+  "Takes a single argument LIBRARY, being a library file to search for.
+Searches for LIBRARY directly (in case relative to current directory,
+or absolute) and then searches directories in load-path in order.  It
+will test LIBRARY with no added extension, then with .el, and finally
+with .elc.  If a file is found in the search, it is visited.  If none
+is found, an error is signaled.  Note that order of extension searching
+is reversed from that of the load function."
+  (interactive "sFind library file: ")
+  (let ((path (cons "" load-path)) exact match elc test found)
+    (while (and (not match) path)
+      (setq test (concat (car path) "/" library)
+            match (if (condition-case nil
+                          (file-readable-p test)
+                        (error nil))
+                      test)
+            path (cdr path)))
+    (setq path (cons "" load-path))
+    (or match
+        (while (and (not elc) path)
+          (setq test (concat (car path) "/" library ".elc")
+                elc (if (condition-case nil
+                            (file-readable-p test)
+                          (error nil))
+                        test)
+                path (cdr path))))
+    (setq path (cons "" load-path))
+    (while (and (not match) path)
+      (setq test (concat (car path) "/" library ".el")
+            match (if (condition-case nil
+                          (file-readable-p test)
+                        (error nil))
+                      test)
+            path (cdr path)))
+    (setq found (or match elc))
+    (if found
+        (progn
+          (find-file found)
+          (and match elc
+               (message "(library file %s exists)" elc)
+               (sit-for 1))
+          (message "Found library file %s" found))
+      (error "Library file \"%s\" not found." library))))
+
+(define-key ctl-x-4-map "l" 'find-library-file)
+(define-key ctl-x-4-map "r" 'byte-recompile-directory)
 #+END_SRC
 * License
 My Emacs configurations written in Org mode.
