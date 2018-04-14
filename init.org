@@ -2209,6 +2209,9 @@ is reversed from that of the load function."
 (define-key ctl-x-4-map "l" 'find-library-file)
 (define-key ctl-x-4-map "r" 'byte-recompile-directory)
 #+END_SRC
+* Todo List
+** TODO read a list of people with nice emacs config files
+- https://github.com/zamansky/emacs.dz
 * License
 My Emacs configurations written in Org mode.
 
