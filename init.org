@@ -351,7 +351,7 @@ Therefore, we need to initialize our packages manually.
 
    ("M-b" mark-paragraph)
    ;;("M-n" indent-new-comment-line)
-   ("M-n" auto-complete)
+   ;;("M-n" auto-complete)
    ("M-p" downcase-word)
    ;; ("M-f" kill-sentence)
 
@@ -678,33 +678,6 @@ From: http://blog.plover.com/prog/revert-all.html
 	     (local-set-key (kbd "C-M-m") 'eval-print-last-sexp)
 	     ))
 #+END_SRC
-* auto-complete
-#+BEGIN_SRC emacs-lisp
-(defun cf-ac-setup ()
-  (ac-config-default)
-  (cf-set-key-bindings
-   'define-key
-   '(
-     ("TAB" nil)
-     ("RET" nil)
-     ;;("M-/" ac-expand)
-     ("M-m" ac-complete)
-     ("M-n" ac-expand)
-     ("M-j" ac-next)
-     ("M-k" ac-previous)
-     )
-   ac-complete-mode-map)
-
-  (define-key ac-mode-map (kbd "M-n") 'auto-complete)
-  ;;(define-key ac-mode-map (kbd "M-m") 'auto-complete)
-
-  (setq ac-auto-start 4)
-  (setq ac-quick-help-delay 0.5)
-  (setq ac-use-fuzzy nil))
-(if (package-installed-p 'auto-complete)
-    (cf-ac-setup)
-  (message "auto-complete not installed"))
-#+END_SRC
 * cc-mode
 #+BEGIN_SRC emacs-lisp
 (defun cf-kill-cc (beg end)
@@ -855,6 +828,64 @@ char will be used."
 (add-to-list 'auto-mode-alist '("CMakeLists\\.txt$" . cmake-mode))
 (add-to-list 'auto-mode-alist '("\\.cmake$" . cmake-mode))
 #+END_SRC
+* company
+Use [[http://company-mode.github.io/][company-mode]], a modular in-buffer completion framework for Emacs.
+** init
+#+BEGIN_SRC emacs-lisp
+(defun cf-setup-company ()
+  ;; Init
+  (add-hook 'after-init-hook #'global-company-mode)
+  ;; Reduce completion menu time delay to minimum.
+  (customize-set-variable 'company-idle-delay 0)
+  ;; key
+  (with-eval-after-load 'company
+    ;; ignore return
+    (define-key company-active-map [return] nil)
+    (define-key company-active-map (kbd "RET") nil)
+    ;; select completion
+    (cf-set-key-bindings
+     'define-key
+     '(
+       ("M-j" company-select-next)
+       ("M-k" company-select-previous)
+       ("M-m" company-complete-selection)
+       ("M-n" company-complete-common)
+       )
+     company-active-map)
+    (cf-set-key-bindings
+     'global-set-key
+     '(("M-n" company-complete))))
+  ;; Show quick-access numbers of completion options.
+  (customize-set-variable 'company-show-numbers t)
+  ;; Align annotations.
+  (customize-set-variable 'company-tooltip-align-annotations t))
+(if (package-installed-p 'company)
+    (cf-setup-company)
+  (message "company mode not installed"))
+#+END_SRC
+** company-quickhelp
+Use [[https://github.com/expez/company-quickhelp][company-quickhelp]], which shows a documentation pop-up during
+=company-mode= completion.
+#+BEGIN_SRC emacs-lisp :tangle no
+(defun cf-setup-company-quickhelp ()
+  (company-quickhelp-mode t)
+  ;; Do not show pop-up automatically
+  (customize-set-variable 'company-quickhelp-delay nil)
+  ;; Define binding for showing pop-up manually in company-active-map instead of
+  ;; company-quickhelp-mode-map; this activates it only when we want completion.
+  (with-eval-after-load 'company
+    (define-key company-active-map (kbd "C-c h") #'company-quickhelp-manual-begin)))
+(if (and (package-installed-p 'company)
+         (package-installed-p 'company-quickhelp-mode))
+    (cf-setup-company-quickhelp)
+  (message "company or company-quickhelper not installed"))
+#+END_SRC
+** misc
+There's also ~company-show-doc-buffer~, which is built into
+~company-mode-map~, but the selections disappear when the doc buffer
+appears (maybe it just doesn't play nice with =popwin=?). Furthermore,
+it's easier to read the documentation when it's right next to the
+candidate.
 * dash-at-pt
 :PROPERTIES:
 :header-args: :tangle no
