@@ -1894,6 +1894,11 @@ Called by `imenu--generic-function'."
          ((agenda "" ((org-agenda-ndays 1)))
           (alltodo ""
                    ((org-agenda-skip-function
+                     '(org-agenda-skip-entry-if
+                       'todo '("TODO" "WAIT" "HOLD" "MISS")))
+                    (org-agenda-overriding-header "In Progress Tasks:")))
+          (alltodo ""
+                   ((org-agenda-skip-function
                      '(or (org-agenda-skip-entry-if 'scheduled 'deadline)))
                     (org-agenda-overriding-header "Tasks without time:"))))
          ;; ((org-agenda-compact-blocks t))
