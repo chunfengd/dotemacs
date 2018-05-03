@@ -1887,7 +1887,7 @@ Called by `imenu--generic-function'."
    org-agenda-mode-map))
 (add-hook 'org-agenda-mode-hook 'cf-org-agenda-mode-hook-func)
 #+END_SRC
-** Agenda Custom Commands
+** custom agenda commands
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-custom-commands
       '(("d" "Daily agenda and all TODOs"
@@ -1899,10 +1899,27 @@ Called by `imenu--generic-function'."
                     (org-agenda-overriding-header "In Progress Tasks:")))
           (alltodo ""
                    ((org-agenda-skip-function
-                     '(or (org-agenda-skip-entry-if 'scheduled 'deadline)))
-                    (org-agenda-overriding-header "Tasks without time:"))))
+                     '(or (org-agenda-skip-entry-if 'scheduled 'deadline)
+                          (org-agenda-skip-entry-if 'todo '("HOLD"))))
+                    (org-agenda-overriding-header "Todo Tasks without time:"))))
          ;; ((org-agenda-compact-blocks t))
-         )))
+         )
+        ("t" "Tetrascience"
+         ((agenda ""
+                  ((org-agenda-files '("~/Dropbox/todo/tetra.org"))
+                   (org-agenda-ndays 1)))
+          (alltodo ""
+                   ((org-agenda-files '("~/Dropbox/todo/tetra.org"))
+                    (org-agenda-skip-function
+                     '(org-agenda-skip-entry-if
+                       'todo '("TODO" "WAIT" "HOLD" "MISS")))
+                    (org-agenda-overriding-header "In Progress Tasks:")))
+          (alltodo ""
+                   ((org-agenda-files '("~/Dropbox/todo/tetra.org"))
+                    (org-agenda-skip-function
+                     '(or (org-agenda-skip-entry-if 'scheduled 'deadline)
+                          (org-agenda-skip-entry-if 'todo '("HOLD"))))
+                    (org-agenda-overriding-header "Todo Tasks without time:")))))))
 #+END_SRC
 ** Todo Keyword Faces
 #+BEGIN_SRC emacs-lisp
