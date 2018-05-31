@@ -1890,12 +1890,12 @@ Called by `imenu--generic-function'."
 ** custom agenda commands
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-custom-commands
-      '(("d" "Daily agenda and all TODOs"
+      '(("d" "Daily Agenda and All TODOs"
          ((agenda "" ((org-agenda-ndays 1)))
           (alltodo ""
                    ((org-agenda-skip-function
                      '(org-agenda-skip-entry-if
-                       'todo '("TODO" "WAIT" "HOLD" "MISS")))
+                       'todo '("TODO" "HOLD" "MISS")))
                     (org-agenda-overriding-header "In Progress Tasks:")))
           (alltodo ""
                    ((org-agenda-skip-function
@@ -1904,6 +1904,12 @@ Called by `imenu--generic-function'."
                     (org-agenda-overriding-header "Todo Tasks without time:"))))
          ;; ((org-agenda-compact-blocks t))
          )
+        ("h" "All Holds"
+         ((alltodo ""
+                   ((org-agenda-skip-function
+                     '(org-agenda-skip-entry-if
+                       'todo '("TODO" "PROG" "MISS")))
+                    (org-agenda-overriding-header "In Progress Tasks:")))))
         ("t" "Tetrascience"
          ((agenda ""
                   ((org-agenda-files '("~/Dropbox/todo/tetra.org"))
@@ -1912,7 +1918,7 @@ Called by `imenu--generic-function'."
                    ((org-agenda-files '("~/Dropbox/todo/tetra.org"))
                     (org-agenda-skip-function
                      '(org-agenda-skip-entry-if
-                       'todo '("TODO" "WAIT" "HOLD" "MISS")))
+                       'todo '("TODO" "HOLD" "MISS")))
                     (org-agenda-overriding-header "In Progress Tasks:")))
           (alltodo ""
                    ((org-agenda-files '("~/Dropbox/todo/tetra.org"))
