@@ -25,7 +25,7 @@ on GitHub.
 (defun cf-path (path)
   (expand-file-name path cf-dotemacs-home))
 #+END_SRC
-* Tangling
+* Tangling and How to Install
 After cloning from [[https://github.com/xiongtx/.emacs.d][GitHub]], there is no =init.el= file, only an
 =init.org= file (this file). To produce an =init.el= file, either:
 ** Run =org-bable-tangle=
@@ -48,6 +48,10 @@ function to ~after-save-hook~ to tangle the =init.org= after saving.
     (org-babel-tangle)))
 
 (add-hook 'after-save-hook 'cf-tangle-init-file)
+#+END_SRC
+** Add the following line into =~/.emacs=
+#+BEGIN_SRC emacs-lisp :tangle no
+(load "/path/to/init.el")
 #+END_SRC
 * Package Management
 ** Require Package
@@ -1912,16 +1916,16 @@ Called by `imenu--generic-function'."
                     (org-agenda-overriding-header "In Progress Tasks:")))))
         ("t" "Tetrascience"
          ((agenda ""
-                  ((org-agenda-files '("~/Dropbox/todo/tetra.org"))
+                  ((org-agenda-files `(,org-agenda-tetra))
                    (org-agenda-ndays 1)))
           (alltodo ""
-                   ((org-agenda-files '("~/Dropbox/todo/tetra.org"))
+                   ((org-agenda-files `(,org-agenda-tetra))
                     (org-agenda-skip-function
                      '(org-agenda-skip-entry-if
                        'todo '("TODO" "HOLD" "MISS")))
                     (org-agenda-overriding-header "In Progress Tasks:")))
           (alltodo ""
-                   ((org-agenda-files '("~/Dropbox/todo/tetra.org"))
+                   ((org-agenda-files `(,org-agenda-tetra))
                     (org-agenda-skip-function
                      '(or (org-agenda-skip-entry-if 'scheduled 'deadline)
                           (org-agenda-skip-entry-if 'todo '("HOLD"))))
