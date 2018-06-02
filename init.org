@@ -641,8 +641,8 @@ From: http://blog.plover.com/prog/revert-all.html
 (setq save-place-file (concat user-emacs-directory "places"))
 #+END_SRC
 *** Daemon Server
-#+BEGIN_SRC emacs-lisp :tangle no
-(setq server-name "server")
+#+BEGIN_SRC emacs-lisp
+(setq server-name "emacs-server")
 (server-start)
 #+END_SRC
 *** exec-path-from-shell
