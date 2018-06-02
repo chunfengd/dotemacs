@@ -2221,6 +2221,20 @@ char will be used."
   )
 (add-hook 'view-mode-hook 'cf-view-key-binding)
 #+END_SRC
+* asm
+#+BEGIN_SRC emacs-lisp
+(defun cf-asm-setup ()
+  ;; (setq-default js2-strict-inconsistent-return-warning nil)
+  (defun cf-init-asm ()
+    (cf-set-key-bindings
+     'local-set-key
+     '(
+       ("C-j" next-line)
+       ("RET" newline)
+       )))
+  (add-hook 'asm-mode-hook 'cf-init-asm))
+(cf-asm-setup)
+#+END_SRC
 * Find Library File
 Functions and bindings to make library files more easy to examine and
 change.
