@@ -34,9 +34,13 @@ extracts code blocks from the current file into =init.el=, then
 restart Emacs
 ** Tangle Command Line
 #+BEGIN_SRC sh :tangle no
-emacs --batch \
-      --load "/Applications/Emacs.app/Contents/Resources/lisp/org/ob-tangle.elc" \
-      --eval "(org-babel-tangle-file \"~/dev/dotemacs/init.org\")"
+$ ./tangle.sh
+#+END_SRC
+or
+#+BEGIN_SRC sh :tangle no
+$ emacs --batch \
+        --eval "(require 'ob-tangle)" \
+        --eval "(org-babel-tangle-file \"./init.org\")"
 #+END_SRC
 ** Automatic Tangling
 To avoid having to tangle manually each time a change is made, we can add a
