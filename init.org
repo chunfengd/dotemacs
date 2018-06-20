@@ -1720,6 +1720,7 @@ open a new line."
     (setq web-mode-markup-indent-offset 2)
     (setq web-mode-css-indent-offset 2)
     (setq web-mode-code-indent-offset 2)
+    (setq web-mode-attr-indent-offset 2)
     (setq web-mode-style-padding 2)
     (setq web-mode-script-padding 2)
     (setq web-mode-block-padding 0)
@@ -1728,6 +1729,8 @@ open a new line."
     (set-face-attribute 'web-mode-current-element-highlight-face nil :background "honeydew4")
     (setq web-mode-enable-current-column-highlight nil)
     (setq web-mode-enable-sexp-functions t)
+    (setq web-mode-enable-auto-quoting nil)
+    (setq web-mode-enable-auto-indentation nil)
     (cf-set-key-bindings
      'define-key
      '(
