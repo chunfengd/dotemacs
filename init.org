@@ -1296,7 +1296,8 @@ Use [[http://company-mode.github.io/][company-mode]], a modular in-buffer comple
   ;; Show quick-access numbers of completion options.
   (customize-set-variable 'company-show-numbers t)
   ;; Align annotations.
-  (customize-set-variable 'company-tooltip-align-annotations t))
+  (customize-set-variable 'company-tooltip-align-annotations t)
+  (customize-set-variable 'company-dabbrev-downcase nil))
 (if (package-installed-p 'company)
     (cf-setup-company)
   (message "company mode not installed"))
