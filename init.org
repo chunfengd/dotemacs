@@ -31,17 +31,32 @@
    - [[#keys][Keys]]
    - [[#customized-util-functions--bindings][Customized Util Functions & Bindings]]
    - [[#misc][Misc]]
+ - [[#org-mode][org-mode]]
+   - [[#init][init]]
+   - [[#cf-org-beginning-of-line][cf-org-beginning-of-line]]
+   - [[#org-mode-hook][org-mode-hook]]
+   - [[#gtd-keys][GTD keys]]
+   - [[#agenda-hook][agenda-hook]]
+   - [[#custom-agenda-commands][custom agenda commands]]
+   - [[#keyword-faces][Keyword Faces]]
+   - [[#deadline-warning-days][Deadline Warning Days]]
+   - [[#use-toc-org-to-automatically-generate-a-table-of-contents-for-org-files][Use toc-org to automatically generate a table of contents for Org files.]]
  - [[#text-mode][text-mode]]
    - [[#auto-fill][Auto Fill]]
    - [[#pro-file][Pro File]]
+ - [[#helm][helm]]
+   - [[#setup-helm][Setup helm]]
+   - [[#setup-projectile][Setup projectile]]
+   - [[#setup-helm-ag][Setup helm-ag]]
  - [[#lisp-interaction-mode][lisp-interaction-mode]]
  - [[#cc-mode][cc-mode]]
  - [[#cedet][cedet]]
  - [[#cmake][cmake]]
  - [[#company][company]]
-   - [[#init][init]]
+   - [[#init-1][init]]
    - [[#company-quickhelp][company-quickhelp]]
    - [[#misc-1][misc]]
+   - [[#company-c-headers][company-c-headers]]
  - [[#dash-at-pt][dash-at-pt]]
  - [[#dired][dired]]
    - [[#display-in-other-window-or-copy-selected][display in other window or copy selected]]
@@ -57,10 +72,6 @@
    - [[#test][Test]]
    - [[#todo][Todo]]
  - [[#graphviz-dot-mode][Graphviz Dot Mode]]
- - [[#helm][helm]]
-   - [[#setup-helm][Setup helm]]
-   - [[#setup-projectile][Setup projectile]]
-   - [[#setup-helm-ag][Setup helm-ag]]
  - [[#highlight-indentation][highlight-indentation]]
  - [[#html][html]]
    - [[#html-mode][html-mode]]
@@ -84,16 +95,6 @@
    - [[#clojure][clojure]]
  - [[#multiple-cursors][multiple-cursors]]
  - [[#markdown][markdown]]
- - [[#org-mode][org-mode]]
-   - [[#init-1][init]]
-   - [[#cf-org-beginning-of-line][cf-org-beginning-of-line]]
-   - [[#org-mode-hook][org-mode-hook]]
-   - [[#gtd-keys][GTD keys]]
-   - [[#agenda-hook][agenda-hook]]
-   - [[#custom-agenda-commands][custom agenda commands]]
-   - [[#keyword-faces][Keyword Faces]]
-   - [[#deadline-warning-days][Deadline Warning Days]]
-   - [[#use-toc-org-to-automatically-generate-a-table-of-contents-for-org-files][Use toc-org to automatically generate a table of contents for Org files.]]
  - [[#outline][outline]]
  - [[#python][python]]
  - [[#restclient][restclient]]
@@ -178,7 +179,11 @@ function to ~after-save-hook~ to tangle the =init.org= after saving.
 *** Melpa
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'package-archives
-             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+             '("melpa-stable" . "https://stable.melpa.org/packages/")
+             t)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/")
+             t)
 #+END_SRC
 *** Org
 #+BEGIN_SRC emacs-lisp
@@ -1325,6 +1330,18 @@ There's also ~company-show-doc-buffer~, which is built into
 appears (maybe it just doesn't play nice with =popwin=?). Furthermore,
 it's easier to read the documentation when it's right next to the
 candidate.
+** company-c-headers
+- https://github.com/randomphrase/company-c-headers
+- This library enables the completion of C/C++ header file names using
+  Company mode
+#+BEGIN_SRC emacs-lisp
+(defun cf-setup-company-c-headers ()
+  (with-eval-after-load 'company
+    (add-to-list 'company-backends 'company-c-headers)))
+(if (package-installed-p 'company-c-headers)
+    (cf-setup-company-c-headers)
+  (message "company-c-headers not installed"))
+#+END_SRC
 * dash-at-pt
 :PROPERTIES:
 :header-args: :tangle no
