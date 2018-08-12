@@ -111,6 +111,7 @@
  - [[#tramp][tramp]]
  - [[#view][view]]
  - [[#asm][asm]]
+ - [[#prettier][prettier]]
  - [[#find-library-file][Find Library File]]
  - [[#list][List]]
    - [[#read-a-list-of-people-with-nice-emacs-config-files][read a list of people with nice emacs config files]]
@@ -2389,6 +2390,25 @@ char will be used."
        )))
   (add-hook 'asm-mode-hook 'cf-init-asm))
 (cf-asm-setup)
+#+END_SRC
+* prettier
+- https://github.com/prettier/prettier-emacs
+- https://prettier.io/
+#+BEGIN_SRC emacs-lisp
+(defun cf-setup-prettier ()
+  (add-hook 'js2-mode-hook
+            #'(lambda ()
+                (if (executable-find "prettier")
+                    (prettier-js-mode))))
+  (add-hook 'web-mode-hook
+            #'(lambda ()
+                (if (and (executable-find "prettier")
+                         (buffer-file-name)
+                         (string-match "\\.jsx?\\'" buffer-file-name))
+                    (prettier-js-mode)))))
+(if (package-installed-p 'prettier-js)
+    (cf-setup-prettier)
+  (message "prettier-js not installed"))
 #+END_SRC
 * Find Library File
 Functions and bindings to make library files more easy to examine and
