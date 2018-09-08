@@ -2405,6 +2405,10 @@ char will be used."
                 (if (and (executable-find "prettier")
                          (buffer-file-name)
                          (string-match "\\.jsx?\\'" buffer-file-name))
+                    (prettier-js-mode))))
+  (add-hook 'yaml-mode-hook
+            #'(lambda ()
+                (if (executable-find "prettier")
                     (prettier-js-mode)))))
 (if (package-installed-p 'prettier-js)
     (cf-setup-prettier)
