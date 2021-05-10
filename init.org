@@ -782,6 +782,19 @@ From: http://blog.plover.com/prog/revert-all.html
 #+BEGIN_SRC emacs-lisp
 (setq default-major-mode 'text-mode)
 #+END_SRC
+* evil-mode
+** init
+#+BEGIN_SRC emacs-lisp
+(defun cf-setup-evil ()
+  (require 'evil)
+  (define-key evil-insert-state-map (kbd "C-c") 'evil-normal-state)
+  (define-key evil-insert-state-map (kbd "C-h") 'backward-delete-char))
+(if (and (package-installed-p 'evil)
+         (package-installed-p 'undo-tree)
+         (package-installed-p 'goto-chg))
+    (cf-setup-evil)
+  (message "evil, undo-tree or goto-chg not installed"))
+#+END_SRC
 * org-mode
 ** init
 #+BEGIN_SRC emacs-lisp
