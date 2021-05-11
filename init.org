@@ -396,6 +396,11 @@ Therefore, we need to initialize our packages manually.
     (format "%s %s" font-name font-size)))
 #+END_SRC
 ** Keys
+*** switch C-c & C-g
+#+BEGIN_SRC emacs-lisp
+(keyboard-translate ?\C-c ?\C-g)
+(keyboard-translate ?\C-g ?\C-c)
+#+END_SRC
 *** Set Key Bindings Function
 #+BEGIN_SRC emacs-lisp
 (defun cf-set-key-bindings (action bind-list &optional map)
@@ -787,8 +792,10 @@ From: http://blog.plover.com/prog/revert-all.html
 #+BEGIN_SRC emacs-lisp
 (defun cf-setup-evil ()
   (require 'evil)
-  (define-key evil-insert-state-map (kbd "C-c") 'evil-normal-state)
-  (define-key evil-insert-state-map (kbd "C-h") 'backward-delete-char))
+  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+  (define-key evil-insert-state-map (kbd "C-h") 'backward-delete-char)
+  (define-key evil-replace-state-map (kbd "C-g") 'evil-normal-state)
+  (define-key evil-replace-state-map (kbd "C-h") 'backward-delete-char))
 (if (and (package-installed-p 'evil)
          (package-installed-p 'undo-tree)
          (package-installed-p 'goto-chg))
