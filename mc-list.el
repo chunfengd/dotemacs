@@ -3,6 +3,12 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        backward-delete-char
+        cf-kill
+        org-self-insert-command
+        org-yank
+        paredit-backslash
+        yaml-electric-dash-and-dot
         ))
 
 (setq mc/cmds-to-run-once
