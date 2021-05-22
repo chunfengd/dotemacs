@@ -796,8 +796,8 @@ From: http://blog.plover.com/prog/revert-all.html
 ** init
 #+BEGIN_SRC emacs-lisp
 (defun cf-config-evil ()
-  (setq evil-want-C-u-delete t)
-  (setq evil-want-C-u-scroll t)
+  ;(setq evil-want-C-u-delete t)
+  ;(setq evil-want-C-u-scroll t)
   (setq evil-want-Y-yank-to-eol t))
 (defun cf-setup-evil ()
   (cf-config-evil)
