@@ -1710,7 +1710,8 @@ open a new line."
 (defun cf-graphviz-mode ()
   ""
   (setq graphviz-dot-indent-width 2)
-  (setq graphviz-dot-auto-indent-on-semi nil))
+  ;; (setq graphviz-dot-auto-indent-on-semi nil)
+  )
 (add-hook 'graphviz-dot-mode-hook 'cf-graphviz-mode)
 #+END_SRC
 * highlight-indentation
@@ -1787,8 +1788,8 @@ open a new line."
     (set-face-attribute 'web-mode-current-element-highlight-face nil :background "honeydew4")
     (setq web-mode-enable-current-column-highlight nil)
     (setq web-mode-enable-sexp-functions t)
-    (setq web-mode-enable-auto-quoting nil)
-    (setq web-mode-enable-auto-indentation nil)
+    ;; (setq web-mode-enable-auto-quoting nil)
+    ;; (setq web-mode-enable-auto-indentation nil)
     (cf-set-key-bindings
      'define-key
      '(
@@ -1908,7 +1909,7 @@ If it's found, then add it to the `exec-path'."
   (eval-after-load "js3-mode"
     (add-hook 'js3-mode-hook
               (lambda ()
-                (setq js3-auto-indent-p nil
+                (setq ;; js3-auto-indent-p nil
                       js3-curly-indent-offset 0
                       js3-enter-indents-newline t
                       js3-expr-indent-offset 2
