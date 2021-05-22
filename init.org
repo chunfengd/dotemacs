@@ -796,8 +796,8 @@ From: http://blog.plover.com/prog/revert-all.html
 ** init
 #+BEGIN_SRC emacs-lisp
 (defun cf-config-evil ()
-  ;(setq evil-want-C-u-delete t)
-  ;(setq evil-want-C-u-scroll t)
+  ;; (setq evil-want-C-u-delete t)
+  ;; (setq evil-want-C-u-scroll t)
   (setq evil-want-Y-yank-to-eol t))
 (defun cf-setup-evil ()
   (cf-config-evil)
@@ -1903,7 +1903,7 @@ If it's found, then add it to the `exec-path'."
   (setq-default js2-bounce-indent-p t)
   ;; (setq-default js2-strict-inconsistent-return-warning nil)
   (defun cf-init-js ()
-    (electric-indent-mode -1)
+    ;; (electric-indent-mode -1)
     (cf-set-key-bindings
      'local-set-key
      '()))
