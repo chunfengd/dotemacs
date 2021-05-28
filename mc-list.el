@@ -5,6 +5,9 @@
       '(
         backward-delete-char
         cf-kill
+        evil-change
+        evil-next-line
+        evil-normal-state
         org-self-insert-command
         org-yank
         paredit-backslash

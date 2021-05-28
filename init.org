@@ -32,6 +32,7 @@
    - [[#customized-util-functions--bindings][Customized Util Functions & Bindings]]
    - [[#misc][Misc]]
  - [[#evil-mode][evil-mode]]
+   - [[#insert-char][insert-char]]
    - [[#init][init]]
  - [[#org-mode][org-mode]]
    - [[#init-1][init]]
@@ -792,30 +793,49 @@ From: http://blog.plover.com/prog/revert-all.html
 * evil-mode
 - github: https://github.com/emacs-evil/evil
 - doc: https://evil.readthedocs.io/en/latest/index.html
+** insert-char
+#+begin_src emacs-lisp
+(defun cf-define-insert-char ()
+  ;; from: https://www.reddit.com/r/emacs/comments/7ogu7a/single_character_insert_for_evil/
+  ;; (evil-define-command my-evil-insert-char (count char)
+  ;;   (interactive "<c><C>")
+  ;;   (setq count (or count 1))
+  ;;   (insert (make-string count char)))
+  ;; (evil-define-command my-evil-append-char (count char)
+  ;;   (interactive "<c><C>")
+  ;;   (setq count (or count 1))
+  ;;   (when (not (eolp))
+  ;;     (forward-char))
+  ;;   (insert (make-string count char)))
+  ;; (define-key evil-normal-state-map (kbd "s") 'my-evil-insert-char)
+  ;; (define-key evil-normal-state-map (kbd "S") 'my-evil-append-char)
+
+  (defun cf-evil-insert-char ()
+    "insert single character"
+    (interactive)
+    (evil-insert 1))
+  (defun cf-evil-append-char ()
+    "append single character"
+    (interactive)
+    (evil-append 1))
+  (define-key evil-normal-state-map (kbd "s") 'cf-evil-insert-char)
+  (define-key evil-normal-state-map (kbd "S") 'cf-evil-append-char)
+  (define-key evil-normal-state-map (kbd "C-a") 'cf-evil-insert-char)
+  ;; check last-command in post-command-hook
+  (defun cf-switch-back-to-normal-state ()
+    "switch back to normal mode if needed"
+    (when (or (equal last-command 'cf-evil-insert-char)
+              (equal last-command 'cf-evil-append-char))
+      (evil-normal-state)))
+  (add-hook 'post-command-hook 'cf-switch-back-to-normal-state)
+  )
+#+end_src
 ** init
 #+BEGIN_SRC emacs-lisp
 (defun cf-config-evil ()
   ;; (setq evil-want-C-u-delete t)
   ;; (setq evil-want-C-u-scroll t)
   (setq evil-want-Y-yank-to-eol t))
-(defun cf-define-insert-char ()
-  ;; from: https://www.reddit.com/r/emacs/comments/7ogu7a/single_character_insert_for_evil/
-  (evil-define-command my-evil-insert-char (count char)
-    (interactive "<c><C>")
-    (setq count (or count 1))
-    (insert (make-string count char)))
-  
-  (evil-define-command my-evil-append-char (count char)
-    (interactive "<c><C>")
-    (setq count (or count 1))
-    (when (not (eolp))
-      (forward-char))
-    (insert (make-string count char)))
-  
-  (with-eval-after-load 'evil-maps
-    (define-key evil-normal-state-map (kbd "s") 'my-evil-insert-char)
-    (define-key evil-normal-state-map (kbd "S") 'my-evil-append-char))
-  )
 (defun cf-setup-evil ()
   (cf-config-evil)
   (require 'evil)
@@ -824,6 +844,8 @@ From: http://blog.plover.com/prog/revert-all.html
   (define-key evil-insert-state-map (kbd "C-h") 'backward-delete-char)
   (define-key evil-replace-state-map (kbd "C-g") 'evil-normal-state)
   (define-key evil-replace-state-map (kbd "C-h") 'backward-delete-char)
+  (define-key evil-normal-state-map (kbd "C-o") 'evil-open-above)
+  (define-key evil-normal-state-map (kbd "C-i") 'indent-for-tab-command)
   (cf-define-insert-char)
   )
 (if (and (package-installed-p 'evil)
