@@ -790,6 +790,10 @@ From: http://blog.plover.com/prog/revert-all.html
 #+BEGIN_SRC emacs-lisp
 (setq default-major-mode 'text-mode)
 #+END_SRC
+*** auto reload
+#+BEGIN_SRC emacs-lisp
+(global-auto-revert-mode t)
+#+END_SRC
 * evil-mode
 - github: https://github.com/emacs-evil/evil
 - doc: https://evil.readthedocs.io/en/latest/index.html
