@@ -853,8 +853,6 @@ From: http://blog.plover.com/prog/revert-all.html
   (define-key evil-insert-state-map (kbd "C-h") 'backward-delete-char)
   (define-key evil-replace-state-map (kbd "C-g") 'evil-normal-state)
   (define-key evil-replace-state-map (kbd "C-h") 'backward-delete-char)
-  (define-key evil-normal-state-map (kbd "C-o") 'evil-open-above)
-  (define-key evil-normal-state-map (kbd "C-i") 'indent-for-tab-command)
   (cf-define-insert-char)
   )
 (if (and (package-installed-p 'evil)
