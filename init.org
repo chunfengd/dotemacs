@@ -39,7 +39,6 @@
    - [[#add-agenda-files-into-emacs][add agenda files into =~/.emacs=]]
    - [[#cf-org-beginning-of-line][cf-org-beginning-of-line]]
    - [[#org-mode-hook][org-mode-hook]]
-   - [[#gtd-keys][GTD keys]]
    - [[#agenda-hook][agenda-hook]]
    - [[#custom-agenda-commands][custom agenda commands]]
    - [[#keyword-faces][Keyword Faces]]
@@ -61,7 +60,6 @@
    - [[#company-quickhelp][company-quickhelp]]
    - [[#misc-1][misc]]
    - [[#company-c-headers][company-c-headers]]
- - [[#dash-at-pt][dash-at-pt]]
  - [[#dired][dired]]
    - [[#display-in-other-window-or-copy-selected][display in other window or copy selected]]
    - [[#key-binding][key binding]]
@@ -100,7 +98,6 @@
  - [[#markdown][markdown]]
  - [[#outline][outline]]
  - [[#python][python]]
- - [[#restclient][restclient]]
  - [[#ruby][ruby]]
  - [[#scss][scss]]
  - [[#shell][shell]]
@@ -430,80 +427,34 @@ Therefore, we need to initialize our packages manually.
    ("C-M->" other-frame)
    ("M-q" fill-region)
    ("M-s" ispell-region)
-   ("C-z" undo)
+   ;; ("C-z" undo)
    ("M-/" undo)
    ("C-?" help-command)
    ("C-t" set-mark-command)
    ("M-t" set-mark-command)
-   ("C-x C-t" transpose-words)
+   ;; ("C-x C-t" transpose-words)
    ;; ("C-M-t" transpose-words)
    ;; ("C-q" back-to-indentation)
    ("M-n" hippie-expand)
    ("M-m" nil)
    ("C-x f" find-file)
    ("C-x g" goto-line)
-   ("M-z" server-edit)
+   ;; ("M-z" server-edit)
    ("C-x C-b" switch-to-buffer)
    ("C-x b" list-buffers)
-   ("C-M-a" backward-paragraph)
-   ("C-M-e" forward-paragraph)
-   ("C-M-w" scroll-other-window-down)
+   ;; ("C-M-a" backward-paragraph)
+   ;; ("C-M-e" forward-paragraph)
+   ("C-M-b" scroll-other-window-down)
+   ("C-M-f" scroll-other-window)
    ("C-c RET" imenu)
-   ("M-o" kill-ring-save)
+   ;; ("M-o" kill-ring-save)
    ("C-c C-c" comment-or-uncomment-region)
    ("C-x C-z" nil)
    ("M-v" yank)
-   ("C-w" scroll-down)
+   ;; ("C-w" scroll-down)
    ("M-w" mark-word)
    ;;("M-w" capitalize-word)
    ("C-y" yank)))
-#+END_SRC
-*** Cursor Movement
-#+BEGIN_SRC emacs-lisp
-(cf-set-key-bindings
- 'global-set-key
- '(
-   ("C-h" backward-char)
-   ("C-j" next-line)
-   ("C-k" previous-line)
-   ("C-l" forward-char)
-
-   ("C-b" backward-delete-char)
-   ("C-n" newline-and-indent)
-   ("C-p" recenter-top-bottom)
-   ("C-f" kill-line)
-
-   ("M-h" backward-word)
-   ("M-j" nil)
-   ("M-k" nil)
-   ("M-l" forward-word)
-
-   ("M-b" mark-paragraph)
-   ;;("M-n" indent-new-comment-line)
-   ;;("M-n" auto-complete)
-   ("M-p" downcase-word)
-   ;; ("M-f" kill-sentence)
-
-   ("C-M-h" backward-sexp)
-   ("C-M-j" forward-list)
-   ("C-M-k" backward-list)
-   ("C-M-l" forward-sexp)
-
-   ("C-M-b" mark-defun)
-   ("C-M-n" indent-new-comment-line)
-   ("C-M-p" reposition-window)
-   ;; ("C-M-f" kill-sexp)
-   ))
-
-(cf-set-key-bindings
- 'define-key
- '(
-   ("M-h" backward-word)
-   ("M-l" forward-word)
-   ("M-j" next-history-element)
-   ("M-k" previous-history-element)
-   )
- minibuffer-local-map)
 #+END_SRC
 ** Customized Util Functions & Bindings
 *** Find Map of Key Binding
@@ -567,28 +518,6 @@ Not exactly but it's easier to remember"
   (interactive)
   (other-frame -1))
 #+END_SRC
-*** Forward Word
-#+BEGIN_SRC emacs-lisp
-(defun cf-forward-word (&optional arg)
-  "Move point backward ARG words.  
-Normally returns t.  If an edge of the buffer or a field boundary is
-reached, point is left there and the function returns nil.
-Do not bind this function to \"M-l\" or \"M-h\"!"
-  (if (or (null arg) (= arg 1))
-    (let
-        ((start (point))
-         rtnflag
-         (forward (key-binding (kbd "M-l")))
-         (backward (key-binding (kbd "M-h"))))
-      (setq rtnflag
-	    (funcall forward '1))
-      (funcall backward '1)
-      (if (>= start (point))
-	  (funcall forward '1)
-	rtnflag))
-    (let ((forward (key-binding (kbd "M-l"))))
-      (funcall forward arg))))
-#+END_SRC
 *** Kill Word
 #+BEGIN_SRC emacs-lisp
 (defun cf-kill-word (arg)
@@ -609,17 +538,6 @@ char will be used."
     (delete-char 1)))
 (global-set-key (kbd "C-d") 'cf-kill)
 #+END_SRC
-*** Open or Copy
-#+BEGIN_SRC emacs-lisp
-(defun cf-open-copy (beg end)
-  "If the mark is active, copy region will be used; otherwise,
-open a new line."
-  (interactive (list (point) (mark)))
-  (if mark-active
-      (kill-ring-save beg end)
-    (open-line 1)))
-(global-set-key (kbd "C-o") 'cf-open-copy)
-#+END_SRC
 *** Move to the Beginning of Current Line
 #+BEGIN_SRC emacs-lisp
 (defun cf-move-beginning-of-line ()
@@ -629,17 +547,6 @@ open a new line."
   (if (= (point) pos-temp)
       (move-beginning-of-line 1)))
 (global-set-key (kbd "C-a") 'cf-move-beginning-of-line)
-#+END_SRC
-*** Magic Kill Ring Save
-#+BEGIN_SRC emacs-lisp
-(defun cf-magic-kill-ring-save(beg end)
-  "If the mark is active, save the region to the kill-ring; otherwise,
-capitalize the word."
-  (interactive (list (point) (mark)))
-  (if mark-active
-      (kill-ring-save beg end)
-    (capitalize-word 1)))
-(global-set-key (kbd "M-c") 'cf-magic-kill-ring-save)
 #+END_SRC
 *** Indent Regidly Inverse
 #+BEGIN_SRC emacs-lisp
@@ -890,66 +797,66 @@ From: http://blog.plover.com/prog/revert-all.html
   (cf-set-key-bindings
    'local-set-key
    '(
-     ("C-j" next-line)
-     ("C-k" previous-line)
-     ("C-f" org-kill-line)
-     ("C-n" org-return-indent)
+     ;; ("C-j" next-line)
+     ;; ("C-k" previous-line)
+     ;; ("C-f" org-kill-line)
+     ;; ("C-n" org-return-indent)
 
-     ("C-c C-h" org-backward-heading-same-level)
-     ("C-c C-j" outline-next-visible-heading)
-     ("C-c C-k" outline-previous-visible-heading)
-     ("C-c C-l" org-forward-heading-same-level)
+     ;; ("C-c C-h" org-backward-heading-same-level)
+     ;; ("C-c C-j" outline-next-visible-heading)
+     ;; ("C-c C-k" outline-previous-visible-heading)
+     ;; ("C-c C-l" org-forward-heading-same-level)
 
-     ("C-c C-b" nil)
-     ("C-c C-n" org-goto)
-     ("C-c C-p" nil)
-     ("C-c C-f" nil)
+     ;; ("C-c C-b" nil)
+     ;; ("C-c C-n" org-goto)
+     ;; ("C-c C-p" nil)
+     ;; ("C-c C-f" nil)
 
-     ("C-c C-v C-h" org-metaleft)
-     ("C-c C-v C-l" org-metaright)
-     ("C-c C-v C-k" org-metaup)
-     ("C-c C-v C-j" org-metadown)
+     ;; ("C-c C-v C-h" org-metaleft)
+     ;; ("C-c C-v C-l" org-metaright)
+     ;; ("C-c C-v C-k" org-metaup)
+     ;; ("C-c C-v C-j" org-metadown)
 
-     ("C-c C-x C-h" org-shiftmetaleft)
-     ("C-c C-x C-l" org-shiftmetaright)
-     ("C-c C-x C-k" org-shiftmetaup)
-     ("C-c C-x C-j" org-shiftmetadown)
+     ;; ("C-c C-x C-h" org-shiftmetaleft)
+     ;; ("C-c C-x C-l" org-shiftmetaright)
+     ;; ("C-c C-x C-k" org-shiftmetaup)
+     ;; ("C-c C-x C-j" org-shiftmetadown)
 
-     ("M-h" backward-word)
-     ("M-b" org-mark-element)
+     ;; ("M-h" backward-word)
+     ;; ("M-b" org-mark-element)
 
-     ("C-c C-f" org-kill-note-or-show-branches) ;; used to be 'C-c C-k'
+     ;; ("C-c C-f" org-kill-note-or-show-branches) ;; used to be 'C-c C-k'
 
      ("C-<tab>" org-cycle)
      ("C-S-<tab>" org-shifttab)
      ("C-a" cf-org-beginning-of-line)
      ("C-c RET" nil)
 
-     ("C-S-i" org-table-previous-field)
-     ("M-S-RET" org-table-wrap-region)
+     ;; ("C-S-i" org-table-previous-field)
+     ;; ("M-S-RET" org-table-wrap-region)
 
-     ("C-c C-x C-p" org-preview-latex-fragment)
+     ;; ("C-c C-x C-p" org-preview-latex-fragment)
 
-     ("C-c [" nil) ;; org-agenda-file-to-front
-     ("C-c ]" nil) ;; org-remove-file
+     ;; ("C-c [" nil) ;; org-agenda-file-to-front
+     ;; ("C-c ]" nil) ;; org-remove-file
      ))
-  (cf-set-key-bindings
-   'define-key
-   '(
-     ("C-M-h" (lambda () (interactive)
-                (org-eval-in-calendar '(calendar-backward-day 1))))
-     ("C-M-l" (lambda () (interactive)
-                (org-eval-in-calendar '(calendar-forward-day 1))))
-     ("C-M-k" (lambda () (interactive)
-                (org-eval-in-calendar '(calendar-backward-week 1))))
-     ("C-M-j" (lambda () (interactive)
-                (org-eval-in-calendar '(calendar-forward-week 1))))
-     ("C-M-S-h" (lambda () (interactive)
-                (org-eval-in-calendar '(calendar-backward-month 1))))
-     ("C-M-S-l" (lambda () (interactive)
-                (org-eval-in-calendar '(calendar-forward-month 1))))
-     )
-   org-read-date-minibuffer-local-map)
+  ;; (cf-set-key-bindings
+  ;;  'define-key
+  ;;  '(
+  ;;    ("C-M-h" (lambda () (interactive)
+  ;;               (org-eval-in-calendar '(calendar-backward-day 1))))
+  ;;    ("C-M-l" (lambda () (interactive)
+  ;;               (org-eval-in-calendar '(calendar-forward-day 1))))
+  ;;    ("C-M-k" (lambda () (interactive)
+  ;;               (org-eval-in-calendar '(calendar-backward-week 1))))
+  ;;    ("C-M-j" (lambda () (interactive)
+  ;;               (org-eval-in-calendar '(calendar-forward-week 1))))
+  ;;    ("C-M-S-h" (lambda () (interactive)
+  ;;               (org-eval-in-calendar '(calendar-backward-month 1))))
+  ;;    ("C-M-S-l" (lambda () (interactive)
+  ;;               (org-eval-in-calendar '(calendar-forward-month 1))))
+  ;;    )
+  ;; org-read-date-minibuffer-local-map)
   (linum-mode 0)
   (org-indent-mode t)
   (flyspell-mode-off)
@@ -960,16 +867,6 @@ From: http://blog.plover.com/prog/revert-all.html
   (setq org-latex-preview-ltxpng-directory "/tmp/ltxpng/")
   )
 (add-hook 'org-mode-hook 'cf-org-mode-hook-func)
-#+END_SRC
-** GTD keys
-#+BEGIN_SRC emacs-lisp
-(cf-set-key-bindings
- 'global-set-key
- '(
-   ("C-c c" org-capture)
-   ("C-c a" org-agenda)
-   ("C-c b" org-iswitchb)
-   ))
 #+END_SRC
 ** agenda-hook
 #+BEGIN_SRC emacs-lisp
@@ -1115,35 +1012,37 @@ From: http://blog.plover.com/prog/revert-all.html
   (defun cf-bind-helm ()
     (cf-set-key-bindings
      'define-key
-     '(("C-w" helm-previous-page))
+     '(("C-b" helm-previous-page)
+       ("C-f" helm-next-page))
      minibuffer-local-map)
     (cf-set-key-bindings
      'define-key
-     '(("C-w" helm-previous-page))
+     '(("C-b" helm-previous-page)
+       ("C-f" helm-next-page))
      helm-generic-files-map)
     (cf-set-key-bindings
      'define-key
-     '(("C-w" helm-previous-page))
+     '(("C-b" helm-previous-page)
+       ("C-f" helm-next-page))
      helm-find-files-map)
     (cf-set-key-bindings
      'define-key
-     '(("C-w" helm-previous-page))
+     '(("C-b" helm-previous-page)
+       ("C-f" helm-next-page))
      helm-read-file-map)
     (cf-set-key-bindings
      'define-key
-     '(("C-b" helm-toggle-buffers-details))
+     '(("C-M-t" helm-toggle-buffers-details))
      helm-buffer-map)
     (cf-set-key-bindings
      'define-key
-     '(("C-j" helm-next-line)
-       ("C-k" helm-previous-line)
-       ("C-n" helm-execute-persistent-action)
-       ("C-M-w" helm-scroll-other-window-down)
-       ("C-w" helm-previous-page)
+     '(;; ("C-j" helm-next-line)
+       ;; ("C-k" helm-previous-line)
+       ;; ("C-n" helm-execute-persistent-action)
+       ("C-M-b" helm-scroll-other-window-down)
+       ("C-b" helm-previous-page)
+       ("C-f" helm-next-page)
        ("C-t" helm-toggle-visible-mark)
-       ;; ("M-a" helm-mark-all)
-       ;; ("M-U" helm-unmark-all)
-       ;; ("C-f" helm-delete-minibuffer-contents)
        )
      helm-map))
   (cf-bind-helm)
@@ -1249,16 +1148,16 @@ char will be used."
   (cf-set-key-bindings
    'local-set-key
    '(
-     ("M-l" c-forward-into-nomenclature)
-     ("M-h" c-backward-into-nomenclature)
-     ("C-M-h" backward-sexp)
-     ("C-M-b" c-mark-function)
-     ("C-c C-j" senator-next-tag)
-     ("C-c C-k" senator-previous-tag)
-     ("C-c C-t" semantic-analyze-proto-impl-toggle)
-     ("C-c C-f" semantic-ia-fast-jump)
-     ("C-c C-b" cf-semantic-ia-fast-jump-back)
-     ("C-d" cf-kill-cc)
+     ;; ("M-l" c-forward-into-nomenclature)
+     ;; ("M-h" c-backward-into-nomenclature)
+     ;; ("C-M-h" backward-sexp)
+     ;; ("C-M-b" c-mark-function)
+     ;; ("C-c C-j" senator-next-tag)
+     ;; ("C-c C-k" senator-previous-tag)
+     ;; ("C-c C-t" semantic-analyze-proto-impl-toggle)
+     ;; ("C-c C-f" semantic-ia-fast-jump)
+     ;; ("C-c C-b" cf-semantic-ia-fast-jump-back)
+     ;; ("C-d" cf-kill-cc)
      ("C-M-a" backward-paragraph)
      ("C-M-e" forward-paragraph)))
   (semantic-mode)
@@ -1431,22 +1330,6 @@ candidate.
     (cf-setup-company-c-headers)
   (message "company-c-headers not installed"))
 #+END_SRC
-* dash-at-pt
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-#+BEGIN_SRC emacs-lisp
-(defun cf-dash-at-pt ()
-  (add-to-list 'load-path (cf-path "lib/dash-at-point"))
-  (autoload 'dash-at-point "dash-at-point"
-    "Search the word at point with Dash." t nil)
-  (cf-set-key-bindings
-     'global-set-key
-     '(("s-<f1>" dash-at-point)
-       ("M-<f1>" dash-at-point-with-docset))))
-
-;; (cf-dash-at-pt)
-#+END_SRC
 * dired
 ** display in other window or copy selected
 #+BEGIN_SRC emacs-lisp
@@ -1467,10 +1350,6 @@ open a new line."
      ("j" dired-next-line)
      ("k" dired-previous-line)
      ("r" revert-buffer)
-     ("C-j" dired-next-line)
-     ("C-k" dired-previous-line)
-     ("C-p" nil)
-     ("C-n" nil)
      ("C-t" set-mark-command)
      ("C-o" cf-disply-other-copy))
    dired-mode-map))
@@ -2071,27 +1950,27 @@ char will be used."
     (cf-set-key-bindings
      'define-key
      '(
-       ("C-j" next-line)
-       ("C-k" previous-line)
-       ("C-f" paredit-kill)
-       ("C-n" paredit-newline)
+       ;; ("C-j" next-line)
+       ;; ("C-k" previous-line)
+       ;; ("C-f" paredit-kill)
+       ;; ("C-n" paredit-newline)
        ;; ("C-d" cf-paredit-kill)
-       ("C-d" nil)
+       ;; ("C-d" nil)
 
-       ("C-M-b" nil)
-       ("C-M-f" nil)
-       ("C-M-h" paredit-backward)
-       ("C-M-l" paredit-forward)
-       ("C-M-j" paredit-forward-up)
-       ("C-M-k" paredit-backward-down)
+       ;; ("C-M-b" nil)
+       ;; ("C-M-f" nil)
+       ;; ("C-M-h" paredit-backward)
+       ;; ("C-M-l" paredit-forward)
+       ;; ("C-M-j" paredit-forward-up)
+       ;; ("C-M-k" paredit-backward-down)
 
-       ("(" nil)
-       (")" nil)
-       ("[" nil)
-       ("]" nil)
-       ("{" nil)
-       ("}" nil)
-       ("\"" nil)
+       ;; ("(" nil)
+       ;; (")" nil)
+       ;; ("[" nil)
+       ;; ("]" nil)
+       ;; ("{" nil)
+       ;; ("}" nil)
+       ;; ("\"" nil)
        )
      paredit-mode-map))
 
@@ -2122,8 +2001,8 @@ Called by `imenu--generic-function'."
     (cf-set-key-bindings
      'define-key
      '(
-       ("{" nil)
-       ("}" nil)
+       ;; ("{" nil)
+       ;; ("}" nil)
        )
      clojure-mode-map)
     (setq-local imenu-create-index-function
@@ -2163,11 +2042,11 @@ Called by `imenu--generic-function'."
     (cf-set-key-bindings
      'define-key
      '(
-       ("C-c C-j" markdown-next-visible-heading)
-       ("C-c C-k" markdown-previous-visible-heading)
-       ("C-c C-l" markdown-forward-same-level)
-       ("C-c C-h" markdown-backward-same-level)
-       ("C-c C-u" markdown-up-heading)
+       ;; ("C-c C-j" markdown-next-visible-heading)
+       ;; ("C-c C-k" markdown-previous-visible-heading)
+       ;; ("C-c C-l" markdown-forward-same-level)
+       ;; ("C-c C-h" markdown-backward-same-level)
+       ;; ("C-c C-u" markdown-up-heading)
        )
      markdown-mode-map))
   (add-hook 'markdown-mode-hook 'cf-md-mode-hook))
@@ -2189,11 +2068,11 @@ Called by `imenu--generic-function'."
      ("C-c C-]" show-subtree)
      ("C-c C-," hide-entry)
      ("C-c C-." show-entry)
-     ("C-c C-j" outline-next-visible-heading)
-     ("C-c C-k" outline-previous-visible-heading)
-     ("C-c C-h" outline-backward-same-level)
-     ("C-c C-l" outline-forward-same-level)
-     ("C-c C-u" outline-up-heading)
+     ;; ("C-c C-j" outline-next-visible-heading)
+     ;; ("C-c C-k" outline-previous-visible-heading)
+     ;; ("C-c C-h" outline-backward-same-level)
+     ;; ("C-c C-l" outline-forward-same-level)
+     ;; ("C-c C-u" outline-up-heading)
      )
    )
   )
@@ -2214,26 +2093,27 @@ Called by `imenu--generic-function'."
      '())
     (cf-set-key-bindings
      'define-key
-     '(("C-j" nil)
-       ("C-n" py-newline-and-indent)
-       ("C-m" nil)
-       ("C-M-h" nil)
-       ("C-M-b" py-mark-def-or-class)
-       ("M-j" py-forward-block-or-clause)
-       ("M-k" py-backward-block-or-clause)
-       ("C-M-j" py-forward-block-or-clause)
-       ("C-M-k" py-backward-block-or-clause)
-       ("C-M-a" nil)
-       ("C-M-e" nil)
-       ("C-c C-v" nil)
-       ("C-c C-x" nil)
-       ("C-c C-m" nil)
-       ("C-c C-v C-l" py-shift-right)
-       ("C-c C-v C-h" py-shift-left)
-       ("C-c C-i C-l" py-shift-right)
-       ("C-c C-i C-h" py-shift-left)
-       ("C-c C-x C-l" py-shift-block-or-clause-right)
-       ("C-c C-x C-h" py-shift-block-or-clause-left))
+     '(;; ("C-j" nil)
+       ;; ("C-n" py-newline-and-indent)
+       ;; ("C-m" nil)
+       ;; ("C-M-h" nil)
+       ;; ("C-M-b" py-mark-def-or-class)
+       ;; ("M-j" py-forward-block-or-clause)
+       ;; ("M-k" py-backward-block-or-clause)
+       ;; ("C-M-j" py-forward-block-or-clause)
+       ;; ("C-M-k" py-backward-block-or-clause)
+       ;; ("C-M-a" nil)
+       ;; ("C-M-e" nil)
+       ;; ("C-c C-v" nil)
+       ;; ("C-c C-x" nil)
+       ;; ("C-c C-m" nil)
+       ;; ("C-c C-v C-l" py-shift-right)
+       ;; ("C-c C-v C-h" py-shift-left)
+       ;; ("C-c C-i C-l" py-shift-right)
+       ;; ("C-c C-i C-h" py-shift-left)
+       ;; ("C-c C-x C-l" py-shift-block-or-clause-right)
+       ;; ("C-c C-x C-h" py-shift-block-or-clause-left)
+       )
      python-mode-map)
     (subword-mode)
     (setq python-indent-offset 4)
@@ -2246,22 +2126,6 @@ Called by `imenu--generic-function'."
 (if (package-installed-p 'python-mode)
     (cf-python-setup)
   (message "python-mode not installed"))
-#+END_SRC
-* restclient
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-#+BEGIN_SRC emacs-lisp
-(defun cf-restclient-setup ()
-  (defun cf-init-restclient ()
-    (cf-set-key-bindings
-     'local-set-key
-     '(
-       ("C-c C-h" restclient-http-send-current)
-       ("C-c C-k" restclient-jump-prev)
-       ("C-c C-j" restclient-jump-next))))
-  (add-hook 'restclient-mode-hook 'cf-init-restclient)
-  )
 #+END_SRC
 * ruby
 #+BEGIN_SRC emacs-lisp
@@ -2323,23 +2187,19 @@ char will be used."
      ;;("M-s" comint-history-isearch-search)
      ("C-c h" comint-history-isearch-backward-regexp)
 
-     ("M-j" comint-next-input)
-     ("M-k" comint-previous-input)
-     ("M-h" backward-word)
-     ("C-M-j" comint-next-matching-input-from-input)
-     ("C-M-k" comint-previous-matching-input-from-input)
-     ("M-n" nil)
-     ("M-p" nil)
+     ("M-n" comint-next-input)
+     ("M-p" comint-previous-input)
+     ;; ("M-h" backward-word)
+     ("C-M-n" comint-next-matching-input-from-input)
+     ("C-M-p" comint-previous-matching-input-from-input)
+     ;; ("M-n" nil)
+     ;; ("M-p" nil)
 
-     ("C-c C-h" shell-backward-command)
-     ("C-c C-l" shell-forward-command)
-     ("C-c C-j" comint-next-prompt)
-     ("C-c C-k" comint-previous-prompt)
+     ("C-c C-b" shell-backward-command)
+     ("C-c C-f" shell-forward-command)
+     ("C-c C-n" comint-next-prompt)
+     ("C-c C-p" comint-previous-prompt)
 
-     ("C-c C-b" nil)
-     ("C-c C-n" nil)
-     ("C-c C-p" nil)
-     ("C-c C-f" nil)
      )
    ;;shell-mode-map
    )
@@ -2357,8 +2217,8 @@ char will be used."
      ))
   (cf-set-key-bindings
    'define-key
-   '(("C-v" scroll-up-command)
-     ("C-w" scroll-down)
+   '(("C-b" scroll-up-command)
+     ("C-f" scroll-down)
      ("C-y" term-paste)
      ("s-v" term-paste)
      ("M-x" nil)
@@ -2404,12 +2264,12 @@ char will be used."
   (cf-set-key-bindings
    'define-key
    '(
-    ("j" speedbar-next)
-    ("k" speedbar-prev)
-    ("C-M-j" speedbar-forward-list)
-    ("C-M-k" speedbar-backward-list)
-    ("M-j" speedbar-restricted-next)
-    ("M-k" speedbar-restricted-prev)
+    ;; ("j" speedbar-next)
+    ;; ("k" speedbar-prev)
+    ;; ("C-M-j" speedbar-forward-list)
+    ;; ("C-M-k" speedbar-backward-list)
+    ;; ("M-j" speedbar-restricted-next)
+    ;; ("M-k" speedbar-restricted-prev)
     )
    speedbar-key-map)
   (cf-set-key-bindings
@@ -2459,8 +2319,8 @@ char will be used."
     (cf-set-key-bindings
      'local-set-key
      '(
-       ("C-j" next-line)
-       ("RET" newline)
+       ;; ("C-j" next-line)
+       ;; ("RET" newline)
        )))
   (add-hook 'asm-mode-hook 'cf-init-asm))
 (cf-asm-setup)
