@@ -1032,13 +1032,9 @@ From: http://blog.plover.com/prog/revert-all.html
      helm-read-file-map)
     (cf-set-key-bindings
      'define-key
-     '(("C-M-t" helm-toggle-buffers-details))
-     helm-buffer-map)
-    (cf-set-key-bindings
-     'define-key
-     '(;; ("C-j" helm-next-line)
-       ;; ("C-k" helm-previous-line)
-       ;; ("C-n" helm-execute-persistent-action)
+     '(
+       ;; C-j helm-execute-persistent-action
+       ;; C-] helm-toggle-buffers-details
        ("C-M-b" helm-scroll-other-window-down)
        ("C-b" helm-previous-page)
        ("C-f" helm-next-page)
