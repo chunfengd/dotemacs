@@ -797,20 +797,11 @@ From: http://blog.plover.com/prog/revert-all.html
   (cf-set-key-bindings
    'local-set-key
    '(
-     ;; ("C-j" next-line)
-     ;; ("C-k" previous-line)
-     ;; ("C-f" org-kill-line)
-     ;; ("C-n" org-return-indent)
-
-     ;; ("C-c C-h" org-backward-heading-same-level)
-     ;; ("C-c C-j" outline-next-visible-heading)
-     ;; ("C-c C-k" outline-previous-visible-heading)
-     ;; ("C-c C-l" org-forward-heading-same-level)
-
-     ;; ("C-c C-b" nil)
-     ;; ("C-c C-n" org-goto)
-     ;; ("C-c C-p" nil)
-     ;; ("C-c C-f" nil)
+     ;; "C-c C-b" org-backward-heading-same-level
+     ;; "C-c C-f" org-forward-heading-same-level
+     ;; "C-c C-n" outline-next-visible-heading
+     ("C-c C-p" outline-previous-visible-heading)
+     ;; "C-c C-j" org-goto
 
      ;; ("C-c C-v C-h" org-metaleft)
      ;; ("C-c C-v C-l" org-metaright)
@@ -822,8 +813,7 @@ From: http://blog.plover.com/prog/revert-all.html
      ;; ("C-c C-x C-k" org-shiftmetaup)
      ;; ("C-c C-x C-j" org-shiftmetadown)
 
-     ;; ("M-h" backward-word)
-     ;; ("M-b" org-mark-element)
+     ;; "M-h" org-mark-element
 
      ;; ("C-c C-f" org-kill-note-or-show-branches) ;; used to be 'C-c C-k'
 
