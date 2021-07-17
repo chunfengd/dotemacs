@@ -803,15 +803,15 @@ From: http://blog.plover.com/prog/revert-all.html
      ("C-c C-p" outline-previous-visible-heading)
      ;; "C-c C-j" org-goto
 
-     ;; ("C-c C-v C-h" org-metaleft)
-     ;; ("C-c C-v C-l" org-metaright)
-     ;; ("C-c C-v C-k" org-metaup)
-     ;; ("C-c C-v C-j" org-metadown)
+     ;; ("M-<left>" org-metaleft)
+     ;; ("M-<righ>" org-metaright)
+     ;; ("M-<up>" org-metaup)
+     ;; ("M-<down>" org-metadown)
 
-     ;; ("C-c C-x C-h" org-shiftmetaleft)
-     ;; ("C-c C-x C-l" org-shiftmetaright)
-     ;; ("C-c C-x C-k" org-shiftmetaup)
-     ;; ("C-c C-x C-j" org-shiftmetadown)
+     ;; ("M-S-<left>" org-shiftmetaleft)
+     ;; ("M-S-<right>" org-shiftmetaright)
+     ;; ("M-S-<up>" org-shiftmetaup)
+     ;; ("M-S-<down>" org-shiftmetadown)
 
      ;; "M-h" org-mark-element
 
