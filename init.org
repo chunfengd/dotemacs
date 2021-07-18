@@ -1060,7 +1060,7 @@ From: http://blog.plover.com/prog/revert-all.html
   (condition-case nil
       (helm-projectile-on)
     (error nil))
-  (define-key projectile-mode-map (kbd "C-c C-p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-x p") 'projectile-command-map)
   (cf-set-key-bindings
    'define-key
    '(
