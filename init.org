@@ -14,6 +14,7 @@
  - [[#introduction][Introduction]]
  - [[#dotemacs-path][Dotemacs Path]]
    - [[#define-cf-path][Define =cf-path=]]
+   - [[#extra-load-path][Extra load path]]
  - [[#tangling-and-how-to-install][Tangling and How to Install]]
    - [[#run-org-bable-tangle][Run =org-bable-tangle=]]
    - [[#tangle-command-line][Tangle Command Line]]
@@ -30,6 +31,7 @@
    - [[#font][Font]]
    - [[#keys][Keys]]
    - [[#customized-util-functions--bindings][Customized Util Functions & Bindings]]
+   - [[#auto-save][Auto Save]]
    - [[#misc][Misc]]
  - [[#evil-mode][evil-mode]]
    - [[#insert-char][insert-char]]
@@ -134,6 +136,22 @@ on GitHub.
 (defun cf-path (path)
   (expand-file-name path cf-dotemacs-home))
 #+END_SRC
+** Extra load path
+- updated from
+  https://github.com/redguardtoo/emacs.d/blob/master/init.el
+#+begin_src emacs-lisp
+(defun my-add-site-dir (site-dir)
+  "Add a directory into `load-path'."
+  (setq load-path
+        (append
+         (delq nil
+               (mapcar (lambda (dir)
+                         (unless (string-match-p "^\\." dir)
+                           (expand-file-name dir site-dir)))
+                       (directory-files site-dir)))
+         load-path)))
+(my-add-site-dir (cf-path "site"))
+#+end_src
 * Tangling and How to Install
 After cloning from [[https://github.com/xiongtx/.emacs.d][GitHub]], there is no =init.el= file, only an
 =init.org= file (this file). To produce an =init.el= file, either:
@@ -599,6 +617,33 @@ From: http://blog.plover.com/prog/revert-all.html
 
 ;; (cf-set-key-bindings 'global-set-key '(("C-<f9>" cf-open-webstorm)))
 #+END_SRC
+*** idle
+- ref: https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-utils.el
+#+begin_src emacs-lisp
+(defvar my-disable-idle-timer nil
+  "Function passed to `my-run-with-idle-timer' is run immediately.")
+
+(defun my-run-with-idle-timer (seconds func)
+  "After SECONDS, run function FUNC once."
+  (cond
+   (my-disable-idle-timer
+    (funcall func))
+   (t
+    (run-with-idle-timer seconds nil func))))
+#+end_src
+** Auto Save
+- refs
+  - https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-misc.el
+  - https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-autoload.el
+#+begin_src emacs-lisp
+(autoload 'auto-save-enable "auto-save" "" t)
+(with-eval-after-load 'auto-save
+  (push 'my-file-too-big-p auto-save-exclude)
+  (push 'my-check-major-mode-for-auto-save auto-save-exclude)
+  (setq auto-save-idle 1)
+  (setq auto-save-slient t))
+(my-run-with-idle-timer 1 #'auto-save-enable)
+#+end_src
 ** Misc
 *** Mac Key
 #+BEGIN_SRC emacs-lisp
