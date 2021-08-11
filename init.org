@@ -2151,12 +2151,25 @@ Called by `imenu--generic-function'."
     ;; (c-toggle-auto-state)
     (c-toggle-hungry-state 1)
     (highlight-indentation-mode)
-    (highlight-indentation-current-column-mode))
+    (highlight-indentation-current-column-mode)
+    ;; (setq py-complete-function nil)
+    (company-mode -1) ;; disable auto complete
+    )
   (add-hook 'python-mode-hook 'cf-init-python))
+
+;; https://www.seas.upenn.edu/~chaoliu/2017/09/01/python-programming-in-emacs/
+(defun cf-jedi-setup ()
+  (with-eval-after-load 'company
+    (add-to-list 'company-backends 'company-jedi))
+  (add-hook 'python-mode-hook 'jedi:setup)
+  (add-hook 'python-mode-hook 'jedi:ac-setup))
 
 (if (package-installed-p 'python-mode)
     (cf-python-setup)
   (message "python-mode not installed"))
+;; (if (package-installed-p 'company-jedi)
+;;     (cf-jedi-setup)
+;;   (message "company-jedi not installed"))
 #+END_SRC
 * ruby
 #+BEGIN_SRC emacs-lisp
