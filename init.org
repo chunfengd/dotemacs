@@ -2014,8 +2014,8 @@ char will be used."
 ** clojure
 #+BEGIN_SRC emacs-lisp
 (defun cf-clojure-mode-setup ()
-  (add-hook 'nrepl-mode-hook 'subword-mode)
-  ;;(add-hook 'nrepl-mode-hook 'rainbow-delimiters-mode)
+  ;; (add-hook 'nrepl-mode-hook 'subword-mode)
+  ;; (add-hook 'nrepl-mode-hook 'rainbow-delimiters-mode)
 
   (defun cf-clojure-match-next-def ()
     "Scans the buffer backwards for the next top-level definition.
@@ -2146,7 +2146,7 @@ Called by `imenu--generic-function'."
        ;; ("C-c C-x C-h" py-shift-block-or-clause-left)
        )
      python-mode-map)
-    (subword-mode)
+    ;; (subword-mode)
     (setq python-indent-offset 4)
     ;; (c-toggle-auto-state)
     (c-toggle-hungry-state 1)
