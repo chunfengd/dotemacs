@@ -31,6 +31,7 @@
    - [[#font][Font]]
    - [[#keys][Keys]]
    - [[#customized-util-functions--bindings][Customized Util Functions & Bindings]]
+   - [[#emacs-default-auto-save][emacs default auto save]]
    - [[#auto-save][Auto Save]]
    - [[#misc][Misc]]
  - [[#evil-mode][evil-mode]]
@@ -631,18 +632,26 @@ From: http://blog.plover.com/prog/revert-all.html
    (t
     (run-with-idle-timer seconds nil func))))
 #+end_src
+** emacs default auto save
+#+begin_src emacs-lisp
+;; https://emacs.stackexchange.com/questions/17210/how-to-place-all-auto-save-files-in-a-directory
+(setq auto-save-file-name-transforms
+  `((".*" "~/.emacs-saves/" t)))
+#+end_src
 ** Auto Save
 - refs
   - https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-misc.el
   - https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-autoload.el
 #+begin_src emacs-lisp
-(autoload 'auto-save-enable "auto-save" "" t)
-(with-eval-after-load 'auto-save
-  (push 'my-file-too-big-p auto-save-exclude)
-  (push 'my-check-major-mode-for-auto-save auto-save-exclude)
-  (setq auto-save-idle 1)
-  (setq auto-save-slient t))
-(my-run-with-idle-timer 1 #'auto-save-enable)
+(defun setup-auto-save ()
+  (autoload 'auto-save-enable "auto-save" "" t)
+  (with-eval-after-load 'auto-save
+    (push 'my-file-too-big-p auto-save-exclude)
+    (push 'my-check-major-mode-for-auto-save auto-save-exclude)
+    (setq auto-save-idle 1)
+    (setq auto-save-slient t))
+  (my-run-with-idle-timer 1 #'auto-save-enable))
+(setup-auto-save)
 #+end_src
 ** Misc
 *** Mac Key
