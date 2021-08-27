@@ -1301,22 +1301,21 @@ Use [[http://company-mode.github.io/][company-mode]], a modular in-buffer comple
   (customize-set-variable 'company-idle-delay 0)
   ;; key
   (with-eval-after-load 'company
-    ;; ignore return
-    (define-key company-active-map [return] nil)
-    (define-key company-active-map (kbd "RET") nil)
     ;; select completion
-    (cf-set-key-bindings
-     'define-key
-     '(
-       ("M-j" company-select-next)
-       ("M-k" company-select-previous)
-       ("M-m" company-complete-selection)
-       ("M-n" company-complete-common)
-       )
-     company-active-map)
+    ;; (cf-set-key-bindings
+    ;;  'define-key
+    ;;  '(
+    ;;    ("M-n" company-select-next)
+    ;;    ("M-p" company-select-previous)
+    ;;
+    ;;    ("<RET>" company-complete-selection)
+    ;;    ("<TAB>" company-complete-common)
+    ;;    )
+    ;;  company-active-map)
     (cf-set-key-bindings
      'global-set-key
-     '(("M-n" company-complete))))
+     '(("M-n" company-complete)))
+    )
   ;; Show quick-access numbers of completion options.
   (customize-set-variable 'company-show-numbers t)
   ;; Align annotations.
