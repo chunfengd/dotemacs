@@ -1183,7 +1183,7 @@ char will be used."
      (arglist-cont-nonempty . 4)
      (arglist-close . 4)
      ))))
-(setq c-default-style "chunfeng-c-style")
+;;(setq c-default-style "chunfeng-c-style")
 (defun cf-init-c ()
   (cf-set-key-bindings
    'local-set-key
@@ -1778,16 +1778,18 @@ open a new line."
 * java
 #+BEGIN_SRC emacs-lisp
 (defun cf-java-func ()
+  (setq c-basic-offset 2)
   (cf-set-key-bindings
    'local-set-key
    '(
-     ("C-M-h" backward-sexp)
-     ("C-M-b" c-mark-function)
-     ("C-M-a" nil)
-     ("C-M-e" nil)
-     ("M-k" c-beginning-of-defun)
-     ("M-j" c-end-of-defun)
-     ("C-d" nil)
+     ;; ("C-M-h" backward-sexp)
+     ;; ("C-M-b" c-mark-function)
+     ;; ("C-M-a" nil)
+     ;; ("C-M-e" nil)
+     ;; ("M-k" c-beginning-of-defun)
+     ;; ("M-j" c-end-of-defun)
+     ;; ("C-d" nil)
+     ("C-c C-c" comment-or-uncomment-region)
      )))
 (add-hook 'java-mode-hook 'cf-java-func)
 #+END_SRC
