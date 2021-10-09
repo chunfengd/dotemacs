@@ -2413,8 +2413,13 @@ char will be used."
   (setq plantuml-default-exec-mode 'jar)
   (add-to-list
    'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
-  (add-to-list
-   'org-src-lang-modes '("plantuml" . plantuml)))
+  ;; add to org-mode
+  (add-hook
+   'org-mode-hook
+   (lambda ()
+     (add-to-list
+      'org-src-lang-modes '("plantuml" . plantuml))))
+  )
 (if (package-installed-p 'plantuml-mode)
     (cf-plantuml-setup)
   (message "plantuml-mode not installed"))
