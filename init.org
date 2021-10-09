@@ -759,6 +759,9 @@ From: http://blog.plover.com/prog/revert-all.html
 *** electric pair
 #+BEGIN_SRC emacs-lisp
 (electric-pair-mode 1)
+(defun my-inhibit-electric-pair (char)
+  (minibufferp))
+(setq electric-pair-inhibit-predicate #'my-inhibit-electric-pair)
 #+END_SRC
 * evil-mode
 - github: https://github.com/emacs-evil/evil
