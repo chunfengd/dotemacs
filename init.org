@@ -115,6 +115,7 @@
  - [[#view][view]]
  - [[#asm][asm]]
  - [[#prettier][prettier]]
+ - [[#plantuml][plantuml]]
  - [[#find-library-file][Find Library File]]
  - [[#list][List]]
    - [[#read-a-list-of-people-with-nice-emacs-config-files][read a list of people with nice emacs config files]]
@@ -2403,6 +2404,21 @@ char will be used."
     (cf-setup-prettier)
   (message "prettier-js not installed"))
 #+END_SRC
+* plantuml
+#+begin_src emacs-lisp
+;; use M-x plantuml-download-jar<RET> to download jar
+;; use M-x plantuml-preview<RET> to preview
+(defun cf-plantuml-setup ()
+  (setq plantuml-jar-path "~/dev/lib/plantuml.jar")
+  (setq plantuml-default-exec-mode 'jar)
+  (add-to-list
+   'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
+  (add-to-list
+   'org-src-lang-modes '("plantuml" . plantuml)))
+(if (package-installed-p 'plantuml-mode)
+    (cf-plantuml-setup)
+  (message "plantuml-mode not installed"))
+#+end_src
 * Find Library File
 Functions and bindings to make library files more easy to examine and
 change.
