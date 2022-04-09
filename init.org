@@ -745,6 +745,8 @@ From: http://blog.plover.com/prog/revert-all.html
   (define-key evil-insert-state-map (kbd "C-h") 'backward-delete-char)
   (define-key evil-replace-state-map (kbd "C-g") 'evil-normal-state)
   (define-key evil-replace-state-map (kbd "C-h") 'backward-delete-char)
+
+  (define-key evil-insert-state-map (kbd "C-n") nil)
   )
 (if (and (package-installed-p 'evil)
          (package-installed-p 'undo-tree)
@@ -1224,19 +1226,20 @@ Use [[http://company-mode.github.io/][company-mode]], a modular in-buffer comple
   ;; key
   (with-eval-after-load 'company
     ;; select completion
-    ;; (cf-set-key-bindings
-    ;;  'define-key
-    ;;  '(
-    ;;    ("M-n" company-select-next)
-    ;;    ("M-p" company-select-previous)
-    ;;
-    ;;    ("<RET>" company-complete-selection)
-    ;;    ("<TAB>" company-complete-common)
-    ;;    )
-    ;;  company-active-map)
+    (cf-set-key-bindings
+     'define-key
+     '(
+       ("C-n" company-select-next) ;; "M-n"
+       ("C-p" company-select-previous) ;; "M-p"
+       ;; ("<RET>" company-complete-selection)
+       ;; ("<tab>" company-complete-common)
+       )
+     company-active-map)
     (cf-set-key-bindings
      'global-set-key
-     '(("M-n" company-complete)))
+     '(
+       ("C-n" company-complete) ;; "M-n"
+       ))
     )
   ;; Show quick-access numbers of completion options.
   (customize-set-variable 'company-show-numbers t)
