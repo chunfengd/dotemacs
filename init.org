@@ -351,20 +351,15 @@ Therefore, we need to initialize our packages manually.
 #+BEGIN_SRC emacs-lisp
 (setq default-fill-column 70)
 #+END_SRC
-*** Column Number & =linum=
-#+BEGIN_SRC emacs-lisp
-(setq-default column-number-mode t)
-;; linum
-(global-linum-mode t)
-(if (not (display-graphic-p))
-    (setq linum-format "%d ")) ; for margin in terminal
-;; disable linum if creating a buffer from terminal
-(add-hook
- 'after-change-major-mode-hook
- '(lambda ()
-    (if (not (display-graphic-p))
-        (linum-mode -1))))
-#+END_SRC
+*** Line Number
+- linum-mode
+- display-line-numbers-mode
+#+begin_src emacs-lisp
+(global-display-line-numbers-mode)
+(setq display-line-numbers-type 'visual)
+(defun cf-disable-line-numbers ()
+  (display-line-numbers-mode 0))
+#+end_src
 *** Scroll
 #+BEGIN_SRC emacs-lisp
 (setq-default scroll-margin 3
@@ -833,7 +828,6 @@ From: http://blog.plover.com/prog/revert-all.html
   ;;               (org-eval-in-calendar '(calendar-forward-month 1))))
   ;;    )
   ;; org-read-date-minibuffer-local-map)
-  (linum-mode 0)
   (org-indent-mode t)
   (flyspell-mode-off)
   (setq org-src-fontify-natively t)
@@ -2084,13 +2078,13 @@ Called by `imenu--generic-function'."
      )
    ;;shell-mode-map
    )
-  (linum-mode 0))
+  (cf-disable-line-numbers))
 (add-hook 'shell-mode-hook 'cf-shell-mode-hook-func)
 #+END_SRC
 ** term mode
 #+BEGIN_SRC emacs-lisp
 (defun cf-term-mode-hook-func ()
-  (linum-mode 0)
+  (cf-disable-line-numbers)
   (setq-local scroll-margin 0)
   (cf-set-key-bindings
    'local-set-key
@@ -2142,12 +2136,12 @@ Called by `imenu--generic-function'."
 * speedbar
 #+BEGIN_SRC emacs-lisp
 (defun cf-speedbar-key-hook-func ()
-  (linum-mode 0))
+  (cf-disable-line-numbers))
 (add-hook 'speedbar-reconfigure-keymaps-hook
           'cf-speedbar-key-hook-func)
 (eval-after-load "speedbar-mode"
   '(progn
-     (linum-mode 0)))
+     (cf-disable-line-numbers)))
 #+END_SRC
 * spell
 #+BEGIN_SRC emacs-lisp
