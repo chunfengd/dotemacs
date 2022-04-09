@@ -35,7 +35,6 @@
    - [[#auto-save][Auto Save]]
    - [[#misc][Misc]]
  - [[#evil-mode][evil-mode]]
-   - [[#insert-char][insert-char]]
    - [[#init][init]]
  - [[#org-mode][org-mode]]
    - [[#init-1][init]]
@@ -64,10 +63,8 @@
    - [[#misc-1][misc]]
    - [[#company-c-headers][company-c-headers]]
  - [[#dired][dired]]
-   - [[#display-in-other-window-or-copy-selected][display in other window or copy selected]]
    - [[#key-binding][key binding]]
    - [[#listing-parameters][Listing Parameters]]
- - [[#expand-region][expand-region]]
  - [[#flycheck][flycheck]]
    - [[#functions][functions]]
  - [[#folding][Folding]]
@@ -79,8 +76,6 @@
  - [[#graphviz-dot-mode][Graphviz Dot Mode]]
  - [[#highlight-indentation][highlight-indentation]]
  - [[#html][html]]
-   - [[#html-mode][html-mode]]
-   - [[#nxml-mode][nxml-mode]]
    - [[#web-mode][web-mode]]
  - [[#imenu][imenu]]
  - [[#java][java]]
@@ -101,7 +96,6 @@
  - [[#markdown][markdown]]
  - [[#outline][outline]]
  - [[#python][python]]
- - [[#ruby][ruby]]
  - [[#scss][scss]]
  - [[#shell][shell]]
    - [[#sh-mode][sh mode]]
@@ -112,8 +106,6 @@
  - [[#speedbar][speedbar]]
  - [[#spell][spell]]
  - [[#tramp][tramp]]
- - [[#view][view]]
- - [[#asm][asm]]
  - [[#prettier][prettier]]
  - [[#plantuml][plantuml]]
  - [[#find-library-file][Find Library File]]
@@ -450,12 +442,11 @@ Therefore, we need to initialize our packages manually.
    ;; ("C-z" undo)
    ("M-/" undo)
    ("C-?" help-command)
-   ("C-t" set-mark-command)
-   ("M-t" set-mark-command)
+   ;; ("C-t" set-mark-command)
+   ;; ("M-t" set-mark-command)
    ;; ("C-x C-t" transpose-words)
    ;; ("C-M-t" transpose-words)
    ;; ("C-q" back-to-indentation)
-   ("M-n" hippie-expand)
    ("M-m" nil)
    ("C-x f" find-file)
    ("C-x g" goto-line)
@@ -546,33 +537,6 @@ With argument ARG, do this that many times."
   (interactive "p")
   (kill-region (point) (progn (cf-forward-word arg) (point))))
 (global-set-key (kbd "M-d") 'cf-kill-word)
-#+END_SRC
-*** kill
-#+BEGIN_SRC emacs-lisp
-(defun cf-kill (beg end)
-  "If the mark is active, kill region will be used; otherwise, delete
-char will be used."
-  (interactive (list (point) (mark)))
-  (if mark-active
-      (kill-region beg end)
-    (delete-char 1)))
-(global-set-key (kbd "C-d") 'cf-kill)
-#+END_SRC
-*** Move to the Beginning of Current Line
-#+BEGIN_SRC emacs-lisp
-(defun cf-move-beginning-of-line ()
-  (interactive)
-  (setq pos-temp (point))
-  (back-to-indentation)
-  (if (= (point) pos-temp)
-      (move-beginning-of-line 1)))
-(global-set-key (kbd "C-a") 'cf-move-beginning-of-line)
-#+END_SRC
-*** Indent Regidly Inverse
-#+BEGIN_SRC emacs-lisp
-(defun cf-indent-regidly-inverse (start end)
-  (interactive "r")
-  (indent-rigidly start end -1))
 #+END_SRC
 *** Eval and Replace
 From: http://emacsredux.com/blog/2013/06/21/eval-and-replace/
@@ -766,43 +730,6 @@ From: http://blog.plover.com/prog/revert-all.html
 * evil-mode
 - github: https://github.com/emacs-evil/evil
 - doc: https://evil.readthedocs.io/en/latest/index.html
-** insert-char
-#+begin_src emacs-lisp
-(defun cf-define-insert-char ()
-  ;; from: https://www.reddit.com/r/emacs/comments/7ogu7a/single_character_insert_for_evil/
-  ;; (evil-define-command my-evil-insert-char (count char)
-  ;;   (interactive "<c><C>")
-  ;;   (setq count (or count 1))
-  ;;   (insert (make-string count char)))
-  ;; (evil-define-command my-evil-append-char (count char)
-  ;;   (interactive "<c><C>")
-  ;;   (setq count (or count 1))
-  ;;   (when (not (eolp))
-  ;;     (forward-char))
-  ;;   (insert (make-string count char)))
-  ;; (define-key evil-normal-state-map (kbd "s") 'my-evil-insert-char)
-  ;; (define-key evil-normal-state-map (kbd "S") 'my-evil-append-char)
-
-  (defun cf-evil-insert-char ()
-    "insert single character"
-    (interactive)
-    (evil-insert 1))
-  (defun cf-evil-append-char ()
-    "append single character"
-    (interactive)
-    (evil-append 1))
-  (define-key evil-normal-state-map (kbd "s") 'cf-evil-insert-char)
-  (define-key evil-normal-state-map (kbd "S") 'cf-evil-append-char)
-  (define-key evil-normal-state-map (kbd "C-a") 'cf-evil-insert-char)
-  ;; check last-command in post-command-hook
-  (defun cf-switch-back-to-normal-state ()
-    "switch back to normal mode if needed"
-    (when (or (equal last-command 'cf-evil-insert-char)
-              (equal last-command 'cf-evil-append-char))
-      (evil-normal-state)))
-  (add-hook 'post-command-hook 'cf-switch-back-to-normal-state)
-  )
-#+end_src
 ** init
 #+BEGIN_SRC emacs-lisp
 (defun cf-config-evil ()
@@ -818,7 +745,6 @@ From: http://blog.plover.com/prog/revert-all.html
   (define-key evil-insert-state-map (kbd "C-h") 'backward-delete-char)
   (define-key evil-replace-state-map (kbd "C-g") 'evil-normal-state)
   (define-key evil-replace-state-map (kbd "C-h") 'backward-delete-char)
-  (cf-define-insert-char)
   )
 (if (and (package-installed-p 'evil)
          (package-installed-p 'undo-tree)
@@ -1154,14 +1080,6 @@ From: http://blog.plover.com/prog/revert-all.html
 #+END_SRC
 * cc-mode
 #+BEGIN_SRC emacs-lisp
-(defun cf-kill-cc (beg end)
-  "If the mark is active, kill region will be used; otherwise, delete
-char will be used."
-  (interactive (list (point) (mark)))
-  (if mark-active
-      (kill-region beg end)
-    (c-electric-delete-forward nil)))
-
 (add-to-list 'auto-mode-alist '("\\.vs$" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.fs$" . c++-mode))
 (defun cf-semantic-ia-fast-jump-back ()
@@ -1201,21 +1119,13 @@ char will be used."
      ;; ("C-c C-t" semantic-analyze-proto-impl-toggle)
      ;; ("C-c C-f" semantic-ia-fast-jump)
      ;; ("C-c C-b" cf-semantic-ia-fast-jump-back)
-     ;; ("C-d" cf-kill-cc)
      ("C-M-a" backward-paragraph)
      ("C-M-e" forward-paragraph)))
-  (semantic-mode)
+  ;; (semantic-mode)
   ;; (c-toggle-auto-state)
   (c-toggle-hungry-state 1))
 (add-hook 'c-mode-hook 'cf-init-c)
 (add-hook 'c++-mode-hook 'cf-init-c)
-
-(add-hook 'objc-mode-hook 'cf-init-c)
-(defun cf-init-objc ()
-  (cf-set-key-bindings
-   'local-set-key
-   '(("C-M-h" nil))))
-(add-hook 'objc-mode-hook 'cf-init-objc)
 #+END_SRC
 * cedet
 :PROPERTIES:
@@ -1373,16 +1283,6 @@ candidate.
   (message "company-c-headers not installed"))
 #+END_SRC
 * dired
-** display in other window or copy selected
-#+BEGIN_SRC emacs-lisp
-(defun cf-disply-other-copy (beg end)
-  "If the mark is active, copy region will be used; otherwise,
-open a new line."
-  (interactive (list (point) (mark)))
-  (if mark-active
-      (kill-ring-save beg end)
-    (dired-display-file)))
-#+END_SRC
 ** key binding
 #+BEGIN_SRC emacs-lisp
 (defun cf-dired-key-binding ()
@@ -1392,8 +1292,7 @@ open a new line."
      ("j" dired-next-line)
      ("k" dired-previous-line)
      ("r" revert-buffer)
-     ("C-t" set-mark-command)
-     ("C-o" cf-disply-other-copy))
+     ("C-t" set-mark-command))
    dired-mode-map))
 (add-hook 'dired-mode-hook 'cf-dired-key-binding)
 #+END_SRC
@@ -1404,20 +1303,6 @@ open a new line."
   "Set ls parameter in dired mode"
   (interactive "s")
   (setq dired-listing-switches parameter))
-#+END_SRC
-* expand-region
-#+BEGIN_SRC emacs-lisp
-(defun cf-expand-region-setup ()
-  (cf-set-key-bindings
-   'global-set-key
-   '(
-     ("C-=" er/expand-region)
-     ("M-t" er/expand-region)
-     )))
-
-(if (package-installed-p 'expand-region)
-    (cf-expand-region-setup)
-  (message "expand-region not installed"))
 #+END_SRC
 * flycheck
 #+BEGIN_SRC emacs-lisp
@@ -1705,40 +1590,6 @@ open a new line."
   (message "highlight-indetation not installed"))
 #+END_SRC
 * html
-** html-mode
-#+BEGIN_SRC emacs-lisp
-;; (add-to-list 'auto-mode-alist '("\\.hbs$" . html-mode))
-(defun cf-html-func ()
-  (cf-set-key-bindings
-   'local-set-key
-   '(("C-c C-x -" html-horizontal-rule)
-     ("C-c C-x c" html-checkboxes)
-     ("C-c C-x h" html-href-anchor)
-     ("C-c C-x i" html-image)
-     ("C-c C-x l" html-list-item)
-     ("C-c C-x n" html-name-anchor)
-     ("C-c C-x o" html-ordered-list)
-     ("C-c C-x r" html-radio-buttons)
-     ("C-c C-x u" html-unordered-list))
-   ;; html-mode-map
-   )
-  (cf-set-key-bindings
-   'define-key
-   '(("C-c C-/" sgml-close-tag))
-   sgml-mode-map))
-(add-hook 'html-mode-hook 'cf-html-func)
-#+END_SRC
-** nxml-mode
-#+BEGIN_SRC emacs-lisp
-(defun cf-nxml-func()
-  (cf-set-key-bindings
-   'define-key
-   '(
-     ("C-c C-e" sgml-close-tag)
-     ("M-h" nil))
-   nxml-mode-map))
-(add-hook 'nxml-mode-hook 'cf-nxml-func)
-#+END_SRC
 ** web-mode
 #+BEGIN_SRC emacs-lisp
 (defun cf-web-mode-setup ()
@@ -1763,11 +1614,11 @@ open a new line."
     (cf-set-key-bindings
      'define-key
      '(
-       ("C-t" nil)
-       ("M-t" nil)
+       ;; ("C-t" nil)
+       ;; ("M-t" nil)
        ;; ("M-t" web-mode-mark-and-expand)
-       ("C-c C-e C-c" web-mode-element-close)
-       ("C-c C-e C-/" web-mode-element-close)
+       ;; ("C-c C-e C-c" web-mode-element-close)
+       ;; ("C-c C-e C-/" web-mode-element-close)
        )
      web-mode-map))
   (add-hook 'web-mode-hook 'cf-web-mode-func))
@@ -1929,7 +1780,7 @@ If it's found, then add it to the `exec-path'."
 #+END_SRC
 * latex
 ** tex-mode
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (defun cf-init-latex-mode ()
   (cf-set-key-bindings
    'local-set-key
@@ -1951,7 +1802,7 @@ If it's found, then add it to the `exec-path'."
 (add-hook 'tex-mode-hook 'cf-init-latex-mode)
 #+END_SRC
 ** bibtex-mode
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (defun cf-bibtex-mode ()
   (cf-set-key-bindings
    'local-set-key
@@ -1972,7 +1823,7 @@ If it's found, then add it to the `exec-path'."
 #+END_SRC
 * lisp
 ** paredit
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (defun cf-paredit-setup ()
 
   (dolist (mode '(scheme emacs-lisp lisp clojure clojurescript))
@@ -1982,14 +1833,6 @@ If it's found, then add it to the `exec-path'."
     (add-hook (intern (concat (symbol-name mode) "-mode-hook"))
               'paredit-mode))
 
-  (defun cf-paredit-kill (beg end)
-    "If the mark is active, kill region will be used; otherwise, delete
-char will be used."
-    (interactive (list (point) (mark)))
-    (if mark-active
-        (kill-region beg end)
-      (paredit-forward-delete 1)))
-
   (defun cf-paredit-key ()
     (cf-set-key-bindings
      'define-key
@@ -1998,7 +1841,6 @@ char will be used."
        ;; ("C-k" previous-line)
        ;; ("C-f" paredit-kill)
        ;; ("C-n" paredit-newline)
-       ;; ("C-d" cf-paredit-kill)
        ;; ("C-d" nil)
 
        ;; ("C-M-b" nil)
@@ -2018,14 +1860,15 @@ char will be used."
        )
      paredit-mode-map))
 
-  (eval-after-load 'paredit '(cf-paredit-key)))
+  ;; (eval-after-load 'paredit '(cf-paredit-key))
+  )
 
 (if (package-installed-p 'paredit)
     (cf-paredit-setup)
   (message "paredit not installed"))
 #+END_SRC
 ** clojure
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (defun cf-clojure-mode-setup ()
   ;; (add-hook 'nrepl-mode-hook 'subword-mode)
   ;; (add-hook 'nrepl-mode-hook 'rainbow-delimiters-mode)
@@ -2059,8 +1902,8 @@ Called by `imenu--generic-function'."
     (cf-clojure-mode-setup)
   (message "clojure-mode not installed"))
 #+END_SRC
-* multiple-cursors
-#+BEGIN_SRC emacs-lisp
+* TODO multiple-cursors
+#+BEGIN_SRC emacs-lisp :tangle no
 (defun cf-multiple-cursors-setup ()
   (setq mc/list-file (cf-path "mc-list.el"))
   (setq mc/always-run-for-all t)
@@ -2080,7 +1923,7 @@ Called by `imenu--generic-function'."
   (message "multiple-cursors not installed"))
 #+END_SRC
 * markdown
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (defun cf-setup-md ()
   (defun cf-md-mode-hook ()
     (cf-set-key-bindings
@@ -2184,26 +2027,12 @@ Called by `imenu--generic-function'."
 ;;     (cf-jedi-setup)
 ;;   (message "company-jedi not installed"))
 #+END_SRC
-* ruby
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'auto-mode-alist '("RakeFile" . ruby-mode))
-(defun cf-init-ruby ()
-  (cf-set-key-bindings
-   'local-set-key
-   '())
-  ;; (c-toggle-auto-state)
-  (c-toggle-hungry-state 1))
-(add-hook 'ruby-mode-hook 'cf-init-ruby)
-#+END_SRC
 * scss
 #+BEGIN_SRC emacs-lisp
 (defun cf-scss-mode-setup ()
   (setq scss-compile-at-save nil)
   (defun cf-init-scss ()
     (message "init-scss")
-    (cf-set-key-bindings
-     'local-set-key
-     '())
     (setq css-indent-offset 2))
   (add-hook 'scss-mode-hook 'cf-init-scss))
 
@@ -2215,22 +2044,6 @@ Called by `imenu--generic-function'."
 ** sh mode
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'auto-mode-alist '("/\\.bash_[^/]*\\'" . sh-mode))
-
-(defun cf-shell-kill (beg end)
-  "If the mark is active, kill region will be used; otherwise, delete
-char will be used."
-  (interactive (list (point) (mark)))
-  (if mark-active
-      (kill-region beg end)
-    (comint-delchar-or-maybe-eof 1)))
-
-;; sh mode
-(defun cf-sh-mode-hook-func ()
-  (cf-set-key-bindings
-   'define-key
-   '()
-   sh-mode-map))
-(add-hook 'sh-mode-hook 'cf-sh-mode-hook-func)
 #+END_SRC
 ** shell mode
 #+BEGIN_SRC emacs-lisp
@@ -2238,7 +2051,7 @@ char will be used."
   (cf-set-key-bindings
    'local-set-key
    '(
-     ("C-d" cf-shell-kill)
+     ;; ("C-d" cf-shell-kill)
      ("C-M-l" nil)
      ;;("C-c h" comint-history-isearch-backward)
      ;;("M-s" comint-history-isearch-search)
@@ -2246,11 +2059,8 @@ char will be used."
 
      ("M-n" comint-next-input)
      ("M-p" comint-previous-input)
-     ;; ("M-h" backward-word)
      ("C-M-n" comint-next-matching-input-from-input)
      ("C-M-p" comint-previous-matching-input-from-input)
-     ;; ("M-n" nil)
-     ;; ("M-p" nil)
 
      ("C-c C-b" shell-backward-command)
      ("C-c C-f" shell-forward-command)
@@ -2281,7 +2091,7 @@ char will be used."
      ("M-x" nil)
      ("C-u" universal-argument)
      ("C-c C-y" term-interrupt-subjob)
-     ("C-o" cf-open-copy))
+     )
    term-raw-map))
 (add-hook 'term-mode-hook 'cf-term-mode-hook-func)
 #+END_SRC
@@ -2318,24 +2128,6 @@ char will be used."
 * speedbar
 #+BEGIN_SRC emacs-lisp
 (defun cf-speedbar-key-hook-func ()
-  (cf-set-key-bindings
-   'define-key
-   '(
-    ;; ("j" speedbar-next)
-    ;; ("k" speedbar-prev)
-    ;; ("C-M-j" speedbar-forward-list)
-    ;; ("C-M-k" speedbar-backward-list)
-    ;; ("M-j" speedbar-restricted-next)
-    ;; ("M-k" speedbar-restricted-prev)
-    )
-   speedbar-key-map)
-  (cf-set-key-bindings
-   'define-key
-   '(
-     ("k" speedbar-prev)
-     ("d" speedbar-buffer-kill-buffer)
-     )
-   speedbar-buffers-key-map)
   (linum-mode 0))
 (add-hook 'speedbar-reconfigure-keymaps-hook
           'cf-speedbar-key-hook-func)
@@ -2348,39 +2140,11 @@ char will be used."
 (setq-default ispell-program-name "aspell")
 #+END_SRC
 * tramp
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (require 'tramp)
 (setq tramp-default-method "scp")
 ;;(custom-set-variables '(tramp-verbose 6))
 (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
-#+END_SRC
-* view
-#+BEGIN_SRC emacs-lisp
-(defun cf-view-key-binding ()
-  (cf-set-key-bindings
-   'define-key
-   '(
-     ;; ("C-j" View-scroll-line-forward)
-     ("C-j" nil)
-     )
-   view-mode-map
-   )
-  )
-(add-hook 'view-mode-hook 'cf-view-key-binding)
-#+END_SRC
-* asm
-#+BEGIN_SRC emacs-lisp
-(defun cf-asm-setup ()
-  ;; (setq-default js2-strict-inconsistent-return-warning nil)
-  (defun cf-init-asm ()
-    (cf-set-key-bindings
-     'local-set-key
-     '(
-       ;; ("C-j" next-line)
-       ;; ("RET" newline)
-       )))
-  (add-hook 'asm-mode-hook 'cf-init-asm))
-(cf-asm-setup)
 #+END_SRC
 * prettier
 - https://github.com/prettier/prettier-emacs
