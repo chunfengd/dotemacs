@@ -1215,7 +1215,18 @@ From: http://blog.plover.com/prog/revert-all.html
 (add-to-list 'auto-mode-alist '("\\.cmake$" . cmake-mode))
 #+END_SRC
 * company
-Use [[http://company-mode.github.io/][company-mode]], a modular in-buffer completion framework for Emacs.
+- [[http://company-mode.github.io/][company-mode]], a modular in-buffer completion framework for Emacs.
+- user manual: http://company-mode.github.io/manual/index.html
+- useful functions
+  - company-show-location
+  - comapny-show-doc-buffer (<f1>)
+  - company-diag
+  - company-other-backend
+  - company-begin-backend
+  - company-capf
+  - company-yasnippet
+- useful variables
+  - company-backends
 ** init
 #+BEGIN_SRC emacs-lisp
 (defun cf-setup-company ()
