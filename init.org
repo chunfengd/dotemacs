@@ -27,7 +27,7 @@
  - [[#basic-ui][Basic UI]]
    - [[#about-me][About Me]]
    - [[#basic][Basic]]
-   - [[#frame][Frame]]
+   - [[#speed-bar][Speed Bar]]
    - [[#font][Font]]
    - [[#keys][Keys]]
    - [[#customized-util-functions--bindings][Customized Util Functions & Bindings]]
@@ -239,53 +239,30 @@ https://github.com/jwiegley/use-package
 (global-hl-line-mode t)
 (if (display-graphic-p)
     (set-face-background hl-line-face "grey20"))
+
+(setq default-fill-column 70)
+
+(setq-default scroll-margin 3
+              scroll-conservatively 10000)
+
+;; frame title
+(when window-system
+  (setq frame-title-format '(buffer-file-name "%f" ("%b"))))
+
+;; frame
+(when (display-graphic-p)
+  (add-to-list 'default-frame-alist '(height . 42))
+  (add-to-list 'default-frame-alist '(width . 80))
+  (add-to-list 'default-frame-alist '(left . 650))
+  (add-to-list 'default-frame-alist '(top . 100)))
 #+end_src
-** Frame
-*** Frame Alist
-#+BEGIN_SRC emacs-lisp :tangle no
-(defvar cf-default-frame-alist
-  '(
-    ;; (width . 150)
-    (width . 80)
-    (height . 42)
-    ))
-(cond
- ((string-equal system-type "windows-nt")
-  (progn
-    (add-to-list 'initial-frame-alist '(left . 650))
-    ;; (add-to-list 'initial-frame-alist '(top . 100))
-    ))
- ((string-equal system-type "darwin")
-  (progn
-    (add-to-list 'initial-frame-alist '(left . 650))
-    (add-to-list 'initial-frame-alist '(top . 100))
-    ))
- ((string-equal system-type "gnu/linux")
-  (progn
-    (add-to-list 'initial-frame-alist '(left . 650))
-    )))
-#+END_SRC
-*** Speed Bar
+** Speed Bar
 #+BEGIN_SRC emacs-lisp
 (add-hook
  'speedbar-load-hook
  '(lambda ()
     (add-to-list 'speedbar-frame-parameters '(width . 35))
     (setq speedbar-show-unknown-files t)))
-#+END_SRC
-*** Frame Title
-#+BEGIN_SRC emacs-lisp
-(when window-system
-  (setq frame-title-format '(buffer-file-name "%f" ("%b"))))
-#+END_SRC
-*** Fill Column
-#+BEGIN_SRC emacs-lisp
-(setq default-fill-column 70)
-#+END_SRC
-*** Scroll
-#+BEGIN_SRC emacs-lisp
-(setq-default scroll-margin 3
-              scroll-conservatively 10000)
 #+END_SRC
 ** Font
 *** Font Lock
