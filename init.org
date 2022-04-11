@@ -744,6 +744,14 @@ https://github.com/Fanael/rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 #+end_src
 * which-key
+https://github.com/justbur/emacs-which-key
+#+begin_src emacs-lisp
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 0.3))
+#+end_src
 * org-mode
 ** init
 #+BEGIN_SRC emacs-lisp
