@@ -21,12 +21,13 @@
    - [[#automatic-tangling][Automatic Tangling]]
    - [[#add-the-following-line-into-emacs][Add the following line into =~/.emacs=]]
  - [[#package-management][Package Management]]
-   - [[#require-package][Require Package]]
-   - [[#package-archives][Package Archives]]
-   - [[#initialize-package][Initialize Package]]
-   - [[#install-missing-packages][install missing packages]]
+   - [[#package-init][package init]]
+   - [[#use-package][use-package]]
+   - [[#install-packages-manually][install packages manually]]
  - [[#general][General]]
    - [[#about-me][About Me]]
+   - [[#basic][Basic]]
+   - [[#doom-modeline][doom-modeline]]
    - [[#frame][Frame]]
    - [[#font][Font]]
    - [[#keys][Keys]]
@@ -179,55 +180,73 @@ function to ~after-save-hook~ to tangle the =init.org= after saving.
 (load "/path/to/init.el")
 #+END_SRC
 * Package Management
-** Require Package
-#+BEGIN_SRC emacs-lisp
+** package init
+#+begin_src emacs-lisp
 (require 'package)
-#+END_SRC
-** Package Archives
-*** Local Archive
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'package-archives
-           `("cf-melpa" . ,(cf-path "../cf-melpa/packages")))
-#+END_SRC
-*** Melpa
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'package-archives
-             '("melpa-stable" . "https://stable.melpa.org/packages/")
-             t)
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/")
-             t)
-#+END_SRC
-*** Org
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'package-archives
-           '("org" . "http://orgmode.org/elpa/") t)
-#+END_SRC
-*** Misc
-#+BEGIN_SRC emacs-lisp
-;; (add-to-list 'package-archives
-;;              '("marmalade" . "https://marmalade-repo.org/packages/"))
-#+END_SRC
-** Initialize Package
-If the variable =package-enable-at-startup= is non-nil, package
-initialization occurs after the init file is loaded, but before
-=after-init-hook=. We want to load packages /before/ the init file is
-loaded, because we'll be referencing packages in the init file.
-Therefore, we need to initialize our packages manually.
-#+BEGIN_SRC emacs-lisp
-(customize-set-variable 'package-enable-at-startup nil)
+(setq package-archives
+      '(
+        ;; ("cf-melpa" . ,(cf-path "../cf-melpa/packages"))
+        ;; ("melpa-stable" . "https://stable.melpa.org/packages/")
+        ("melpa" . "https://melpa.org/packages/")
+        ("org" . "http://orgmode.org/elpa/")
+        ("elpa" . "https://elpa.gnu.org/packages/")
+        ;; ("marmalade" . "https://marmalade-repo.org/packages/")
+        ))
 (package-initialize)
-#+END_SRC
-** install missing packages
+(unless package-archive-contents
+  (package-refresh-contents))
+#+end_src
+** use-package
+#+begin_src emacs-lisp
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+(require 'use-package)
+;; make sure packages are installed
+(setq use-package-always-ensure t)
+#+end_src
+** install packages manually
+#+begin_src emacs-lisp :tangle no
+;; https://github.com/melpa/melpa/issues/7238
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+(package-refresh-contents nil)
+(package-install 'lsp-mode)
+#+end_src
 * General
 ** About Me
 #+BEGIN_SRC emacs-lisp
 (customize-set-variable 'user-full-name "Chunfeng Dai")
 ;; (customize-set-variable 'user-mail-address "")
 #+END_SRC
+** Basic
+#+begin_src emacs-lisp
+(load-theme 'wombat)
+(setq inhibit-startup-message t)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
+(tooltip-mode -1)
+(menu-bar-mode -1)
+(set-fringe-mode 10)
+(setq visible-bell t)
+#+end_src
+** doom-modeline
+https://github.com/seagle0128/doom-modeline
+#+begin_src emacs-lisp
+;; Install icons for doom
+;; Run M-x all-the-icons-install-fonts to install
+(use-package all-the-icons
+  :if (display-graphic-p))
+
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1)
+  :custom
+  ((doom-modeline-height 15)
+   ))
+#+end_src
 ** Frame
 *** Frame Alist
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (defvar cf-default-frame-alist
   '(
     ;; (width . 150)
@@ -239,39 +258,19 @@ Therefore, we need to initialize our packages manually.
   (progn
     (add-to-list 'initial-frame-alist '(left . 650))
     ;; (add-to-list 'initial-frame-alist '(top . 100))
-    (setq default-frame-alist
-          (append cf-default-frame-alist
-                  '((background-color . "black")
-                    (foreground-color . "grey75")
-                    (border-color . "white")
-                    (cursor-color . "grey80")
-                    (mouse-color . "dark orange"))))))
+    ))
  ((string-equal system-type "darwin")
   (progn
     (add-to-list 'initial-frame-alist '(left . 650))
     (add-to-list 'initial-frame-alist '(top . 100))
-    (setq default-frame-alist
-          (append cf-default-frame-alist
-                  '((width . 80)
-                    (height . 42)
-                    (background-color . "black")
-                    (foreground-color . "grey75")
-                    (border-color . "white")
-                    (cursor-color . "purple")
-                    (mouse-color . "dark orange"))))))
+    ))
  ((string-equal system-type "gnu/linux")
   (progn
     (add-to-list 'initial-frame-alist '(left . 650))
-    (setq default-frame-alist
-          (append cf-default-frame-alist
-                  '((background-color . "black")
-                    (foreground-color . "grey75")
-                    (border-color . "white")
-                    (cursor-color . "grey80")
-                    (mouse-color . "dark orange")))))))
+    )))
 #+END_SRC
 *** Highlight Current Line
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (global-hl-line-mode t)
 (if (display-graphic-p)
     (set-face-background hl-line-face "grey20"))
@@ -334,13 +333,6 @@ Therefore, we need to initialize our packages manually.
  '(lambda ()
     (add-to-list 'speedbar-frame-parameters '(width . 35))
     (setq speedbar-show-unknown-files t)))
-#+END_SRC
-*** Menu Bar
-#+BEGIN_SRC emacs-lisp
-(dolist (mode '(menu-bar-mode tool-bar-mode scroll-bar-mode))
-  (when (fboundp mode) (funcall mode -1)))
-;; (menu-bar-no-scroll-bar)
-;; (menu-bar-mode 0)
 #+END_SRC
 *** Frame Title
 #+BEGIN_SRC emacs-lisp
@@ -652,10 +644,6 @@ From: http://blog.plover.com/prog/revert-all.html
 #+BEGIN_SRC emacs-lisp
 (setq-default make-backup-files nil)
 #+END_SRC
-*** Visible Bell
-#+BEGIN_SRC emacs-lisp
-(setq visible-bell t)
-#+END_SRC
 *** Narrow
 #+BEGIN_SRC emacs-lisp
 (put 'narrow-to-region 'disabled nil)
@@ -663,10 +651,6 @@ From: http://blog.plover.com/prog/revert-all.html
 *** Delete Selection Mode
 #+BEGIN_SRC emacs-lisp
 (delete-selection-mode 1)
-#+END_SRC
-*** Inhibit Startup Message
-#+BEGIN_SRC emacs-lisp
-(setq inhibit-startup-message t)
 #+END_SRC
 *** Sentence End Double Space
 #+BEGIN_SRC emacs-lisp
