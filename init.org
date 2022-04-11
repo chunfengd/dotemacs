@@ -16,18 +16,17 @@
    - [[#define-cf-path][Define =cf-path=]]
    - [[#extra-load-path][Extra load path]]
  - [[#tangling-and-how-to-install][Tangling and How to Install]]
-   - [[#run-org-bable-tangle][Run =org-bable-tangle=]]
-   - [[#tangle-command-line][Tangle Command Line]]
+   - [[#tangle-via-org-mode][Tangle via Org Mode]]
+   - [[#tangle-via-command-line][Tangle via Command Line]]
    - [[#automatic-tangling][Automatic Tangling]]
    - [[#add-the-following-line-into-emacs][Add the following line into =~/.emacs=]]
  - [[#package-management][Package Management]]
    - [[#package-init][package init]]
    - [[#use-package][use-package]]
    - [[#install-packages-manually][install packages manually]]
- - [[#general][General]]
+ - [[#basic-ui][Basic UI]]
    - [[#about-me][About Me]]
    - [[#basic][Basic]]
-   - [[#doom-modeline][doom-modeline]]
    - [[#frame][Frame]]
    - [[#font][Font]]
    - [[#keys][Keys]]
@@ -37,6 +36,12 @@
    - [[#misc][Misc]]
  - [[#evil-mode][evil-mode]]
    - [[#init][init]]
+ - [[#more-ui][More UI]]
+   - [[#doom-modeline][doom-modeline]]
+   - [[#line-number][Line Number]]
+   - [[#parenthesis][parenthesis]]
+   - [[#rainbow-delimiters][rainbow-delimiters]]
+ - [[#which-key][which-key]]
  - [[#org-mode][org-mode]]
    - [[#init-1][init]]
    - [[#add-agenda-files-into-emacs][add agenda files into =~/.emacs=]]
@@ -149,11 +154,10 @@ on GitHub.
 * Tangling and How to Install
 After cloning from [[https://github.com/xiongtx/.emacs.d][GitHub]], there is no =init.el= file, only an
 =init.org= file (this file). To produce an =init.el= file, either:
-** Run =org-bable-tangle=
-Open =init.org= and use =C-c C-v t= to call ~org-babel-tangle~, which
-extracts code blocks from the current file into =init.el=, then
-restart Emacs
-** Tangle Command Line
+** Tangle via Org Mode
+Open =init.org= and call =M-x org-babel-tangle=, which extracts code
+blocks from the current file into =init.el=
+** Tangle via Command Line
 #+BEGIN_SRC sh :tangle no
 $ ./tangle.sh
 #+END_SRC
@@ -164,8 +168,9 @@ $ emacs --batch \
         --eval "(org-babel-tangle-file \"./init.org\")"
 #+END_SRC
 ** Automatic Tangling
-To avoid having to tangle manually each time a change is made, we can add a
-function to ~after-save-hook~ to tangle the =init.org= after saving.
+To avoid having to tangle manually each time a change is made, we can
+add a function to ~after-save-hook~ to tangle the =init.org= after
+saving.
 #+BEGIN_SRC emacs-lisp
 (defun cf-tangle-init-file ()
   "Tangle the current buffer if it is the init.org file."
@@ -196,6 +201,7 @@ function to ~after-save-hook~ to tangle the =init.org= after saving.
   (package-refresh-contents))
 #+end_src
 ** use-package
+https://github.com/jwiegley/use-package
 #+begin_src emacs-lisp
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
@@ -211,7 +217,7 @@ function to ~after-save-hook~ to tangle the =init.org= after saving.
 (package-refresh-contents nil)
 (package-install 'lsp-mode)
 #+end_src
-* General
+* Basic UI
 ** About Me
 #+BEGIN_SRC emacs-lisp
 (customize-set-variable 'user-full-name "Chunfeng Dai")
@@ -227,21 +233,6 @@ function to ~after-save-hook~ to tangle the =init.org= after saving.
 (menu-bar-mode -1)
 (set-fringe-mode 10)
 (setq visible-bell t)
-#+end_src
-** doom-modeline
-https://github.com/seagle0128/doom-modeline
-#+begin_src emacs-lisp
-;; Install icons for doom
-;; Run M-x all-the-icons-install-fonts to install
-(use-package all-the-icons
-  :if (display-graphic-p))
-
-(use-package doom-modeline
-  :ensure t
-  :init (doom-modeline-mode 1)
-  :custom
-  ((doom-modeline-height 15)
-   ))
 #+end_src
 ** Frame
 *** Frame Alist
@@ -342,15 +333,6 @@ https://github.com/seagle0128/doom-modeline
 #+BEGIN_SRC emacs-lisp
 (setq default-fill-column 70)
 #+END_SRC
-*** Line Number
-- linum-mode
-- display-line-numbers-mode
-#+begin_src emacs-lisp
-(global-display-line-numbers-mode)
-(setq display-line-numbers-type 'visual)
-(defun cf-disable-line-numbers ()
-  (display-line-numbers-mode 0))
-#+end_src
 *** Scroll
 #+BEGIN_SRC emacs-lisp
 (setq-default scroll-margin 3
@@ -627,13 +609,6 @@ From: http://blog.plover.com/prog/revert-all.html
   (progn
     (defconst cf-system-include-dirs nil))))
 #+END_SRC
-*** Parentheses
-#+BEGIN_SRC emacs-lisp
-;; (setq show-paren-mode t) ; does not work
-(setq show-paren-mode nil)
-(show-paren-mode)
-(setq show-paren-style 'mixed)
-#+END_SRC
 *** Indent Tab
 #+BEGIN_SRC emacs-lisp
 (setq-default indent-tabs-mode nil)
@@ -732,6 +707,43 @@ From: http://blog.plover.com/prog/revert-all.html
     (cf-setup-evil)
   (message "evil, undo-tree or goto-chg not installed"))
 #+END_SRC
+* More UI
+** doom-modeline
+https://github.com/seagle0128/doom-modeline
+#+begin_src emacs-lisp
+;; Install icons for doom
+;; Run M-x all-the-icons-install-fonts to install
+(use-package all-the-icons
+  :if (display-graphic-p))
+
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1)
+  :custom
+  ((doom-modeline-height 15)
+   ))
+#+end_src
+** Line Number
+#+begin_src emacs-lisp
+(global-display-line-numbers-mode)
+(setq display-line-numbers-type 'visual)
+(dolist (mode '(shell-mode-hook
+                term-mode-hook
+                eshell-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+#+end_src
+** parenthesis
+#+begin_src emacs-lisp
+(show-paren-mode)
+(setq show-paren-style 'mixed)
+#+end_src
+** rainbow-delimiters
+https://github.com/Fanael/rainbow-delimiters
+#+begin_src emacs-lisp
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+#+end_src
+* which-key
 * org-mode
 ** init
 #+BEGIN_SRC emacs-lisp
@@ -2050,13 +2062,12 @@ Called by `imenu--generic-function'."
      )
    ;;shell-mode-map
    )
-  (cf-disable-line-numbers))
+  )
 (add-hook 'shell-mode-hook 'cf-shell-mode-hook-func)
 #+END_SRC
 ** term mode
 #+BEGIN_SRC emacs-lisp
 (defun cf-term-mode-hook-func ()
-  (cf-disable-line-numbers)
   (setq-local scroll-margin 0)
   (cf-set-key-bindings
    'local-set-key
@@ -2107,13 +2118,9 @@ Called by `imenu--generic-function'."
 #+END_SRC
 * speedbar
 #+BEGIN_SRC emacs-lisp
-(defun cf-speedbar-key-hook-func ()
-  (cf-disable-line-numbers))
-(add-hook 'speedbar-reconfigure-keymaps-hook
-          'cf-speedbar-key-hook-func)
 (eval-after-load "speedbar-mode"
   '(progn
-     (cf-disable-line-numbers)))
+     (display-line-numbers-mode 0)))
 #+END_SRC
 * spell
 #+BEGIN_SRC emacs-lisp
