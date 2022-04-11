@@ -234,6 +234,11 @@ https://github.com/jwiegley/use-package
 (menu-bar-mode -1)
 (set-fringe-mode 10)
 (setq visible-bell t)
+
+;; highlight current line
+(global-hl-line-mode t)
+(if (display-graphic-p)
+    (set-face-background hl-line-face "grey20"))
 #+end_src
 ** Frame
 *** Frame Alist
@@ -259,63 +264,6 @@ https://github.com/jwiegley/use-package
   (progn
     (add-to-list 'initial-frame-alist '(left . 650))
     )))
-#+END_SRC
-*** Highlight Current Line
-#+BEGIN_SRC emacs-lisp :tangle no
-(global-hl-line-mode t)
-(if (display-graphic-p)
-    (set-face-background hl-line-face "grey20"))
-#+END_SRC
-*** Toggle Frame Maximum
-#+BEGIN_SRC emacs-lisp
-(cond
- ((string-equal system-type "windows-nt")
-  ;; windows
-  (progn
-    (defvar max-flag nil)
-    (defun cf-win-toggle-frame-maximum ()
-      "Toggle frame between maximum and norm."
-      (interactive)
-      (if (null max-flag)
-          (progn
-            (w32-send-sys-command 61488)
-            (setq max-flag t))
-        (w32-send-sys-command 61728)
-        (setq max-flag nil)))
-    (global-set-key [f6] 'cf-win-toggle-frame-maximum)))
- ((string-equal system-type "darwin")
-  ;; mac os x
-  (progn
-    (defun toggle-fullscreen ()
-      "Toggle full screen. From: http://emacswiki.org/emacs/FullScreen."
-      (interactive)
-      (set-frame-parameter
-       nil 'fullscreen
-       (when (not (frame-parameter nil 'fullscreen)) 'fullboth)))
-    ;; (global-set-key [f6] 'toggle-fullscreen)
-    (defun cf-reset-frame-rect ()
-      "Reset the current frame to its original size"
-      (interactive)
-      (let ((cur-frame (selected-frame)))
-        (set-frame-size cur-frame 80 42)
-        (set-frame-position cur-frame 650 100)))
-    (global-set-key (kbd "<f6>") 'toggle-frame-maximized)
-    (global-set-key (kbd "M-<f6>") 'cf-reset-frame-rect)))
- ((string-equal system-type "gnu/linux")
-  (message "linux")
-  (progn
-    (defun fullscreen (&optional f)
-      (interactive)
-      (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
-                             '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0))
-      (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
-                             '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
-    (defun toggle-frame-maxium ()
-      (interactive)
-      (when (eq window-system 'x)
-        (set-frame-parameter nil 'fullscreen
-         (when (not (frame-parameter nil 'fullscreen)) 'fullboth))))
-    (global-set-key [f6] 'toggle-frame-maximum))))
 #+END_SRC
 *** Speed Bar
 #+BEGIN_SRC emacs-lisp
