@@ -38,6 +38,7 @@
    - [[#init][init]]
  - [[#more-ui][More UI]]
    - [[#doom-modeline][doom-modeline]]
+   - [[#doom-theme][doom-theme]]
    - [[#line-number][Line Number]]
    - [[#parenthesis][parenthesis]]
    - [[#rainbow-delimiters][rainbow-delimiters]]
@@ -723,6 +724,11 @@ https://github.com/seagle0128/doom-modeline
   ((doom-modeline-height 15)
    ))
 #+end_src
+** doom-theme
+#+begin_src emacs-lisp
+(use-package doom-themes
+  :init (load-theme 'doom-dark+ t))
+#+end_src
 ** Line Number
 #+begin_src emacs-lisp
 (global-display-line-numbers-mode)
@@ -750,7 +756,7 @@ https://github.com/justbur/emacs-which-key
   :init (which-key-mode)
   :diminish which-key-mode
   :config
-  (setq which-key-idle-delay 0.3))
+  (setq which-key-idle-delay 0.6))
 #+end_src
 * org-mode
 ** init
