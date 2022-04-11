@@ -152,7 +152,7 @@ on GitHub.
          load-path)))
 (my-add-site-dir (cf-path "site"))
 #+end_src
-* Tangling and How to Install
+* How to Install
 After cloning from [[https://github.com/xiongtx/.emacs.d][GitHub]], there is no =init.el= file, only an
 =init.org= file (this file). To produce an =init.el= file, either:
 ** Tangle via Org Mode
@@ -184,6 +184,8 @@ saving.
 #+BEGIN_SRC emacs-lisp :tangle no
 (load "/path/to/init.el")
 #+END_SRC
+** Install icons
+Run M-x all-the-icons-install-fonts
 * Package Management
 ** package init
 #+begin_src emacs-lisp
@@ -658,7 +660,8 @@ https://github.com/seagle0128/doom-modeline
 #+begin_src emacs-lisp
 (global-display-line-numbers-mode)
 (setq display-line-numbers-type 'visual)
-(dolist (mode '(shell-mode-hook
+(dolist (mode '(org-mode-hook
+                shell-mode-hook
                 term-mode-hook
                 eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
