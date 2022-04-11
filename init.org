@@ -53,7 +53,6 @@
  - [[#helm][helm]]
    - [[#setup-helm][Setup helm]]
    - [[#setup-projectile][Setup projectile]]
-   - [[#setup-helm-ag][Setup helm-ag]]
  - [[#lisp-interaction-mode][lisp-interaction-mode]]
  - [[#cc-mode][cc-mode]]
  - [[#cedet][cedet]]
@@ -1038,17 +1037,6 @@ From: http://blog.plover.com/prog/revert-all.html
          (package-installed-p 'helm-projectile))
     (cf-setup-projectile)
   (message "projectile or helm-projectile not installed"))
-#+END_SRC
-** Setup helm-ag
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-#+BEGIN_SRC emacs-lisp
-(defun cf-setup-helm-ag () )
-
-(if (package-installed-p 'helm-ag)
-    (cf-setup-helm-ag)
-  (message "helm-ag not installed"))
 #+END_SRC
 * lisp-interaction-mode
 #+BEGIN_SRC emacs-lisp
