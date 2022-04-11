@@ -654,7 +654,7 @@ https://github.com/seagle0128/doom-modeline
 ** doom-theme
 #+begin_src emacs-lisp
 (use-package doom-themes
-  :init (load-theme 'doom-dark+ t))
+  :init (load-theme 'doom-vibrant t))
 #+end_src
 ** Line Number
 #+begin_src emacs-lisp
