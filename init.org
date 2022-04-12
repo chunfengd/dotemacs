@@ -45,8 +45,13 @@
    - [[#parenthesis][parenthesis]]
    - [[#rainbow-delimiters][rainbow-delimiters]]
  - [[#which-key][which-key]]
- - [[#org-mode][org-mode]]
+ - [[#ivy][ivy]]
    - [[#init-1][init]]
+   - [[#ivy-minibuffer-key-bindings][ivy minibuffer key bindings]]
+   - [[#saving-the-current-completion-session-to-a-buffer][saving the current completion session to a buffer]]
+ - [[#counsel][counsel]]
+ - [[#org-mode][org-mode]]
+   - [[#init-2][init]]
    - [[#add-agenda-files-into-emacs][add agenda files into =~/.emacs=]]
    - [[#cf-org-beginning-of-line][cf-org-beginning-of-line]]
    - [[#org-mode-hook][org-mode-hook]]
@@ -66,7 +71,7 @@
  - [[#cedet][cedet]]
  - [[#cmake][cmake]]
  - [[#company][company]]
-   - [[#init-2][init]]
+   - [[#init-3][init]]
    - [[#company-quickhelp][company-quickhelp]]
    - [[#misc-1][misc]]
    - [[#company-c-headers][company-c-headers]]
@@ -200,7 +205,7 @@ Run M-x all-the-icons-install-fonts
         ;; ("melpa-stable" . "https://stable.melpa.org/packages/")
         ("melpa" . "https://melpa.org/packages/")
         ("org" . "http://orgmode.org/elpa/")
-        ("elpa" . "https://elpa.gnu.org/packages/")
+        ;; ("elpa" . "https://elpa.gnu.org/packages/")
         ;; ("marmalade" . "https://marmalade-repo.org/packages/")
         ))
 (package-initialize)
@@ -692,6 +697,65 @@ https://github.com/justbur/emacs-which-key
   :config
   (setq which-key-idle-delay 0.6))
 #+end_src
+* ivy
+- https://github.com/abo-abo/swiper
+- https://oremacs.com/swiper/
+- https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
+** init
+#+begin_src emacs-lisp
+(use-package ivy
+  :diminish
+  :bind (("C-s" . swiper)
+         :map ivy-minibuffer-map
+         ("TAB" . ivy-alt-done)
+         ("C-l" . ivy-alt-done)
+         ("C-j" . ivy-next-line) ; default M-n
+         ("C-k" . ivy-previous-line) ; default M-p
+         :map ivy-switch-buffer-map
+         ("C-k" . ivy-previous-line)
+         ("C-l" . ivy-done)
+         ("C-d" . ivy-switch-buffer-kill)
+         :map ivy-reverse-i-search-map
+         ("C-k" . ivy-previous-line)
+         ("C-d" . ivy-reverse-i-search-kill))
+  :config (ivy-mode 1))
+
+(use-package ivy-rich
+  :init
+  (ivy-rich-mode 1))
+#+end_src
+** ivy minibuffer key bindings
+|-------+-------------------------+--------------------------------------------|
+| M-<   | ivy-beginning-of-buffer |                                            |
+| M->   | ivy-end-of-buffer       |                                            |
+| C-v   | ivy-scroll-up-command   |                                            |
+| M-v   | ivy-scroll-down-command |                                            |
+| RET   | ivy-done                | calls the default action                   |
+| C-M-m | ivy-call                | calls the default action, keeps ivy open   |
+| M-o   | ivy-dispatching-done    | displays available actions                 |
+| C-M-o | ivy-dispatching-call    | displays available actions, keeps ivy open |
+|       | ivy-resume              | restart ivy before last action             |
+|-------+-------------------------+--------------------------------------------|
+** saving the current completion session to a buffer
+|---------+-----------------------+----------------------------------------------------|
+| C-c C-o | ivy-occur             | save candidates to a buffer                        |
+| RET     | ivy-occur-press       | call the current action on candidate               |
+| mouse-1 | ivy-occur-click       |                                                    |
+| j       | next-line             |                                                    |
+| k       | previous-line         |                                                    |
+| a       | ivy-occur-read-action | read an action and make it current for this buffer |
+| o       | ivy-occur-dispatch    |                                                    |
+| q       | quit-window           |                                                    |
+|---------+-----------------------+----------------------------------------------------|
+* counsel
+#+begin_src emacs-lisp
+(use-package counsel
+  :bind (("M-x" . counsel-M-x)
+         ("C-x C-b" . counsel-ibuffer)
+         ("C-x C-f" . counsel-find-file)
+         :map minibuffer-local-map
+         ("C-r" . 'counsel-minibuffer-history)))
+#+end_src
 * org-mode
 ** init
 #+BEGIN_SRC emacs-lisp
@@ -875,7 +939,7 @@ https://github.com/justbur/emacs-which-key
 - http://tuhdo.github.io/helm-projectile.html
 - https://github.com/bbatsov/projectile
 ** Setup helm
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (defun cf-setup-helm ()
   (require 'helm)
   (require 'helm-config)
@@ -969,7 +1033,7 @@ https://github.com/justbur/emacs-which-key
   (message "helm-core, helm or async not installed"))
 #+END_SRC
 ** Setup projectile
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (defun cf-setup-projectile ()
   (projectile-global-mode)
   (setq projectile-find-dir-includes-top-level t)
