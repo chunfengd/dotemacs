@@ -711,6 +711,8 @@ https://github.com/justbur/emacs-which-key
          ("C-l" . ivy-alt-done)
          ("C-j" . ivy-next-line) ; default M-n
          ("C-k" . ivy-previous-line) ; default M-p
+         ("C-f" . ivy-scroll-up-command) ; default C-v
+         ("C-b" . ivy-scroll-down-command) ; default M-v
          :map ivy-switch-buffer-map
          ("C-k" . ivy-previous-line)
          ("C-l" . ivy-done)
@@ -736,8 +738,6 @@ https://github.com/justbur/emacs-which-key
 |-------+-------------------------+--------------------------------------------|
 | M-<   | ivy-beginning-of-buffer |                                            |
 | M->   | ivy-end-of-buffer       |                                            |
-| C-v   | ivy-scroll-up-command   |                                            |
-| M-v   | ivy-scroll-down-command |                                            |
 | RET   | ivy-done                | calls the default action                   |
 | C-M-m | ivy-call                | calls the default action, keeps ivy open   |
 | M-o   | ivy-dispatching-done    | displays available actions                 |
