@@ -12,14 +12,16 @@
 
 * Table of Contents                                                     :TOC:
  - [[#introduction][Introduction]]
+   - [[#other-reference][other reference]]
  - [[#dotemacs-path][Dotemacs Path]]
    - [[#define-cf-path][Define =cf-path=]]
    - [[#extra-load-path][Extra load path]]
- - [[#tangling-and-how-to-install][Tangling and How to Install]]
+ - [[#how-to-install][How to Install]]
    - [[#tangle-via-org-mode][Tangle via Org Mode]]
    - [[#tangle-via-command-line][Tangle via Command Line]]
    - [[#automatic-tangling][Automatic Tangling]]
    - [[#add-the-following-line-into-emacs][Add the following line into =~/.emacs=]]
+   - [[#install-icons][Install icons]]
  - [[#package-management][Package Management]]
    - [[#package-init][package init]]
    - [[#use-package][use-package]]
@@ -620,15 +622,16 @@ From: http://blog.plover.com/prog/revert-all.html
   (setq evil-want-integration t)
   (setq evil-want-keybinding nil)
   (setq evil-want-C-u-scroll t)
-  (setq evil-want-C-i-jump nil)
   (setq evil-want-Y-yank-to-eol t)
   (setq evil-shift-width 2)
   :config
   (evil-mode 1)
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-  (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+  (define-key evil-insert-state-map (kbd "C-h")
+    'evil-delete-backward-char-and-join)
   (define-key evil-replace-state-map (kbd "C-g") 'evil-normal-state)
-  (define-key evil-replace-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+  (define-key evil-replace-state-map (kbd "C-h")
+    'evil-delete-backward-char-and-join)
   (define-key evil-insert-state-map (kbd "C-n") nil)
 
   ;; Use visual line motions even outside of visual-line-mode buffers
