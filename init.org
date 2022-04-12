@@ -128,6 +128,8 @@
 This is an Emacs configuration file written in Org-mode. It is adapted
 from Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init.org][config file]] and Tianxiang Xiong's [[https://github.com/xiongtx/.emacs.d/blob/master/init.org][config]]
 on GitHub.
+** other reference
+- https://github.com/daviwil/emacs-from-scratch
 * Dotemacs Path
 ** Define =cf-path=
 #+BEGIN_SRC emacs-lisp
@@ -612,29 +614,30 @@ From: http://blog.plover.com/prog/revert-all.html
 - github: https://github.com/emacs-evil/evil
 - doc: https://evil.readthedocs.io/en/latest/index.html
 ** init
-#+BEGIN_SRC emacs-lisp
-(defun cf-config-evil ()
-  ;; (setq evil-want-C-u-delete t)
-  ;; (setq evil-want-C-u-scroll t)
+#+begin_src emacs-lisp
+(use-package evil
+  :init
+  (setq evil-want-integration t)
+  (setq evil-want-keybinding nil)
+  (setq evil-want-C-u-scroll t)
+  (setq evil-want-C-i-jump nil)
   (setq evil-want-Y-yank-to-eol t)
-  (setq evil-shift-width 2))
-(defun cf-setup-evil ()
-  (cf-config-evil)
-  (require 'evil)
+  (setq evil-shift-width 2)
+  :config
   (evil-mode 1)
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-  (define-key evil-insert-state-map (kbd "C-h") 'backward-delete-char)
+  (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
   (define-key evil-replace-state-map (kbd "C-g") 'evil-normal-state)
-  (define-key evil-replace-state-map (kbd "C-h") 'backward-delete-char)
-
+  (define-key evil-replace-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
   (define-key evil-insert-state-map (kbd "C-n") nil)
-  )
-(if (and (package-installed-p 'evil)
-         (package-installed-p 'undo-tree)
-         (package-installed-p 'goto-chg))
-    (cf-setup-evil)
-  (message "evil, undo-tree or goto-chg not installed"))
-#+END_SRC
+
+  ;; Use visual line motions even outside of visual-line-mode buffers
+  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+
+  (evil-set-initial-state 'messages-buffer-mode 'normal)
+  (evil-set-initial-state 'dashboard-mode 'normal))
+#+end_src
 * More UI
 ** doom-modeline
 https://github.com/seagle0128/doom-modeline
