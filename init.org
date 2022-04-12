@@ -257,6 +257,9 @@ https://github.com/jwiegley/use-package
   (add-to-list 'default-frame-alist '(width . 80))
   (add-to-list 'default-frame-alist '(left . 650))
   (add-to-list 'default-frame-alist '(top . 100)))
+
+(setq-default indent-tabs-mode nil)
+(setq default-tab-width 8)
 #+end_src
 ** Speed Bar
 #+BEGIN_SRC emacs-lisp
@@ -267,6 +270,9 @@ https://github.com/jwiegley/use-package
     (setq speedbar-show-unknown-files t)))
 #+END_SRC
 ** Font
+:PROPERTIES:
+:header-args: :tangle no
+:END:
 *** Font Lock
 #+BEGIN_SRC emacs-lisp
 (global-font-lock-mode t)
@@ -323,45 +329,18 @@ https://github.com/jwiegley/use-package
 (cf-set-key-bindings
  'global-set-key
  '(
-   ("<f5>" compile)
    ("<f7>" speedbar-get-focus)
    ("C-x C-o" other-window)
-   ;; ("<C-tab>" other-window)
-   ("C-x C-5 C-o" other-frame)
    ("<M-tab>" other-frame)
-   ("C-<" cf-pre-window)
-   ("C->" other-window)
-   ("C-M-<" cf-pre-frame)
-   ("C-M->" other-frame)
    ("M-q" fill-region)
    ("M-s" ispell-region)
-   ;; ("C-z" undo)
    ("M-/" undo)
    ("C-?" help-command)
-   ;; ("C-t" set-mark-command)
-   ;; ("M-t" set-mark-command)
-   ;; ("C-x C-t" transpose-words)
-   ;; ("C-M-t" transpose-words)
-   ;; ("C-q" back-to-indentation)
-   ("M-m" nil)
    ("C-x f" find-file)
    ("C-x g" goto-line)
-   ;; ("M-z" server-edit)
-   ("C-x C-b" switch-to-buffer)
    ("C-x b" list-buffers)
-   ;; ("C-M-a" backward-paragraph)
-   ;; ("C-M-e" forward-paragraph)
-   ("C-M-b" scroll-other-window-down)
-   ("C-M-f" scroll-other-window)
-   ("C-c RET" imenu)
-   ;; ("M-o" kill-ring-save)
    ("C-c C-c" comment-or-uncomment-region)
-   ("C-x C-z" nil)
-   ("M-v" yank)
-   ;; ("C-w" scroll-down)
-   ("M-w" mark-word)
-   ;;("M-w" capitalize-word)
-   ("C-y" yank)))
+   ))
 #+END_SRC
 ** Customized Util Functions & Bindings
 *** Find Map of Key Binding
@@ -413,31 +392,10 @@ Not exactly but it's easier to remember"
     (if path
         (kill-new path))))
 #+END_SRC
-*** Frame Related
-#+BEGIN_SRC emacs-lisp
-(defun cf-pre-window ()
-  ""
-  (interactive)
-  (other-window -1))
-
-(defun cf-pre-frame ()
-  ""
-  (interactive)
-  (other-frame -1))
-#+END_SRC
-*** Kill Word
-#+BEGIN_SRC emacs-lisp
-(defun cf-kill-word (arg)
-  "Kill characters forward until encountering the end of a word.
-With argument ARG, do this that many times."
-  (interactive "p")
-  (kill-region (point) (progn (cf-forward-word arg) (point))))
-(global-set-key (kbd "M-d") 'cf-kill-word)
-#+END_SRC
 *** Eval and Replace
 From: http://emacsredux.com/blog/2013/06/21/eval-and-replace/
 #+BEGIN_SRC emacs-lisp
-(defun cf-eval-and-replace ()
+(defun my/eval-and-replace ()
   "Replace the preceding sexp with its value."
   (interactive)
   (backward-kill-sexp)
@@ -446,7 +404,6 @@ From: http://emacsredux.com/blog/2013/06/21/eval-and-replace/
              (current-buffer))
     (error (message "Invalid expression")
            (insert (current-kill 0)))))
-(global-set-key (kbd "C-x C-e") 'cf-eval-and-replace)
 #+END_SRC
 *** Revert All Buffers
 From: http://blog.plover.com/prog/revert-all.html
@@ -536,11 +493,6 @@ From: http://blog.plover.com/prog/revert-all.html
   (message "linux")
   (progn
     (defconst cf-system-include-dirs nil))))
-#+END_SRC
-*** Indent Tab
-#+BEGIN_SRC emacs-lisp
-(setq-default indent-tabs-mode nil)
-(setq default-tab-width 8)
 #+END_SRC
 *** Backup Files
 #+BEGIN_SRC emacs-lisp
