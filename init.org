@@ -45,11 +45,10 @@
    - [[#parenthesis][parenthesis]]
    - [[#rainbow-delimiters][rainbow-delimiters]]
  - [[#which-key][which-key]]
- - [[#ivy][ivy]]
+ - [[#ivy--counsel][ivy & counsel]]
    - [[#init-1][init]]
    - [[#ivy-minibuffer-key-bindings][ivy minibuffer key bindings]]
    - [[#saving-the-current-completion-session-to-a-buffer][saving the current completion session to a buffer]]
- - [[#counsel][counsel]]
  - [[#org-mode][org-mode]]
    - [[#init-2][init]]
    - [[#add-agenda-files-into-emacs][add agenda files into =~/.emacs=]]
@@ -697,7 +696,7 @@ https://github.com/justbur/emacs-which-key
   :config
   (setq which-key-idle-delay 0.6))
 #+end_src
-* ivy
+* ivy & counsel
 - https://github.com/abo-abo/swiper
 - https://oremacs.com/swiper/
 - https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
@@ -723,6 +722,14 @@ https://github.com/justbur/emacs-which-key
 (use-package ivy-rich
   :init
   (ivy-rich-mode 1))
+
+(use-package counsel
+  :bind (("M-x" . counsel-M-x)
+         ("C-x C-b" . counsel-ibuffer)
+         ("C-x b" . counsel-recentf)
+         ("C-x C-f" . counsel-find-file)
+         :map minibuffer-local-map
+         ("C-r" . 'counsel-minibuffer-history)))
 #+end_src
 ** ivy minibuffer key bindings
 |-------+-------------------------+--------------------------------------------|
@@ -747,15 +754,6 @@ https://github.com/justbur/emacs-which-key
 | o       | ivy-occur-dispatch    |                                                    |
 | q       | quit-window           |                                                    |
 |---------+-----------------------+----------------------------------------------------|
-* counsel
-#+begin_src emacs-lisp
-(use-package counsel
-  :bind (("M-x" . counsel-M-x)
-         ("C-x C-b" . counsel-ibuffer)
-         ("C-x C-f" . counsel-find-file)
-         :map minibuffer-local-map
-         ("C-r" . 'counsel-minibuffer-history)))
-#+end_src
 * org-mode
 ** init
 #+BEGIN_SRC emacs-lisp
