@@ -267,7 +267,8 @@ https://github.com/jwiegley/use-package
  'speedbar-load-hook
  '(lambda ()
     (add-to-list 'speedbar-frame-parameters '(width . 35))
-    (setq speedbar-show-unknown-files t)))
+    (setq speedbar-show-unknown-files t)
+    (display-line-numbers-mode 0)))
 #+END_SRC
 ** Font
 :PROPERTIES:
@@ -296,18 +297,6 @@ https://github.com/jwiegley/use-package
          t 'han (font-spec :name "Songti SC")))))
  ;; linux
  ((string-equal system-type "gnu/linux")))
-#+END_SRC
-*** Font Util
-#+BEGIN_SRC emacs-lisp
-(defun cf-font-exist (font)
-  (if (null (x-list-fonts font))
-      nil t))
-(defun cf-make-font-string (font-name font-size)
-  (if (and (stringp font-size)
-	   (equal ":" (string (elt font-size 0)))
-	   )
-      (format "%s%s" font-name font-size)
-    (format "%s %s" font-name font-size)))
 #+END_SRC
 ** Keys
 *** switch C-c & C-g
@@ -882,10 +871,6 @@ https://github.com/justbur/emacs-which-key
 #+BEGIN_SRC emacs-lisp
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 #+END_SRC
-** Pro File
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'auto-mode-alist '("\\.pro$" . text-mode))
-#+END_SRC
 * helm
 - http://tuhdo.github.io/helm-intro.html
 - http://tuhdo.github.io/helm-projectile.html
@@ -1139,12 +1124,6 @@ https://github.com/justbur/emacs-which-key
 
 ;; (if (file-exists-p cedet-home)
 ;;     (cf-load-cedet))
-#+END_SRC
-* cmake
-#+BEGIN_SRC emacs-lisp
-(autoload 'cmake-mode "cmake-mode" "Cmake Mode" t)
-(add-to-list 'auto-mode-alist '("CMakeLists\\.txt$" . cmake-mode))
-(add-to-list 'auto-mode-alist '("\\.cmake$" . cmake-mode))
 #+END_SRC
 * company
 - [[http://company-mode.github.io/][company-mode]], a modular in-buffer completion framework for Emacs.
@@ -1953,12 +1932,6 @@ Called by `imenu--generic-function'."
             (= (length bf-name) 0))
         (shell)
       (shell bf-name))))
-#+END_SRC
-* speedbar
-#+BEGIN_SRC emacs-lisp
-(eval-after-load "speedbar-mode"
-  '(progn
-     (display-line-numbers-mode 0)))
 #+END_SRC
 * spell
 #+BEGIN_SRC emacs-lisp
