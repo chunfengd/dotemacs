@@ -36,7 +36,7 @@
    - [[#emacs-default-auto-save][emacs default auto save]]
    - [[#auto-save][Auto Save]]
    - [[#misc][Misc]]
- - [[#evil-mode][evil-mode]]
+ - [[#evil][evil]]
    - [[#init][init]]
  - [[#more-ui][More UI]]
    - [[#doom-modeline][doom-modeline]]
@@ -53,7 +53,6 @@
  - [[#org-mode][org-mode]]
    - [[#init-2][init]]
    - [[#add-agenda-files-into-emacs][add agenda files into =~/.emacs=]]
-   - [[#cf-org-beginning-of-line][cf-org-beginning-of-line]]
    - [[#org-mode-hook][org-mode-hook]]
    - [[#agenda-hook][agenda-hook]]
    - [[#custom-agenda-commands][custom agenda commands]]
@@ -66,7 +65,6 @@
  - [[#helm][helm]]
    - [[#setup-helm][Setup helm]]
    - [[#setup-projectile][Setup projectile]]
- - [[#lisp-interaction-mode][lisp-interaction-mode]]
  - [[#cc-mode][cc-mode]]
  - [[#cedet][cedet]]
  - [[#cmake][cmake]]
@@ -87,7 +85,6 @@
    - [[#test][Test]]
    - [[#todo][Todo]]
  - [[#graphviz-dot-mode][Graphviz Dot Mode]]
- - [[#highlight-indentation][highlight-indentation]]
  - [[#html][html]]
    - [[#web-mode][web-mode]]
  - [[#imenu][imenu]]
@@ -99,17 +96,11 @@
    - [[#js3-mode][js3-mode]]
    - [[#json-mode][json-mode]]
  - [[#jump-avy][jump (avy)]]
- - [[#latex][latex]]
-   - [[#tex-mode][tex-mode]]
-   - [[#bibtex-mode][bibtex-mode]]
  - [[#lisp][lisp]]
    - [[#paredit][paredit]]
    - [[#clojure][clojure]]
- - [[#multiple-cursors][multiple-cursors]]
- - [[#markdown][markdown]]
  - [[#outline][outline]]
  - [[#python][python]]
- - [[#scss][scss]]
  - [[#shell][shell]]
    - [[#sh-mode][sh mode]]
    - [[#shell-mode][shell mode]]
@@ -121,7 +112,6 @@
  - [[#tramp][tramp]]
  - [[#prettier][prettier]]
  - [[#plantuml][plantuml]]
- - [[#find-library-file][Find Library File]]
  - [[#list][List]]
    - [[#read-a-list-of-people-with-nice-emacs-config-files][read a list of people with nice emacs config files]]
    - [[#toc-org][toc-org]]
@@ -617,7 +607,7 @@ From: http://blog.plover.com/prog/revert-all.html
   (minibufferp))
 (setq electric-pair-inhibit-predicate #'my-inhibit-electric-pair)
 #+END_SRC
-* evil-mode
+* evil
 - github: https://github.com/emacs-evil/evil
 - doc: https://evil.readthedocs.io/en/latest/index.html
 ** init
@@ -781,15 +771,6 @@ https://github.com/justbur/emacs-which-key
 (setq org-agenda-tetra
       "~/path/to/todo/tetra.org")
 #+END_SRC
-** cf-org-beginning-of-line
-#+BEGIN_SRC emacs-lisp
-(defun cf-org-beginning-of-line ()
-  (interactive)
-  (setq pos-temp (point))
-  (back-to-indentation)
-  (if (= (point) pos-temp)
-      (org-beginning-of-line 1)))
-#+END_SRC
 ** org-mode-hook
 #+BEGIN_SRC emacs-lisp
 (defun cf-org-mode-hook-func ()
@@ -818,7 +799,6 @@ https://github.com/justbur/emacs-which-key
 
      ("C-<tab>" org-cycle)
      ("C-S-<tab>" org-shifttab)
-     ("C-a" cf-org-beginning-of-line)
      ("C-c RET" nil)
 
      ;; ("C-S-i" org-table-previous-field)
@@ -1070,14 +1050,6 @@ https://github.com/justbur/emacs-which-key
          (package-installed-p 'helm-projectile))
     (cf-setup-projectile)
   (message "projectile or helm-projectile not installed"))
-#+END_SRC
-* lisp-interaction-mode
-#+BEGIN_SRC emacs-lisp
-(add-hook 'lisp-interaction-mode-hook
-	  '(lambda ()
-	     (local-set-key (kbd "C-j") 'next-line)
-	     (local-set-key (kbd "C-M-m") 'eval-print-last-sexp)
-	     ))
 #+END_SRC
 * cc-mode
 #+BEGIN_SRC emacs-lisp
@@ -1582,26 +1554,6 @@ candidate.
   )
 (add-hook 'graphviz-dot-mode-hook 'cf-graphviz-mode)
 #+END_SRC
-* highlight-indentation
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-#+BEGIN_SRC emacs-lisp
-(defun cf-highlight-indetation-setup ()
-  ;; (autoload 'js3-mode "js3-mode" nil t)
-  (require 'highlight-indentation)
-  ;; (setq highlight-indent-offset 2)
-  (if (display-graphic-p)
-      (set-face-background
-       'highlight-indentation-face "grey20"))
-  (if (display-graphic-p)
-      (set-face-background
-       'highlight-indentation-current-column-face "grey12")))
-
-(if (package-installed-p 'highlight-indentation)
-    (cf-highlight-indetation-setup)
-  (message "highlight-indetation not installed"))
-#+END_SRC
 * html
 ** web-mode
 #+BEGIN_SRC emacs-lisp
@@ -1791,49 +1743,6 @@ If it's found, then add it to the `exec-path'."
     (cf-setup-avy)
   (message "avy not installed"))
 #+END_SRC
-* latex
-** tex-mode
-#+BEGIN_SRC emacs-lisp :tangle no
-(defun cf-init-latex-mode ()
-  (cf-set-key-bindings
-   'local-set-key
-   '(
-     ("C-j" next-line)
-     ;;("C-n" tex-terminate-paragraph)
-     ("C-c C-o" nil)
-     ("C-c C-b" latex-insert-block)))
-  ;; (setq tex-command "xelatex")
-  (setq tex-dvi-print-command "dvipdf")
-  (setq tex-dvi-view-command
-	'(cond
-	  ((eq window-system 'x) "xdvi")
-	  ((eq window-system 'w32) "yap")
-	  ((eq window-system 'ns) "xdvi")
-	  (t "dvi3tty * | cat -s")))
-  (outline-minor-mode)
-  )
-(add-hook 'tex-mode-hook 'cf-init-latex-mode)
-#+END_SRC
-** bibtex-mode
-#+BEGIN_SRC emacs-lisp :tangle no
-(defun cf-bibtex-mode ()
-  (cf-set-key-bindings
-   'local-set-key
-   '(
-     ("C-j" nil)
-     ("C-c C-j" bibtex-pop-next)
-     ("C-c C-k" bibtex-pop-previous)
-     ("C-M-h" nil)
-     ("C-M-l" nil)
-     ("C-M-b" bibtex-mark-entry)
-     ("M-n" ispell-complete-word)
-     ("M-m" ispell-complete-word)
-     )
-   )
-  (outline-minor-mode)
-  )
-(add-hook 'bibtex-mode-hook 'cf-bibtex-mode)
-#+END_SRC
 * lisp
 ** paredit
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -1914,46 +1823,6 @@ Called by `imenu--generic-function'."
 (if (package-installed-p 'clojure-mode)
     (cf-clojure-mode-setup)
   (message "clojure-mode not installed"))
-#+END_SRC
-* TODO multiple-cursors
-#+BEGIN_SRC emacs-lisp :tangle no
-(defun cf-multiple-cursors-setup ()
-  (setq mc/list-file (cf-path "mc-list.el"))
-  (setq mc/always-run-for-all t)
-  (cf-set-key-bindings
-   'global-set-key
-   '(
-     ("C-S-c C-S-c" mc/edit-lines)
-     ("C-M-_" mc/mark-previous-like-this)
-     ("C-M-+" mc/mark-next-like-this)
-     ("C-M-|" mc/mark-all-like-this)
-     ("C-S-c C-<" mc/mark-all-like-this)
-     ("C-S-c C-S-r" set-rectangular-region-anchor)
-     ("C-S-c C-S-k" set-rectangular-region-anchor))))
-
-(if (package-installed-p 'multiple-cursors)
-    (cf-multiple-cursors-setup)
-  (message "multiple-cursors not installed"))
-#+END_SRC
-* markdown
-#+BEGIN_SRC emacs-lisp :tangle no
-(defun cf-setup-md ()
-  (defun cf-md-mode-hook ()
-    (cf-set-key-bindings
-     'define-key
-     '(
-       ;; ("C-c C-j" markdown-next-visible-heading)
-       ;; ("C-c C-k" markdown-previous-visible-heading)
-       ;; ("C-c C-l" markdown-forward-same-level)
-       ;; ("C-c C-h" markdown-backward-same-level)
-       ;; ("C-c C-u" markdown-up-heading)
-       )
-     markdown-mode-map))
-  (add-hook 'markdown-mode-hook 'cf-md-mode-hook))
-
-(if (package-installed-p 'markdown-mode)
-    (cf-setup-md)
-  (message "md not installed"))
 #+END_SRC
 * outline
 #+BEGIN_SRC emacs-lisp
@@ -2039,19 +1908,6 @@ Called by `imenu--generic-function'."
 ;; (if (package-installed-p 'company-jedi)
 ;;     (cf-jedi-setup)
 ;;   (message "company-jedi not installed"))
-#+END_SRC
-* scss
-#+BEGIN_SRC emacs-lisp
-(defun cf-scss-mode-setup ()
-  (setq scss-compile-at-save nil)
-  (defun cf-init-scss ()
-    (message "init-scss")
-    (setq css-indent-offset 2))
-  (add-hook 'scss-mode-hook 'cf-init-scss))
-
-(if (package-installed-p 'scss-mode)
-    (cf-scss-mode-setup)
-  (message "scss-mode not installed"))
 #+END_SRC
 * shell
 ** sh mode
@@ -2199,57 +2055,6 @@ Called by `imenu--generic-function'."
     (cf-plantuml-setup)
   (message "plantuml-mode not installed"))
 #+end_src
-* Find Library File
-Functions and bindings to make library files more easy to examine and
-change.
-#+BEGIN_SRC emacs-lisp
-(defun find-library-file (library)
-  "Takes a single argument LIBRARY, being a library file to search for.
-Searches for LIBRARY directly (in case relative to current directory,
-or absolute) and then searches directories in load-path in order.  It
-will test LIBRARY with no added extension, then with .el, and finally
-with .elc.  If a file is found in the search, it is visited.  If none
-is found, an error is signaled.  Note that order of extension searching
-is reversed from that of the load function."
-  (interactive "sFind library file: ")
-  (let ((path (cons "" load-path)) exact match elc test found)
-    (while (and (not match) path)
-      (setq test (concat (car path) "/" library)
-            match (if (condition-case nil
-                          (file-readable-p test)
-                        (error nil))
-                      test)
-            path (cdr path)))
-    (setq path (cons "" load-path))
-    (or match
-        (while (and (not elc) path)
-          (setq test (concat (car path) "/" library ".elc")
-                elc (if (condition-case nil
-                            (file-readable-p test)
-                          (error nil))
-                        test)
-                path (cdr path))))
-    (setq path (cons "" load-path))
-    (while (and (not match) path)
-      (setq test (concat (car path) "/" library ".el")
-            match (if (condition-case nil
-                          (file-readable-p test)
-                        (error nil))
-                      test)
-            path (cdr path)))
-    (setq found (or match elc))
-    (if found
-        (progn
-          (find-file found)
-          (and match elc
-               (message "(library file %s exists)" elc)
-               (sit-for 1))
-          (message "Found library file %s" found))
-      (error "Library file \"%s\" not found." library))))
-
-(define-key ctl-x-4-map "l" 'find-library-file)
-(define-key ctl-x-4-map "r" 'byte-recompile-directory)
-#+END_SRC
 * Todo List
 ** TODO read a list of people with nice emacs config files
 - https://github.com/zamansky/emacs.dz
