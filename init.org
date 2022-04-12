@@ -38,6 +38,7 @@
    - [[#misc][Misc]]
  - [[#evil][evil]]
    - [[#init][init]]
+   - [[#evil-collection][evil-collection]]
  - [[#more-ui][More UI]]
    - [[#doom-modeline][doom-modeline]]
    - [[#doom-theme][doom-theme]]
@@ -635,6 +636,14 @@ From: http://blog.plover.com/prog/revert-all.html
 
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
+#+end_src
+** evil-collection
+https://github.com/emacs-evil/evil-collection
+#+begin_src emacs-lisp
+(use-package evil-collection
+  :after evil
+  :config
+  (evil-collection-init))
 #+end_src
 * More UI
 ** doom-modeline
