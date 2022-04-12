@@ -49,6 +49,7 @@
    - [[#init-1][init]]
    - [[#ivy-minibuffer-key-bindings][ivy minibuffer key bindings]]
    - [[#saving-the-current-completion-session-to-a-buffer][saving the current completion session to a buffer]]
+ - [[#helpful][helpful]]
  - [[#org-mode][org-mode]]
    - [[#init-2][init]]
    - [[#add-agenda-files-into-emacs][add agenda files into =~/.emacs=]]
@@ -754,6 +755,18 @@ https://github.com/justbur/emacs-which-key
 | o       | ivy-occur-dispatch    |                                                    |
 | q       | quit-window           |                                                    |
 |---------+-----------------------+----------------------------------------------------|
+* helpful
+#+begin_src emacs-lisp
+(use-package helpful
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-key] . helpful-key))
+#+end_src
 * org-mode
 ** init
 #+BEGIN_SRC emacs-lisp
