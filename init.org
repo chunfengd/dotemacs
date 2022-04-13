@@ -223,7 +223,7 @@ https://github.com/jwiegley/use-package
 #+END_SRC
 ** Basic
 #+begin_src emacs-lisp
-(load-theme 'wombat)
+;; (load-theme 'wombat)
 (setq inhibit-startup-message t)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
