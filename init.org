@@ -644,10 +644,11 @@ https://github.com/justbur/emacs-which-key
          :map ivy-minibuffer-map
          ("TAB" . ivy-alt-done)
          ("C-l" . ivy-alt-done)
-         ("C-j" . ivy-next-line) ; default M-n
-         ("C-k" . ivy-previous-line) ; default M-p
-         ("C-f" . ivy-scroll-up-command) ; default C-v
-         ("C-b" . ivy-scroll-down-command) ; default M-v
+         ("C-j" . ivy-next-line)
+         ("C-k" . ivy-previous-line)
+         ("C-f" . ivy-scroll-up-command)
+         ("C-b" . ivy-scroll-down-command)
+         ("C-w" . ivy-yank-word)
          :map ivy-switch-buffer-map
          ("C-k" . ivy-previous-line)
          ("C-l" . ivy-done)
