@@ -657,7 +657,11 @@ https://github.com/justbur/emacs-which-key
          :map ivy-reverse-i-search-map
          ("C-k" . ivy-previous-line)
          ("C-d" . ivy-reverse-i-search-kill))
-  :config (ivy-mode 1))
+  :config
+  (ivy-mode 1)
+  ;; add ‘recentf-mode’ and bookmarks to ‘ivy-switch-buffer’.
+  (setq ivy-use-virtual-buffers t)
+)
 
 (use-package ivy-rich
   :init
@@ -665,8 +669,7 @@ https://github.com/justbur/emacs-which-key
 
 (use-package counsel
   :bind (("M-x" . counsel-M-x)
-         ("C-x C-b" . counsel-ibuffer)
-         ("C-x b" . counsel-recentf)
+         ("C-x C-b" . counsel-switch-buffer)
          ("C-x C-f" . counsel-find-file)
          :map minibuffer-local-map
          ("C-r" . 'counsel-minibuffer-history)))
