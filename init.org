@@ -671,6 +671,7 @@ https://github.com/justbur/emacs-which-key
   :bind (("M-x" . counsel-M-x)
          ("C-x C-b" . counsel-switch-buffer)
          ("C-x C-f" . counsel-find-file)
+         ("M-y" . counsel-yank-pop)
          :map minibuffer-local-map
          ("C-r" . 'counsel-minibuffer-history)))
 #+end_src
