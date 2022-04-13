@@ -722,6 +722,9 @@ https://github.com/justbur/emacs-which-key
   (setq projectile-switch-project-action #'projectile-dired)
   :config
   (projectile-mode))
+
+(use-package counsel-projectile
+  :config (counsel-projectile-mode))
 #+end_src
 *** useful commands
 |----+---------------------------|
@@ -899,7 +902,7 @@ https://github.com/justbur/emacs-which-key
 - http://tuhdo.github.io/helm-projectile.html
 - https://github.com/bbatsov/projectile
 ** Setup helm
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (defun cf-setup-helm ()
   (require 'helm)
   (require 'helm-config)
