@@ -63,6 +63,9 @@
    - [[#use-toc-org-to-automatically-generate-a-table-of-contents-for-org-files][Use toc-org to automatically generate a table of contents for Org files.]]
  - [[#text-mode][text-mode]]
    - [[#auto-fill][Auto Fill]]
+ - [[#lsp][lsp]]
+   - [[#config][config]]
+ - [[#typescript][typescript]]
  - [[#cc-mode][cc-mode]]
  - [[#cedet][cedet]]
  - [[#company][company]]
@@ -90,7 +93,6 @@
    - [[#node-modules-path-setup][node-modules-path-setup]]
    - [[#js-mode][js-mode]]
    - [[#js2-mode][js2-mode]]
-   - [[#js3-mode][js3-mode]]
    - [[#json-mode][json-mode]]
  - [[#jump-avy][jump (avy)]]
  - [[#lisp][lisp]]
@@ -900,6 +902,39 @@ https://github.com/justbur/emacs-which-key
 #+BEGIN_SRC emacs-lisp
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 #+END_SRC
+* lsp
+** config
+#+begin_src emacs-lisp
+(defun my/lsp-mode-setup ()
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  (lsp-headerline-breadcrumb-mode))
+
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :hook (lsp-mode . my/lsp-mode-setup)
+  :init
+  (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+  :config
+  (lsp-enable-which-key-integration t))
+
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-position 'bottom))
+
+(use-package lsp-treemacs
+  :after lsp)
+
+(use-package lsp-ivy)
+#+end_src
+* typescript
+#+begin_src emacs-lisp
+(use-package typescript-mode
+  :mode "\\.\\(js\\|jsx\\|ts\\)\\'"
+  :hook (typescript-mode . lsp-deferred)
+  :config
+  (setq typescript-indent-level 2))
+#+end_src
 * cc-mode
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.vs$" . c++-mode))
@@ -1489,13 +1524,13 @@ If it's found, then add it to the `exec-path'."
 (cf-node-modules-path-setup)
 #+END_SRC
 ** js-mode
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (defun cf-js-setup ()
   (setq-default js-indent-level 2))
 (cf-js-setup)
 #+END_SRC
 ** js2-mode
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (defun cf-js2-setup ()
   ;; js2-mode-hide-comments
   ;; js2-mode-hide-element
@@ -1529,32 +1564,6 @@ If it's found, then add it to the `exec-path'."
 (if (package-installed-p 'js2-mode)
     (cf-js2-setup)
   (message "js2-mode not installed"))
-#+END_SRC
-** js3-mode
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-#+BEGIN_SRC emacs-lisp
-(defun cf-js3-setup ()
-  (autoload 'js3-mode "js3-mode" nil t)
-  (eval-after-load "js3-mode"
-    (add-hook 'js3-mode-hook
-              (lambda ()
-                (setq ;; js3-auto-indent-p nil
-                      js3-curly-indent-offset 0
-                      js3-enter-indents-newline t
-                      js3-expr-indent-offset 2
-                      js3-indent-on-enter-key t
-                      js3-lazy-commas t
-                      js3-lazy-dots t
-                      js3-lazy-operators t
-                      js3-paren-indent-offset 2
-                      js3-square-indent-offset 4)
-                (auto-complete-mode 1))))
-  (add-to-list 'auto-mode-alist '("\\.js$" . js3-mode)))
-(if (package-installed-p 'js3-mode)
-    (cf-js3-setup)
-  (message "js3-mode not installed"))
 #+END_SRC
 ** json-mode
 #+BEGIN_SRC emacs-lisp
