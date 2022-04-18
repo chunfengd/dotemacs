@@ -66,13 +66,6 @@
  - [[#lsp][lsp]]
    - [[#config][config]]
  - [[#typescript][typescript]]
- - [[#cc-mode][cc-mode]]
- - [[#cedet][cedet]]
- - [[#company][company]]
-   - [[#init-3][init]]
-   - [[#company-quickhelp][company-quickhelp]]
-   - [[#misc-1][misc]]
-   - [[#company-c-headers][company-c-headers]]
  - [[#dired][dired]]
    - [[#key-binding][key binding]]
    - [[#listing-parameters][Listing Parameters]]
@@ -88,18 +81,12 @@
  - [[#html][html]]
    - [[#web-mode][web-mode]]
  - [[#imenu][imenu]]
- - [[#java][java]]
  - [[#js][js]]
    - [[#node-modules-path-setup][node-modules-path-setup]]
    - [[#js-mode][js-mode]]
    - [[#js2-mode][js2-mode]]
    - [[#json-mode][json-mode]]
  - [[#jump-avy][jump (avy)]]
- - [[#lisp][lisp]]
-   - [[#paredit][paredit]]
-   - [[#clojure][clojure]]
- - [[#outline][outline]]
- - [[#python][python]]
  - [[#shell][shell]]
    - [[#sh-mode][sh mode]]
    - [[#shell-mode][shell mode]]
@@ -190,7 +177,7 @@ Run M-x all-the-icons-install-fonts
 (setq package-archives
       '(
         ;; ("cf-melpa" . ,(cf-path "../cf-melpa/packages"))
-        ;; ("melpa-stable" . "https://stable.melpa.org/packages/")
+        ("melpa-stable" . "https://stable.melpa.org/packages/")
         ("melpa" . "https://melpa.org/packages/")
         ("org" . "http://orgmode.org/elpa/")
         ;; ("elpa" . "https://elpa.gnu.org/packages/")
@@ -198,7 +185,7 @@ Run M-x all-the-icons-install-fonts
         ))
 (package-initialize)
 (unless package-archive-contents
-  (package-refresh-contents))
+  (package-refresh-contents nil))
 #+end_src
 ** use-package
 https://github.com/jwiegley/use-package
@@ -935,216 +922,6 @@ https://github.com/justbur/emacs-which-key
   :config
   (setq typescript-indent-level 2))
 #+end_src
-* cc-mode
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'auto-mode-alist '("\\.vs$" . c++-mode))
-(add-to-list 'auto-mode-alist '("\\.fs$" . c++-mode))
-(defun cf-semantic-ia-fast-jump-back ()
-  "zz from: http://emacser.com/cedet.htm"
-  (interactive)
-  (if (ring-empty-p (oref semantic-mru-bookmark-ring ring))
-      (error "Semantic Bookmark ring is currently empty"))
-  (let* ((ring (oref semantic-mru-bookmark-ring ring))
-         (alist (semantic-mrub-ring-to-assoc-list ring))
-         (first (cdr (car alist))))
-    (if (semantic-equivalent-tag-p (oref first tag)
-                                   (semantic-current-tag))
-        (setq first (cdr (car (cdr alist)))))
-    (semantic-mrub-switch-tags first)))
-(c-add-style
- "chunfeng-c-style"
- '("gnu"
-   (c-basic-offset . 4)
-   (c-offsets-alist
-    .
-    ((innamespace . 0)
-     (arglist-intro . 4)
-     (arglist-cont-nonempty . 4)
-     (arglist-close . 4)
-     ))))
-;;(setq c-default-style "chunfeng-c-style")
-(defun cf-init-c ()
-  (cf-set-key-bindings
-   'local-set-key
-   '(
-     ;; ("M-l" c-forward-into-nomenclature)
-     ;; ("M-h" c-backward-into-nomenclature)
-     ;; ("C-M-h" backward-sexp)
-     ;; ("C-M-b" c-mark-function)
-     ;; ("C-c C-j" senator-next-tag)
-     ;; ("C-c C-k" senator-previous-tag)
-     ;; ("C-c C-t" semantic-analyze-proto-impl-toggle)
-     ;; ("C-c C-f" semantic-ia-fast-jump)
-     ;; ("C-c C-b" cf-semantic-ia-fast-jump-back)
-     ("C-M-a" backward-paragraph)
-     ("C-M-e" forward-paragraph)))
-  ;; (semantic-mode)
-  ;; (c-toggle-auto-state)
-  (c-toggle-hungry-state 1))
-(add-hook 'c-mode-hook 'cf-init-c)
-(add-hook 'c++-mode-hook 'cf-init-c)
-#+END_SRC
-* cedet
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-#+BEGIN_SRC emacs-lisp
-;; cedet
-
-;(cf-install-packages '(cedet))
-;(require 'cedet)
-
-(defconst cedet-home "~/.emacs.d/site-byte/cedet")
-(defconst cedet-pro-home "~/.emacs.d/cedet-pro")
-
-(setq byte-compile-warnings nil)
-
-(defconst cf-user-include-dirs
-  (list ".." "../frame" "../src" "../include"
-	"../.." "../../frame" "../../src" "../../include"
-	"../../.." "../../../frame" "../../../src" "../../../include"))
-
-(defun cf-semantic-folding-key-binding ()
-  (cf-set-key-bindings
-   'define-key
-   '(
-     ("C-c C-," semantic-tag-folding-fold-block)
-     ("C-c C-." semantic-tag-folding-show-block)
-     ("C-c C--" semantic-tag-folding-fold-all)
-     ("C-c C-=" semantic-tag-folding-show-all)
-     )
-   semantic-tag-folding-mode-map))
-
-(defun cf-semantic-tag-key-binding ()
-  (cf-set-key-bindings
-   'define-key
-   '(
-     ("f" semantic-ia-fast-jump)
-     ("b" cf-semantic-ia-fast-jump-back)
-     )
-   senator-prefix-map))
-
-(defun cf-load-cedet ()
-  ""
-  (interactive)
-  (add-to-list 'load-path (concat cedet-home "/common"))
-  (require 'cedet)
-  (require 'semantic-ia)
-  (require 'semantic-gcc)
-  ;;(load-file "~/.emacs.d/site-byte/cedet/common/cedet.el")
-  (semantic-load-enable-code-helpers)
-  (semantic-load-enable-minimum-features)
-  ;;(semantic-load-enable-guady-code-helpers)
-  ;;(semantic-load-enable-excessive-code-helpers)
-  ;;(semantic-load-enable-semantic-debugging-helpers)
-  (require 'semanticdb)
-  (global-semanticdb-minor-mode 1)
-  ;;(require 'semanticdb-global)
-  ;;(semanticdb-enable-gnu-global-databases 'c-mode)
-  ;;(semanticdb-enable-gnu-global-databases 'c++-mode)
-  (global-ede-mode 1)
-  (let ((include-dirs cf-user-include-dirs))
-    (if (string-equal system-type "windows-nt")
-	(setq include-dirs
-	      (append include-dirs cf-system-include-dirs)))
-    (mapc (lambda (dir)
-	    (semantic-add-system-include dir 'c++-mode)
-	    (semantic-add-system-include dir 'c-mode))
-	  include-dirs))
-  (require 'semantic-tag-folding nil 'noerror)
-  (global-semantic-tag-folding-mode 1)
-  (cf-semantic-folding-key-binding)
-  (cf-semantic-tag-key-binding)
-  (if (file-exists-p cedet-pro-home)
-      (mapc 'load
-            (directory-files cedet-pro-home t
-                             "^[a-zA-Z0-9].*.el$"))))
-
-;; (if (file-exists-p cedet-home)
-;;     (cf-load-cedet))
-#+END_SRC
-* company
-- [[http://company-mode.github.io/][company-mode]], a modular in-buffer completion framework for Emacs.
-- user manual: http://company-mode.github.io/manual/index.html
-- useful functions
-  - company-show-location
-  - comapny-show-doc-buffer (<f1>)
-  - company-diag
-  - company-other-backend
-  - company-begin-backend
-  - company-capf
-  - company-yasnippet
-- useful variables
-  - company-backends
-** init
-#+BEGIN_SRC emacs-lisp
-(defun cf-setup-company ()
-  ;; Init
-  (add-hook 'after-init-hook #'global-company-mode)
-  ;; Reduce completion menu time delay to minimum.
-  (customize-set-variable 'company-idle-delay 0)
-  ;; key
-  (with-eval-after-load 'company
-    ;; select completion
-    (cf-set-key-bindings
-     'define-key
-     '(
-       ("C-n" company-select-next) ;; "M-n"
-       ("C-p" company-select-previous) ;; "M-p"
-       ;; ("<RET>" company-complete-selection)
-       ;; ("<tab>" company-complete-common)
-       )
-     company-active-map)
-    (cf-set-key-bindings
-     'global-set-key
-     '(
-       ("C-n" company-complete) ;; "M-n"
-       ))
-    )
-  ;; Show quick-access numbers of completion options.
-  (customize-set-variable 'company-show-numbers t)
-  ;; Align annotations.
-  (customize-set-variable 'company-tooltip-align-annotations t)
-  (customize-set-variable 'company-dabbrev-downcase nil))
-(if (package-installed-p 'company)
-    (cf-setup-company)
-  (message "company mode not installed"))
-#+END_SRC
-** company-quickhelp
-Use [[https://github.com/expez/company-quickhelp][company-quickhelp]], which shows a documentation pop-up during
-=company-mode= completion.
-#+BEGIN_SRC emacs-lisp :tangle no
-(defun cf-setup-company-quickhelp ()
-  (company-quickhelp-mode t)
-  ;; Do not show pop-up automatically
-  (customize-set-variable 'company-quickhelp-delay nil)
-  ;; Define binding for showing pop-up manually in company-active-map instead of
-  ;; company-quickhelp-mode-map; this activates it only when we want completion.
-  (with-eval-after-load 'company
-    (define-key company-active-map (kbd "C-c h") #'company-quickhelp-manual-begin)))
-(if (and (package-installed-p 'company)
-         (package-installed-p 'company-quickhelp-mode))
-    (cf-setup-company-quickhelp)
-  (message "company or company-quickhelper not installed"))
-#+END_SRC
-** misc
-There's also ~company-show-doc-buffer~, which is built into
-~company-mode-map~, but the selections disappear when the doc buffer
-appears (maybe it just doesn't play nice with =popwin=?). Furthermore,
-it's easier to read the documentation when it's right next to the
-candidate.
-** company-c-headers
-- https://github.com/randomphrase/company-c-headers
-- This library enables the completion of C/C++ header file names using
-  Company mode
-#+BEGIN_SRC emacs-lisp
-(defun cf-setup-company-c-headers ()
-  (with-eval-after-load 'company
-    (add-to-list 'company-backends 'company-c-headers)))
-(if (package-installed-p 'company-c-headers)
-    (cf-setup-company-c-headers)
-  (message "company-c-headers not installed"))
-#+END_SRC
 * dired
 ** key binding
 #+BEGIN_SRC emacs-lisp
@@ -1168,7 +945,7 @@ candidate.
   (setq dired-listing-switches parameter))
 #+END_SRC
 * flycheck
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (defvar flycheck-global-modes)
 
 (defun cf-setup-flycheck ()
@@ -1473,24 +1250,6 @@ candidate.
 #+BEGIN_SRC emacs-lisp
 (setq imenu-auto-rescan nil)
 #+END_SRC
-* java
-#+BEGIN_SRC emacs-lisp
-(defun cf-java-func ()
-  (setq c-basic-offset 2)
-  (cf-set-key-bindings
-   'local-set-key
-   '(
-     ;; ("C-M-h" backward-sexp)
-     ;; ("C-M-b" c-mark-function)
-     ;; ("C-M-a" nil)
-     ;; ("C-M-e" nil)
-     ;; ("M-k" c-beginning-of-defun)
-     ;; ("M-j" c-end-of-defun)
-     ;; ("C-d" nil)
-     ("C-c C-c" comment-or-uncomment-region)
-     )))
-(add-hook 'java-mode-hook 'cf-java-func)
-#+END_SRC
 * js
 ** node-modules-path-setup
 From: https://github.com/codesuki/add-node-modules-path
@@ -1595,172 +1354,6 @@ If it's found, then add it to the `exec-path'."
     (cf-setup-avy)
   (message "avy not installed"))
 #+END_SRC
-* lisp
-** paredit
-#+BEGIN_SRC emacs-lisp :tangle no
-(defun cf-paredit-setup ()
-
-  (dolist (mode '(scheme emacs-lisp lisp clojure clojurescript))
-    ;; (when (> (display-color-cells) 8)
-    ;;   (font-lock-add-keywords (intern (concat (symbol-name mode) "-mode"))
-    ;;                           '(("(\\|)" . 'esk-paren-face))))
-    (add-hook (intern (concat (symbol-name mode) "-mode-hook"))
-              'paredit-mode))
-
-  (defun cf-paredit-key ()
-    (cf-set-key-bindings
-     'define-key
-     '(
-       ;; ("C-j" next-line)
-       ;; ("C-k" previous-line)
-       ;; ("C-f" paredit-kill)
-       ;; ("C-n" paredit-newline)
-       ;; ("C-d" nil)
-
-       ;; ("C-M-b" nil)
-       ;; ("C-M-f" nil)
-       ;; ("C-M-h" paredit-backward)
-       ;; ("C-M-l" paredit-forward)
-       ;; ("C-M-j" paredit-forward-up)
-       ;; ("C-M-k" paredit-backward-down)
-
-       ;; ("(" nil)
-       ;; (")" nil)
-       ;; ("[" nil)
-       ;; ("]" nil)
-       ;; ("{" nil)
-       ;; ("}" nil)
-       ;; ("\"" nil)
-       )
-     paredit-mode-map))
-
-  ;; (eval-after-load 'paredit '(cf-paredit-key))
-  )
-
-(if (package-installed-p 'paredit)
-    (cf-paredit-setup)
-  (message "paredit not installed"))
-#+END_SRC
-** clojure
-#+BEGIN_SRC emacs-lisp :tangle no
-(defun cf-clojure-mode-setup ()
-  ;; (add-hook 'nrepl-mode-hook 'subword-mode)
-  ;; (add-hook 'nrepl-mode-hook 'rainbow-delimiters-mode)
-
-  (defun cf-clojure-match-next-def ()
-    "Scans the buffer backwards for the next top-level definition.
-Called by `imenu--generic-function'."
-    (when (re-search-backward "^\\s *(def\\S *[ \n\t]+" nil t)
-      (save-excursion
-        (goto-char (match-end 0))
-        (when (looking-at "#?\\^")
-          (let (forward-sexp-function) ; using the built-in one
-            (forward-sexp)))           ; skip the metadata
-        (re-search-forward "[^ \n\t)]+"))))
-
-  (defun cf-clojure-mode-func ()
-    (cf-set-key-bindings
-     'define-key
-     '(
-       ;; ("{" nil)
-       ;; ("}" nil)
-       )
-     clojure-mode-map)
-    (setq-local imenu-create-index-function
-                (lambda ()
-                  (imenu--generic-function
-                   '((nil cf-clojure-match-next-def 0))))))
-  (add-hook 'clojure-mode-hook 'cf-clojure-mode-func))
-
-(if (package-installed-p 'clojure-mode)
-    (cf-clojure-mode-setup)
-  (message "clojure-mode not installed"))
-#+END_SRC
-* outline
-#+BEGIN_SRC emacs-lisp
-(setq outline-minor-mode-prefix (kbd "C-c C-o"))
-(defun cf-outline-minor-mode ()
-  (cf-set-key-bindings
-   'local-set-key
-   '(
-     ("C-c C-=" show-all)
-     ("C-c C--" hide-body)
-     ("C-c C-[" hide-subtree)
-     ("C-c C-]" show-subtree)
-     ("C-c C-," hide-entry)
-     ("C-c C-." show-entry)
-     ;; ("C-c C-j" outline-next-visible-heading)
-     ;; ("C-c C-k" outline-previous-visible-heading)
-     ;; ("C-c C-h" outline-backward-same-level)
-     ;; ("C-c C-l" outline-forward-same-level)
-     ;; ("C-c C-u" outline-up-heading)
-     )
-   )
-  )
-(add-hook 'outline-minor-mode-hook 'cf-outline-minor-mode)
-#+END_SRC
-* python
-#+BEGIN_SRC emacs-lisp
-(defun cf-python-setup ()
-  (autoload 'python-mode "python-mode" "Python Mode." t)
-  (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-  (add-to-list 'interpreter-mode-alist '("python" . python-mode))
-
-  (setq abbrev-file-name "~/.emacs.d/abbrev_defs")
-
-  (defun cf-init-python ()
-    (cf-set-key-bindings
-     'local-set-key
-     '())
-    (cf-set-key-bindings
-     'define-key
-     '(;; ("C-j" nil)
-       ;; ("C-n" py-newline-and-indent)
-       ;; ("C-m" nil)
-       ;; ("C-M-h" nil)
-       ;; ("C-M-b" py-mark-def-or-class)
-       ;; ("M-j" py-forward-block-or-clause)
-       ;; ("M-k" py-backward-block-or-clause)
-       ;; ("C-M-j" py-forward-block-or-clause)
-       ;; ("C-M-k" py-backward-block-or-clause)
-       ;; ("C-M-a" nil)
-       ;; ("C-M-e" nil)
-       ;; ("C-c C-v" nil)
-       ;; ("C-c C-x" nil)
-       ;; ("C-c C-m" nil)
-       ;; ("C-c C-v C-l" py-shift-right)
-       ;; ("C-c C-v C-h" py-shift-left)
-       ;; ("C-c C-i C-l" py-shift-right)
-       ;; ("C-c C-i C-h" py-shift-left)
-       ;; ("C-c C-x C-l" py-shift-block-or-clause-right)
-       ;; ("C-c C-x C-h" py-shift-block-or-clause-left)
-       )
-     python-mode-map)
-    ;; (subword-mode)
-    (setq python-indent-offset 4)
-    ;; (c-toggle-auto-state)
-    (c-toggle-hungry-state 1)
-    (highlight-indentation-mode)
-    (highlight-indentation-current-column-mode)
-    ;; (setq py-complete-function nil)
-    (company-mode -1) ;; disable auto complete
-    )
-  (add-hook 'python-mode-hook 'cf-init-python))
-
-;; https://www.seas.upenn.edu/~chaoliu/2017/09/01/python-programming-in-emacs/
-(defun cf-jedi-setup ()
-  (with-eval-after-load 'company
-    (add-to-list 'company-backends 'company-jedi))
-  (add-hook 'python-mode-hook 'jedi:setup)
-  (add-hook 'python-mode-hook 'jedi:ac-setup))
-
-(if (package-installed-p 'python-mode)
-    (cf-python-setup)
-  (message "python-mode not installed"))
-;; (if (package-installed-p 'company-jedi)
-;;     (cf-jedi-setup)
-;;   (message "company-jedi not installed"))
-#+END_SRC
 * shell
 ** sh mode
 #+BEGIN_SRC emacs-lisp
@@ -1859,7 +1452,7 @@ Called by `imenu--generic-function'."
 * prettier
 - https://github.com/prettier/prettier-emacs
 - https://prettier.io/
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (defun cf-setup-prettier ()
   ;; (add-hook 'js2-mode-hook
   ;;           #'(lambda ()
