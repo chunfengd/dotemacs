@@ -641,8 +641,8 @@ https://github.com/justbur/emacs-which-key
 )
 
 (use-package ivy-rich
-  :init
-  (ivy-rich-mode 1))
+  :requires (ivy)
+  :init (ivy-rich-mode 1))
 
 (use-package counsel
   :bind (("M-x" . counsel-M-x)
@@ -705,6 +705,7 @@ https://github.com/justbur/emacs-which-key
   (projectile-mode))
 
 (use-package counsel-projectile
+  :requires (projectile counsel)
   :config (counsel-projectile-mode))
 #+end_src
 *** useful commands
