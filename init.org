@@ -11,97 +11,98 @@
 #   - https://github.com/xiongtx/.emacs.d/blob/master/init.org
 
 * Table of Contents                                                     :TOC:
- - [[#introduction][Introduction]]
-   - [[#other-reference][other reference]]
- - [[#dotemacs-path][Dotemacs Path]]
-   - [[#define-cf-path][Define =cf-path=]]
-   - [[#extra-load-path][Extra load path]]
- - [[#how-to-install][How to Install]]
-   - [[#tangle-via-org-mode][Tangle via Org Mode]]
-   - [[#tangle-via-command-line][Tangle via Command Line]]
-   - [[#automatic-tangling][Automatic Tangling]]
-   - [[#add-the-following-line-into-emacs][Add the following line into =~/.emacs=]]
-   - [[#install-icons][Install icons]]
- - [[#package-management][Package Management]]
-   - [[#package-init][package init]]
-   - [[#use-package][use-package]]
-   - [[#install-packages-manually][install packages manually]]
- - [[#basic-ui][Basic UI]]
-   - [[#about-me][About Me]]
-   - [[#basic][Basic]]
-   - [[#speed-bar][Speed Bar]]
-   - [[#font][Font]]
-   - [[#keys][Keys]]
-   - [[#customized-util-functions--bindings][Customized Util Functions & Bindings]]
-   - [[#emacs-default-auto-save][emacs default auto save]]
-   - [[#auto-save][Auto Save]]
-   - [[#misc][Misc]]
- - [[#evil][evil]]
-   - [[#init][init]]
-   - [[#evil-collection][evil-collection]]
- - [[#more-ui][More UI]]
-   - [[#doom-modeline][doom-modeline]]
-   - [[#doom-theme][doom-theme]]
-   - [[#line-number][Line Number]]
-   - [[#parenthesis][parenthesis]]
-   - [[#rainbow-delimiters][rainbow-delimiters]]
- - [[#which-key][which-key]]
- - [[#ivy--counsel][ivy & counsel]]
-   - [[#init-1][init]]
-   - [[#ivy-minibuffer-key-bindings][ivy minibuffer key bindings]]
-   - [[#saving-the-current-completion-session-to-a-buffer][saving the current completion session to a buffer]]
- - [[#helpful][helpful]]
- - [[#projectile][projectile]]
- - [[#org-mode][org-mode]]
-   - [[#init-2][init]]
-   - [[#add-agenda-files-into-emacs][add agenda files into =~/.emacs=]]
-   - [[#org-mode-hook][org-mode-hook]]
-   - [[#agenda-hook][agenda-hook]]
-   - [[#custom-agenda-commands][custom agenda commands]]
-   - [[#keyword-faces][Keyword Faces]]
-   - [[#deadline-warning-days][Deadline Warning Days]]
-   - [[#use-toc-org-to-automatically-generate-a-table-of-contents-for-org-files][Use toc-org to automatically generate a table of contents for Org files.]]
- - [[#text-mode][text-mode]]
-   - [[#auto-fill][Auto Fill]]
- - [[#lsp][lsp]]
-   - [[#config][config]]
- - [[#typescript][typescript]]
- - [[#dired][dired]]
-   - [[#key-binding][key binding]]
-   - [[#listing-parameters][Listing Parameters]]
- - [[#flycheck][flycheck]]
-   - [[#functions][functions]]
- - [[#folding][Folding]]
-   - [[#main-code][Main Code]]
-   - [[#key-binding-1][Key Binding]]
-   - [[#example][Example]]
-   - [[#test][Test]]
-   - [[#todo][Todo]]
- - [[#graphviz-dot-mode][Graphviz Dot Mode]]
- - [[#html][html]]
-   - [[#web-mode][web-mode]]
- - [[#imenu][imenu]]
- - [[#js][js]]
-   - [[#node-modules-path-setup][node-modules-path-setup]]
-   - [[#js-mode][js-mode]]
-   - [[#js2-mode][js2-mode]]
-   - [[#json-mode][json-mode]]
- - [[#jump-avy][jump (avy)]]
- - [[#shell][shell]]
-   - [[#sh-mode][sh mode]]
-   - [[#shell-mode][shell mode]]
-   - [[#term-mode][term mode]]
-   - [[#tm-function][tm function]]
-   - [[#sh-function][sh function]]
- - [[#spell][spell]]
- - [[#tramp][tramp]]
- - [[#prettier][prettier]]
- - [[#plantuml][plantuml]]
- - [[#list][List]]
-   - [[#read-a-list-of-people-with-nice-emacs-config-files][read a list of people with nice emacs config files]]
-   - [[#toc-org][toc-org]]
-   - [[#magit][magit]]
- - [[#license][License]]
+- [[#introduction][Introduction]]
+  - [[#other-reference][other reference]]
+- [[#dotemacs-path][Dotemacs Path]]
+  - [[#define-cf-path][Define =cf-path=]]
+  - [[#extra-load-path][Extra load path]]
+- [[#how-to-install][How to Install]]
+  - [[#tangle-via-org-mode][Tangle via Org Mode]]
+  - [[#tangle-via-command-line][Tangle via Command Line]]
+  - [[#automatic-tangling][Automatic Tangling]]
+  - [[#add-the-following-line-into-emacs][Add the following line into =~/.emacs=]]
+  - [[#install-icons][Install icons]]
+- [[#package-management][Package Management]]
+  - [[#package-init][package init]]
+  - [[#use-package][use-package]]
+  - [[#install-packages-manually][install packages manually]]
+- [[#basic-ui][Basic UI]]
+  - [[#about-me][About Me]]
+  - [[#basic][Basic]]
+  - [[#speed-bar][Speed Bar]]
+  - [[#keys][Keys]]
+  - [[#customized-util-functions--bindings][Customized Util Functions & Bindings]]
+  - [[#misc][Misc]]
+- [[#evil][evil]]
+  - [[#init][init]]
+  - [[#evil-collection][evil-collection]]
+- [[#more-ui][More UI]]
+  - [[#doom-modeline][doom-modeline]]
+  - [[#doom-theme][doom-theme]]
+  - [[#line-number][Line Number]]
+  - [[#parenthesis][parenthesis]]
+  - [[#rainbow-delimiters][rainbow-delimiters]]
+  - [[#font][Font]]
+  - [[#emacs-default-auto-save][emacs default auto save]]
+  - [[#auto-save][Auto Save]]
+- [[#which-key][which-key]]
+- [[#ivy--counsel][ivy & counsel]]
+  - [[#init-1][init]]
+  - [[#ivy-minibuffer-key-bindings][ivy minibuffer key bindings]]
+  - [[#saving-the-current-completion-session-to-a-buffer][saving the current completion session to a buffer]]
+- [[#helpful][helpful]]
+- [[#projectile][projectile]]
+- [[#org-mode][org-mode]]
+  - [[#init-2][init]]
+  - [[#add-agenda-files-into-emacs][add agenda files into =~/.emacs=]]
+  - [[#org-mode-hook][org-mode-hook]]
+  - [[#agenda-hook][agenda-hook]]
+  - [[#custom-agenda-commands][custom agenda commands]]
+  - [[#keyword-faces][Keyword Faces]]
+  - [[#deadline-warning-days][Deadline Warning Days]]
+  - [[#use-toc-org-to-automatically-generate-a-table-of-contents-for-org-files][Use toc-org to automatically generate a table of contents for Org files.]]
+- [[#text-mode][text-mode]]
+  - [[#auto-fill][Auto Fill]]
+- [[#lsp][lsp]]
+  - [[#config][config]]
+- [[#company][company]]
+- [[#typescript][typescript]]
+- [[#dired][dired]]
+  - [[#key-binding][key binding]]
+  - [[#listing-parameters][Listing Parameters]]
+- [[#flycheck][flycheck]]
+  - [[#functions][functions]]
+- [[#folding][Folding]]
+  - [[#main-code][Main Code]]
+  - [[#key-binding-1][Key Binding]]
+  - [[#example][Example]]
+  - [[#test][Test]]
+  - [[#todo][Todo]]
+- [[#graphviz-dot-mode][Graphviz Dot Mode]]
+- [[#html][html]]
+  - [[#web-mode][web-mode]]
+- [[#imenu][imenu]]
+- [[#js][js]]
+  - [[#node-modules-path-setup][node-modules-path-setup]]
+  - [[#js-mode][js-mode]]
+  - [[#js2-mode][js2-mode]]
+  - [[#json-mode][json-mode]]
+- [[#jump-avy][jump (avy)]]
+- [[#shell][shell]]
+  - [[#sh-mode][sh mode]]
+  - [[#shell-mode][shell mode]]
+  - [[#term-mode][term mode]]
+  - [[#tm-function][tm function]]
+  - [[#sh-function][sh function]]
+- [[#spell][spell]]
+- [[#tramp][tramp]]
+- [[#prettier][prettier]]
+- [[#plantuml][plantuml]]
+- [[#list][List]]
+  - [[#read-a-list-of-people-with-nice-emacs-config-files][read a list of people with nice emacs config files]]
+  - [[#toc-org][toc-org]]
+  - [[#magit][magit]]
+- [[#license][License]]
 
 * Introduction
 :PROPERTIES:
@@ -254,34 +255,6 @@ https://github.com/jwiegley/use-package
     (setq speedbar-show-unknown-files t)
     (display-line-numbers-mode 0)))
 #+END_SRC
-** Font
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-*** Font Lock
-#+BEGIN_SRC emacs-lisp
-(global-font-lock-mode t)
-#+END_SRC
-*** Default Font
-#+BEGIN_SRC emacs-lisp
-(cond
- ;; windows
- ((string-equal system-type "windows-nt")
-  (progn
-    (set-default-font "Consolas:pixelsize=14:antialias=subpixel")
-    (set-fontset-font "fontset-default"
-		      'han '("Microsoft Yahei" . "unicode-bmp"))
-    (add-to-list 'default-frame-alist
-		 '(font . "Consolas:pixelsize=14:antialias=subpixel"))))
- ((string-equal system-type "darwin")
-  (progn
-    (setq default-directory "~/")
-    (if (display-graphic-p)
-        (set-fontset-font
-         t 'han (font-spec :name "Songti SC")))))
- ;; linux
- ((string-equal system-type "gnu/linux")))
-#+END_SRC
 ** Keys
 *** switch C-c & C-g
 #+BEGIN_SRC emacs-lisp
@@ -302,16 +275,8 @@ https://github.com/jwiegley/use-package
 (cf-set-key-bindings
  'global-set-key
  '(
-   ("<f7>" speedbar-get-focus)
-   ("C-x C-o" other-window)
-   ("<M-tab>" other-frame)
-   ("M-q" fill-region)
-   ("M-s" ispell-region)
-   ("M-/" undo)
    ("C-?" help-command)
-   ("C-x f" find-file)
-   ("C-x g" goto-line)
-   ("C-x b" list-buffers)
+   ;;("C-x b" list-buffers)
    ("C-c C-c" comment-or-uncomment-region)
    ))
 #+END_SRC
