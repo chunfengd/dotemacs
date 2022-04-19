@@ -388,27 +388,6 @@ From: http://blog.plover.com/prog/revert-all.html
    (t
     (run-with-idle-timer seconds nil func))))
 #+end_src
-** emacs default auto save
-#+begin_src emacs-lisp
-;; https://emacs.stackexchange.com/questions/17210/how-to-place-all-auto-save-files-in-a-directory
-(setq auto-save-file-name-transforms
-  `((".*" "~/.emacs-saves/" t)))
-#+end_src
-** Auto Save
-- refs
-  - https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-misc.el
-  - https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-autoload.el
-#+begin_src emacs-lisp
-(defun setup-auto-save ()
-  (autoload 'auto-save-enable "auto-save" "" t)
-  (with-eval-after-load 'auto-save
-    (push 'my-file-too-big-p auto-save-exclude)
-    (push 'my-check-major-mode-for-auto-save auto-save-exclude)
-    (setq auto-save-idle 1)
-    (setq auto-save-slient t))
-  (my-run-with-idle-timer 1 #'auto-save-enable))
-(setup-auto-save)
-#+end_src
 ** Misc
 *** Mac Key
 #+BEGIN_SRC emacs-lisp
@@ -422,10 +401,6 @@ From: http://blog.plover.com/prog/revert-all.html
   (progn
     (setq mac-option-key-is-meta nil)
     (setq mac-command-key-is-meta t)
-    ;;(setq mac-command-modifier 'meta)
-    ;;(setq mac-option-modifier nil)
-    ;; (setenv "NODE_NO_READLINE" "1")
-    ;; (exec-path-from-shell-initialize)
     ))
  ((string-equal system-type "gnu/linux")
   (message "linux")
@@ -576,6 +551,51 @@ https://github.com/Fanael/rainbow-delimiters
 #+begin_src emacs-lisp
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
+#+end_src
+** Font
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+*** Default Font
+#+BEGIN_SRC emacs-lisp
+(cond
+ ;; windows
+ ((string-equal system-type "windows-nt")
+  (progn
+    (set-default-font "Consolas:pixelsize=14:antialias=subpixel")
+    (set-fontset-font "fontset-default"
+		      'han '("Microsoft Yahei" . "unicode-bmp"))
+    (add-to-list 'default-frame-alist
+		 '(font . "Consolas:pixelsize=14:antialias=subpixel"))))
+ ((string-equal system-type "darwin")
+  (progn
+    (setq default-directory "~/")
+    (if (display-graphic-p)
+        (set-fontset-font
+         t 'han (font-spec :name "Songti SC")))))
+ ;; linux
+ ((string-equal system-type "gnu/linux")))
+#+END_SRC
+** emacs default auto save
+#+begin_src emacs-lisp
+;; https://emacs.stackexchange.com/questions/17210/how-to-place-all-auto-save-files-in-a-directory
+(setq auto-save-file-name-transforms
+  `((".*" "~/.emacs-saves/" t)))
+#+end_src
+** Auto Save
+- refs
+  - https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-misc.el
+  - https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-autoload.el
+#+begin_src emacs-lisp
+(defun setup-auto-save ()
+  (autoload 'auto-save-enable "auto-save" "" t)
+  (with-eval-after-load 'auto-save
+    (push 'my-file-too-big-p auto-save-exclude)
+    (push 'my-check-major-mode-for-auto-save auto-save-exclude)
+    (setq auto-save-idle 1)
+    (setq auto-save-slient t))
+  (my-run-with-idle-timer 1 #'auto-save-enable))
+(setup-auto-save)
 #+end_src
 * which-key
 https://github.com/justbur/emacs-which-key
@@ -878,6 +898,38 @@ https://github.com/justbur/emacs-which-key
   :after lsp)
 
 (use-package lsp-ivy)
+#+end_src
+* company
+- user manual: http://company-mode.github.io/manual/index.html
+- useful functions
+  - company-show-location
+  - company-show-doc-buffer
+  - company-diag
+  - company-other-backend
+  - company-begin-backend
+  - company-capf
+  - company-yasnippet
+- useful variables
+  - company-backends
+#+begin_src emacs-lisp
+(use-package company
+  :after lsp-mode
+  ;; :hook (lsp-mode . company-mode)
+  :bind (("C-n" . company-complete)
+         :map company-active-map
+         ("C-n" . company-select-next)
+         ("C-p" . company-select-previous)
+         :map company-active-map
+         ("C-n" . company-select-next)
+         ("C-p" . company-select-previous))
+  :custom
+  (company-minimum-prefix-length 3)
+  (company-idle-delay 0.3)
+  (company-show-numbers t)
+  (company-tootip-align-annotations t)
+  (campany-dabbrev-downcase nil)
+  :config
+  (global-company-mode 1))
 #+end_src
 * typescript
 #+begin_src emacs-lisp
