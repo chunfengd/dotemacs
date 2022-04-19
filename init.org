@@ -52,6 +52,12 @@
   - [[#saving-the-current-completion-session-to-a-buffer][saving the current completion session to a buffer]]
 - [[#helpful][helpful]]
 - [[#projectile][projectile]]
+- [[#lsp][lsp]]
+  - [[#config][config]]
+- [[#company][company]]
+  - [[#config-1][config]]
+- [[#flycheck][flycheck]]
+  - [[#functions][functions]]
 - [[#org-mode][org-mode]]
   - [[#init-2][init]]
   - [[#add-agenda-files-into-emacs][add agenda files into =~/.emacs=]]
@@ -63,16 +69,13 @@
   - [[#use-toc-org-to-automatically-generate-a-table-of-contents-for-org-files][Use toc-org to automatically generate a table of contents for Org files.]]
 - [[#text-mode][text-mode]]
   - [[#auto-fill][Auto Fill]]
-- [[#lsp][lsp]]
-  - [[#config][config]]
-- [[#company][company]]
-  - [[#config-1][config]]
 - [[#typescript][typescript]]
+- [[#java][java]]
+  - [[#config-2][config]]
+  - [[#set-java_home--lsp-java-java-path-in-emacs][set JAVA_HOME & lsp-java-java-path in .emacs]]
 - [[#dired][dired]]
   - [[#key-binding][key binding]]
   - [[#listing-parameters][Listing Parameters]]
-- [[#flycheck][flycheck]]
-  - [[#functions][functions]]
 - [[#folding][Folding]]
   - [[#main-code][Main Code]]
   - [[#key-binding-1][Key Binding]]
@@ -443,7 +446,7 @@ From: http://blog.plover.com/prog/revert-all.html
 (setq server-name "emacs-server")
 (server-start)
 #+END_SRC
-*** exec-path-from-shell
+*** TODO exec-path-from-shell
 #+BEGIN_SRC emacs-lisp
 (if (package-installed-p 'exec-path-from-shell)
     (progn
@@ -711,6 +714,104 @@ https://github.com/justbur/emacs-which-key
 | sr | projectile-ripgrep        |
 | sg | projectile-grep           |
 |----+---------------------------|
+* lsp
+- https://emacs-lsp.github.io/lsp-mode/
+- https://emacs-lsp.github.io/lsp-mode/page/languages/
+- https://langserver.org/
+** config
+#+begin_src emacs-lisp
+(defun my/lsp-mode-setup ()
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  (lsp-headerline-breadcrumb-mode))
+
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :hook (lsp-mode . my/lsp-mode-setup)
+  :init
+  (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+  :config
+  (lsp-enable-which-key-integration t))
+
+(use-package lsp-ui
+  :requires lsp-mode
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-position 'bottom))
+
+(use-package lsp-treemacs
+  :requires lsp-mode
+  :after lsp)
+
+(use-package lsp-ivy
+  :requires lsp-mode)
+#+end_src
+* company
+- user manual: http://company-mode.github.io/manual/index.html
+- useful functions
+  - company-show-location
+  - company-show-doc-buffer
+  - company-diag
+  - company-other-backend
+  - company-begin-backend
+  - company-capf
+  - company-yasnippet
+- useful variables
+  - company-backends
+** config
+#+begin_src emacs-lisp
+(use-package company
+  ;; :after lsp-mode
+  ;; :hook (lsp-mode . company-mode)
+  :bind (("C-n" . company-complete)
+         :map company-active-map
+         ("C-n" . company-select-next)
+         ("C-p" . company-select-previous)
+         :map company-active-map
+         ("C-n" . company-select-next)
+         ("C-p" . company-select-previous))
+  :custom
+  (company-minimum-prefix-length 3)
+  (company-idle-delay 0.0)
+  (company-show-numbers t)
+  (company-tootip-align-annotations t)
+  (campany-dabbrev-downcase nil)
+  :config
+  (global-company-mode 1))
+#+end_src
+* TODO flycheck
+#+BEGIN_SRC emacs-lisp :tangle no
+(defvar flycheck-global-modes)
+
+(defun cf-setup-flycheck ()
+  (require 'flycheck)
+  (add-hook 'after-init-hook 'global-flycheck-mode)
+  (setq flycheck-global-modes
+        '(emacs-lisp-mode js-mode js2-mode json-mode web-mode))
+  (setq-default flycheck-disabled-checkers
+                '(emacs-lisp-checkdoc))
+  ;; jsx setting
+  (setq-default flycheck-disabled-checkers
+                (append flycheck-disabled-checkers
+                        '(javascript-jshint)))
+  (setq-default flycheck-disabled-checkers
+                (append flycheck-disabled-checkers
+                        '(json-jsonlint)))
+  (flycheck-add-mode 'javascript-eslint 'web-mode)
+)
+
+(if (package-installed-p 'flycheck)
+    (cf-setup-flycheck)
+  (message "flycheck not installed"))
+#+END_SRC
+** functions
+- =flycheck-verify-setup= (=C-c ! v=): to check whether flycheck setup
+  is complete
+- (=C-c ! n=) & (=C-c ! p=): to jump back and forth between erroneous
+  places
+- (=C-c ! l=): to pop up a list of all errors in the current buffer
+- =flycheck-select-checker=: to use this as the 1st for current buffer
+- =flycheck-buffer= (=C-c ! c=): to check manually
+- =[var]flycheck-checker=: checker used for current buffer
 * org-mode
 ** init
 #+BEGIN_SRC emacs-lisp
@@ -875,64 +976,6 @@ https://github.com/justbur/emacs-which-key
 #+BEGIN_SRC emacs-lisp
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 #+END_SRC
-* lsp
-** config
-#+begin_src emacs-lisp
-(defun my/lsp-mode-setup ()
-  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
-  (lsp-headerline-breadcrumb-mode))
-
-(use-package lsp-mode
-  :commands (lsp lsp-deferred)
-  :hook (lsp-mode . my/lsp-mode-setup)
-  :init
-  (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
-  :config
-  (lsp-enable-which-key-integration t))
-
-(use-package lsp-ui
-  :hook (lsp-mode . lsp-ui-mode)
-  :custom
-  (lsp-ui-doc-position 'bottom))
-
-(use-package lsp-treemacs
-  :after lsp)
-
-(use-package lsp-ivy)
-#+end_src
-* company
-- user manual: http://company-mode.github.io/manual/index.html
-- useful functions
-  - company-show-location
-  - company-show-doc-buffer
-  - company-diag
-  - company-other-backend
-  - company-begin-backend
-  - company-capf
-  - company-yasnippet
-- useful variables
-  - company-backends
-** config
-#+begin_src emacs-lisp
-(use-package company
-  ;; :after lsp-mode
-  ;; :hook (lsp-mode . company-mode)
-  :bind (("C-n" . company-complete)
-         :map company-active-map
-         ("C-n" . company-select-next)
-         ("C-p" . company-select-previous)
-         :map company-active-map
-         ("C-n" . company-select-next)
-         ("C-p" . company-select-previous))
-  :custom
-  (company-minimum-prefix-length 3)
-  (company-idle-delay 0.3)
-  (company-show-numbers t)
-  (company-tootip-align-annotations t)
-  (campany-dabbrev-downcase nil)
-  :config
-  (global-company-mode 1))
-#+end_src
 * typescript
 #+begin_src emacs-lisp
 (use-package typescript-mode
@@ -941,7 +984,21 @@ https://github.com/justbur/emacs-which-key
   :config
   (setq typescript-indent-level 2))
 #+end_src
-* dired
+* java
+- https://emacs-lsp.github.io/lsp-java/
+- https://xpressrazor.wordpress.com/2020/11/04/java-programming-in-emacs/
+** config
+#+begin_src emacs-lisp
+(use-package lsp-java 
+  :requires lsp-mode
+  :hook (java-mode . 'lsp-deferred))
+#+end_src
+** set JAVA_HOME & lsp-java-java-path in .emacs
+#+begin_src emacs-lisp :tangle no
+(setenv "JAVA_HOME"  "/usr/local/Cellar/openjdk@11/11.0.10/libexec/openjdk.jdk/Contents/Home")
+(setq lsp-java-java-path "/usr/local/Cellar/openjdk@11/11.0.10/libexec/openjdk.jdk/Contents/Home/bin/java")
+#+end_src
+* TODO dired
 ** key binding
 #+BEGIN_SRC emacs-lisp
 (defun cf-dired-key-binding ()
@@ -963,40 +1020,6 @@ https://github.com/justbur/emacs-which-key
   (interactive "s")
   (setq dired-listing-switches parameter))
 #+END_SRC
-* flycheck
-#+BEGIN_SRC emacs-lisp :tangle no
-(defvar flycheck-global-modes)
-
-(defun cf-setup-flycheck ()
-  (require 'flycheck)
-  (add-hook 'after-init-hook 'global-flycheck-mode)
-  (setq flycheck-global-modes
-        '(emacs-lisp-mode js-mode js2-mode json-mode web-mode))
-  (setq-default flycheck-disabled-checkers
-                '(emacs-lisp-checkdoc))
-  ;; jsx setting
-  (setq-default flycheck-disabled-checkers
-                (append flycheck-disabled-checkers
-                        '(javascript-jshint)))
-  (setq-default flycheck-disabled-checkers
-                (append flycheck-disabled-checkers
-                        '(json-jsonlint)))
-  (flycheck-add-mode 'javascript-eslint 'web-mode)
-)
-
-(if (package-installed-p 'flycheck)
-    (cf-setup-flycheck)
-  (message "flycheck not installed"))
-#+END_SRC
-** functions
-- =flycheck-verify-setup= (=C-c ! v=): to check whether flycheck setup
-  is complete
-- (=C-c ! n=) & (=C-c ! p=): to jump back and forth between erroneous
-  places
-- (=C-c ! l=): to pop up a list of all errors in the current buffer
-- =flycheck-select-checker=: to use this as the 1st for current buffer
-- =flycheck-buffer= (=C-c ! c=): to check manually
-- =[var]flycheck-checker=: checker used for current buffer
 * Folding
 ** Main Code
 #+BEGIN_SRC emacs-lisp
@@ -1219,7 +1242,7 @@ https://github.com/justbur/emacs-which-key
 - 'occur-mode-find-occurrence-hook
 - bug of [{\n},{\n},{\n}]
 - lightweight-macro
-* Graphviz Dot Mode
+* TODO Graphviz Dot Mode
 #+BEGIN_SRC emacs-lisp
 (defun cf-graphviz-mode ()
   ""
@@ -1228,7 +1251,7 @@ https://github.com/justbur/emacs-which-key
   )
 (add-hook 'graphviz-dot-mode-hook 'cf-graphviz-mode)
 #+END_SRC
-* html
+* TODO html
 ** web-mode
 #+BEGIN_SRC emacs-lisp
 (defun cf-web-mode-setup ()
@@ -1265,11 +1288,11 @@ https://github.com/justbur/emacs-which-key
     (cf-web-mode-setup)
   (message "web-mode not installed"))
 #+END_SRC
-* imenu
+* TODO imenu
 #+BEGIN_SRC emacs-lisp
 (setq imenu-auto-rescan nil)
 #+END_SRC
-* js
+* TODO js
 ** node-modules-path-setup
 From: https://github.com/codesuki/add-node-modules-path
 #+BEGIN_SRC emacs-lisp
@@ -1350,7 +1373,7 @@ If it's found, then add it to the `exec-path'."
     (cf-json-setup)
   (message "json-mode not installed"))
 #+END_SRC
-* jump (avy)
+* TODO jump (avy)
 #+BEGIN_SRC emacs-lisp
 (defun cf-setup-avy ()
   (cf-set-key-bindings
@@ -1373,7 +1396,7 @@ If it's found, then add it to the `exec-path'."
     (cf-setup-avy)
   (message "avy not installed"))
 #+END_SRC
-* shell
+* TODO shell
 ** sh mode
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'auto-mode-alist '("/\\.bash_[^/]*\\'" . sh-mode))
@@ -1457,18 +1480,18 @@ If it's found, then add it to the `exec-path'."
         (shell)
       (shell bf-name))))
 #+END_SRC
-* spell
+* TODO spell
 #+BEGIN_SRC emacs-lisp
 (setq-default ispell-program-name "aspell")
 #+END_SRC
-* tramp
+* TODO tramp
 #+BEGIN_SRC emacs-lisp :tangle no
 (require 'tramp)
 (setq tramp-default-method "scp")
 ;;(custom-set-variables '(tramp-verbose 6))
 (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 #+END_SRC
-* prettier
+* TODO prettier
 - https://github.com/prettier/prettier-emacs
 - https://prettier.io/
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -1493,7 +1516,7 @@ If it's found, then add it to the `exec-path'."
     (cf-setup-prettier)
   (message "prettier-js not installed"))
 #+END_SRC
-* plantuml
+* TODO plantuml
 #+begin_src emacs-lisp
 ;; use M-x plantuml-download-jar<RET> to download jar
 ;; use M-x plantuml-preview<RET> to preview
