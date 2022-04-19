@@ -1,5 +1,5 @@
 #+BABEL: :cache yes
-#+PROPERTY: header-args :tangle yes :comments org
++PROPERTY: header-args :tangle yes :comments org
 
 #+TITLE: Emacs Configuration File
 #+AUTHOR: Chunfeng Dai
@@ -54,6 +54,7 @@
 - [[#projectile][projectile]]
 - [[#lsp][lsp]]
   - [[#config][config]]
+- [[#dap][dap]]
 - [[#company][company]]
   - [[#config-1][config]]
 - [[#flycheck][flycheck]]
@@ -70,8 +71,11 @@
 - [[#text-mode][text-mode]]
   - [[#auto-fill][Auto Fill]]
 - [[#typescript][typescript]]
-- [[#java][java]]
   - [[#config-2][config]]
+  - [[#manual][manual]]
+- [[#java][java]]
+  - [[#config-3][config]]
+  - [[#dap-1][dap]]
   - [[#set-java_home--lsp-java-java-path-in-emacs][set JAVA_HOME & lsp-java-java-path in .emacs]]
 - [[#dired][dired]]
   - [[#key-binding][key binding]]
@@ -746,6 +750,13 @@ https://github.com/justbur/emacs-which-key
 (use-package lsp-ivy
   :requires lsp-mode)
 #+end_src
+* dap
+#+begin_src emacs-lisp
+(use-package dap-mode
+  :requires lsp-mode
+  :after lsp-mode
+  :config (dap-auto-configure-mode))
+#+end_src
 * company
 - user manual: http://company-mode.github.io/manual/index.html
 - useful functions
@@ -978,6 +989,7 @@ https://github.com/justbur/emacs-which-key
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 #+END_SRC
 * typescript
+** config
 #+begin_src emacs-lisp
 (use-package typescript-mode
   :mode "\\.\\(js\\|jsx\\|ts\\)\\'"
@@ -985,6 +997,10 @@ https://github.com/justbur/emacs-which-key
   :config
   (setq typescript-indent-level 2))
 #+end_src
+** manual
+- install js/ts server
+- install eslint globally
+- install eslint server by using M-x lsp-install-server
 * java
 - https://emacs-lsp.github.io/lsp-java/
 - https://xpressrazor.wordpress.com/2020/11/04/java-programming-in-emacs/
@@ -992,7 +1008,13 @@ https://github.com/justbur/emacs-which-key
 #+begin_src emacs-lisp
 (use-package lsp-java 
   :requires lsp-mode
-  :hook (java-mode . 'lsp-deferred))
+  :config (add-hook 'java-mode-hook 'lsp-deferred))
+#+end_src
+** dap
+Run M-x dap-debug to execute a java file.
+#+begin_src emacs-lisp
+(use-package dap-java
+  :ensure nil)
 #+end_src
 ** set JAVA_HOME & lsp-java-java-path in .emacs
 #+begin_src emacs-lisp :tangle no
