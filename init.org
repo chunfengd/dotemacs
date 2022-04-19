@@ -66,6 +66,7 @@
 - [[#lsp][lsp]]
   - [[#config][config]]
 - [[#company][company]]
+  - [[#config-1][config]]
 - [[#typescript][typescript]]
 - [[#dired][dired]]
   - [[#key-binding][key binding]]
@@ -911,9 +912,10 @@ https://github.com/justbur/emacs-which-key
   - company-yasnippet
 - useful variables
   - company-backends
+** config
 #+begin_src emacs-lisp
 (use-package company
-  :after lsp-mode
+  ;; :after lsp-mode
   ;; :hook (lsp-mode . company-mode)
   :bind (("C-n" . company-complete)
          :map company-active-map
