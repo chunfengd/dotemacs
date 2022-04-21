@@ -74,7 +74,8 @@
   - [[#config-2][config]]
   - [[#manual][manual]]
 - [[#java][java]]
-  - [[#config-3][config]]
+  - [[#links][links]]
+  - [[#lsp-java][lsp-java]]
   - [[#dap-1][dap]]
   - [[#set-java_home--lsp-java-java-path-in-emacs][set JAVA_HOME & lsp-java-java-path in .emacs]]
 - [[#dired][dired]]
@@ -991,9 +992,15 @@ https://github.com/justbur/emacs-which-key
 - install eslint globally
 - install eslint server by using M-x lsp-install-server
 * java
-- https://emacs-lsp.github.io/lsp-java/
-- https://xpressrazor.wordpress.com/2020/11/04/java-programming-in-emacs/
-** config
+** links
+- lsp-java
+  - https://emacs-lsp.github.io/lsp-java/
+  - https://xpressrazor.wordpress.com/2020/11/04/java-programming-in-emacs/
+- Eclipse jdt
+  - https://github.com/eclipse/eclipse.jdt.ls/
+- Eclipse configuration files
+  - https://www.ibm.com/docs/en/spm/7.0.4?topic=eclipse-configuration-files
+** lsp-java
 #+begin_src emacs-lisp
 (use-package lsp-java 
   :config (add-hook 'java-mode-hook 'lsp-deferred))
