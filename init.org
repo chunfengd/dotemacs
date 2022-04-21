@@ -17,6 +17,7 @@
   - [[#define-cf-path][Define =cf-path=]]
   - [[#extra-load-path][Extra load path]]
 - [[#how-to-install][How to Install]]
+  - [[#install-emacs-on-mac][install Emacs on Mac]]
   - [[#tangle-via-org-mode][Tangle via Org Mode]]
   - [[#tangle-via-command-line][Tangle via Command Line]]
   - [[#automatic-tangling][Automatic Tangling]]
@@ -148,6 +149,20 @@ on GitHub.
 * How to Install
 After cloning from [[https://github.com/xiongtx/.emacs.d][GitHub]], there is no =init.el= file, only an
 =init.org= file (this file). To produce an =init.el= file, either:
+** install Emacs on Mac
+- https://github.com/railwaycat/homebrew-emacsmacport
+#+begin_src sh
+# tap repo
+brew tap railwaycat/emacsmacport
+
+# install
+brew install emacs-mac
+# or
+brew install --cask emacs-mac
+
+# untap
+brew untap railwaycat/emacsmacport
+#+end_src
 ** Tangle via Org Mode
 Open =init.org= and call =M-x org-babel-tangle=, which extracts code
 blocks from the current file into =init.el=
@@ -287,6 +302,31 @@ https://github.com/jwiegley/use-package
    ;;("C-x b" list-buffers)
    ("C-c C-c" comment-or-uncomment-region)
    ))
+(global-set-key [(hyper c)] 'kill-ring-save)
+(global-set-key [(hyper v)] 'yank)
+#+END_SRC
+*** Mac Key
+#+BEGIN_SRC emacs-lisp
+(cond
+ ((string-equal system-type "windows-nt")
+  ;; windows
+  (progn
+    ))
+ ((string-equal system-type "darwin")
+  ;; mac os x
+  (progn
+    ;; (setq mac-option-key-is-meta t)
+    ;; (setq mac-command-key-is-meta nil)
+
+    ;; works for Emacs Mac Port: https://github.com/railwaycat/homebrew-emacsmacport
+    ;; switch key https://gist.github.com/railwaycat/3498096
+    (setq mac-option-modifier 'meta)
+    (setq mac-command-modifier 'hyper)
+    ))
+ ((string-equal system-type "gnu/linux")
+  (message "linux")
+  (progn
+    (defconst cf-system-include-dirs nil))))
 #+END_SRC
 ** Customized Util Functions & Bindings
 *** Find Map of Key Binding
@@ -397,24 +437,6 @@ From: http://blog.plover.com/prog/revert-all.html
     (run-with-idle-timer seconds nil func))))
 #+end_src
 ** Misc
-*** Mac Key
-#+BEGIN_SRC emacs-lisp
-(cond
- ((string-equal system-type "windows-nt")
-  ;; windows
-  (progn
-    ))
- ((string-equal system-type "darwin")
-  ;; mac os x
-  (progn
-    (setq mac-option-key-is-meta nil)
-    (setq mac-command-key-is-meta t)
-    ))
- ((string-equal system-type "gnu/linux")
-  (message "linux")
-  (progn
-    (defconst cf-system-include-dirs nil))))
-#+END_SRC
 *** Backup Files
 #+BEGIN_SRC emacs-lisp
 (setq-default make-backup-files nil)
