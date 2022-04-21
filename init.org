@@ -668,7 +668,7 @@ https://github.com/justbur/emacs-which-key
 )
 
 (use-package ivy-rich
-  :requires (ivy)
+  ;; :requires (ivy)
   :init (ivy-rich-mode 1))
 
 (use-package counsel
@@ -732,7 +732,7 @@ https://github.com/justbur/emacs-which-key
   (projectile-mode))
 
 (use-package counsel-projectile
-  :requires (projectile counsel)
+  ;; :requires (projectile counsel)
   :config (counsel-projectile-mode))
 #+end_src
 *** useful commands
@@ -761,22 +761,18 @@ https://github.com/justbur/emacs-which-key
   (lsp-enable-which-key-integration t))
 
 (use-package lsp-ui
-  :requires lsp-mode
   :hook (lsp-mode . lsp-ui-mode)
   :custom
   (lsp-ui-doc-position 'bottom))
 
 (use-package lsp-treemacs
-  :requires lsp-mode
   :after lsp)
 
-(use-package lsp-ivy
-  :requires lsp-mode)
+(use-package lsp-ivy)
 #+end_src
 * dap
 #+begin_src emacs-lisp
 (use-package dap-mode
-  :requires lsp-mode
   :after lsp-mode
   :config (dap-auto-configure-mode))
 #+end_src
@@ -1030,7 +1026,6 @@ https://github.com/justbur/emacs-which-key
 ** config
 #+begin_src emacs-lisp
 (use-package lsp-java 
-  :requires lsp-mode
   :config (add-hook 'java-mode-hook 'lsp-deferred))
 #+end_src
 ** dap
