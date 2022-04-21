@@ -1,5 +1,5 @@
 #+BABEL: :cache yes
-+PROPERTY: header-args :tangle yes :comments org
+#+PROPERTY: header-args :tangle yes :comments org
 
 #+TITLE: Emacs Configuration File
 #+AUTHOR: Chunfeng Dai
@@ -247,7 +247,7 @@ https://github.com/jwiegley/use-package
 ;; frame
 (when (display-graphic-p)
   (add-to-list 'default-frame-alist '(height . 42))
-  (add-to-list 'default-frame-alist '(width . 80))
+  (add-to-list 'default-frame-alist '(width . 90))
   (add-to-list 'default-frame-alist '(left . 650))
   (add-to-list 'default-frame-alist '(top . 100)))
 
