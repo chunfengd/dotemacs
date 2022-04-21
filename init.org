@@ -205,7 +205,7 @@ Run =M-x all-the-icons-install-fonts=
         ("melpa-stable" . "https://stable.melpa.org/packages/")
         ("melpa" . "https://melpa.org/packages/")
         ("org" . "http://orgmode.org/elpa/")
-        ;; ("elpa" . "https://elpa.gnu.org/packages/")
+        ("elpa" . "https://elpa.gnu.org/packages/")
         ;; ("marmalade" . "https://marmalade-repo.org/packages/")
         ))
 (package-initialize)
