@@ -151,6 +151,7 @@ After cloning from [[https://github.com/xiongtx/.emacs.d][GitHub]], there is no 
 =init.org= file (this file). To produce an =init.el= file, either:
 ** install Emacs on Mac
 - https://github.com/railwaycat/homebrew-emacsmacport
+- compatible with magnet
 #+begin_src sh
 # tap repo
 brew tap railwaycat/emacsmacport
@@ -178,7 +179,7 @@ $ emacs --batch \
 #+END_SRC
 ** Automatic Tangling
 To avoid having to tangle manually each time a change is made, we can
-add a function to ~after-save-hook~ to tangle the =init.org= after
+add a function to =after-save-hook= to tangle the =init.org= after
 saving.
 #+BEGIN_SRC emacs-lisp
 (defun cf-tangle-init-file ()
@@ -193,7 +194,7 @@ saving.
 (load "/path/to/init.el")
 #+END_SRC
 ** Install icons
-Run M-x all-the-icons-install-fonts
+Run =M-x all-the-icons-install-fonts=
 * Package Management
 ** package init
 #+begin_src emacs-lisp
