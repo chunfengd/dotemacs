@@ -59,7 +59,6 @@
 - [[#company][company]]
   - [[#config-1][config]]
 - [[#flycheck][flycheck]]
-  - [[#functions][functions]]
 - [[#org-mode][org-mode]]
   - [[#init-2][init]]
   - [[#add-agenda-files-into-emacs][add agenda files into =~/.emacs=]]
@@ -810,40 +809,10 @@ https://github.com/justbur/emacs-which-key
   :config
   (global-company-mode 1))
 #+end_src
-* TODO flycheck
-#+BEGIN_SRC emacs-lisp :tangle no
-(defvar flycheck-global-modes)
-
-(defun cf-setup-flycheck ()
-  (require 'flycheck)
-  (add-hook 'after-init-hook 'global-flycheck-mode)
-  (setq flycheck-global-modes
-        '(emacs-lisp-mode js-mode js2-mode json-mode web-mode))
-  (setq-default flycheck-disabled-checkers
-                '(emacs-lisp-checkdoc))
-  ;; jsx setting
-  (setq-default flycheck-disabled-checkers
-                (append flycheck-disabled-checkers
-                        '(javascript-jshint)))
-  (setq-default flycheck-disabled-checkers
-                (append flycheck-disabled-checkers
-                        '(json-jsonlint)))
-  (flycheck-add-mode 'javascript-eslint 'web-mode)
-)
-
-(if (package-installed-p 'flycheck)
-    (cf-setup-flycheck)
-  (message "flycheck not installed"))
+* flycheck
+#+BEGIN_SRC emacs-lisp
+(use-package flycheck)
 #+END_SRC
-** functions
-- =flycheck-verify-setup= (=C-c ! v=): to check whether flycheck setup
-  is complete
-- (=C-c ! n=) & (=C-c ! p=): to jump back and forth between erroneous
-  places
-- (=C-c ! l=): to pop up a list of all errors in the current buffer
-- =flycheck-select-checker=: to use this as the 1st for current buffer
-- =flycheck-buffer= (=C-c ! c=): to check manually
-- =[var]flycheck-checker=: checker used for current buffer
 * org-mode
 ** init
 #+BEGIN_SRC emacs-lisp
