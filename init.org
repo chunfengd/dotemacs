@@ -641,6 +641,7 @@ https://github.com/justbur/emacs-which-key
 - https://github.com/abo-abo/swiper
 - https://oremacs.com/swiper/
 - https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
+- https://sam217pa.github.io/2016/09/13/from-helm-to-ivy/
 ** init
 #+begin_src emacs-lisp
 (use-package ivy
