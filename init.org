@@ -263,7 +263,7 @@ https://github.com/jwiegley/use-package
 ;; frame
 (when (display-graphic-p)
   (add-to-list 'default-frame-alist '(height . 42))
-  (add-to-list 'default-frame-alist '(width . 90))
+  (add-to-list 'default-frame-alist '(width . 85))
   (add-to-list 'default-frame-alist '(left . 650))
   (add-to-list 'default-frame-alist '(top . 100)))
 
