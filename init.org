@@ -12,7 +12,7 @@
 
 * Table of Contents                                                     :TOC:
 - [[#introduction][Introduction]]
-  - [[#other-reference][other reference]]
+  - [[#other-references][other references]]
 - [[#dotemacs-path][Dotemacs Path]]
   - [[#define-cf-path][Define =cf-path=]]
   - [[#extra-load-path][Extra load path]]
@@ -34,8 +34,9 @@
   - [[#keys][Keys]]
   - [[#customized-util-functions--bindings][Customized Util Functions & Bindings]]
   - [[#misc][Misc]]
-- [[#evil][evil]]
-  - [[#init][init]]
+- [[#key-binding][key binding]]
+  - [[#general--leader-keys][general / leader-keys]]
+  - [[#evil][evil]]
   - [[#evil-collection][evil-collection]]
 - [[#more-ui][More UI]]
   - [[#doom-modeline][doom-modeline]]
@@ -48,7 +49,7 @@
   - [[#auto-save][Auto Save]]
 - [[#which-key][which-key]]
 - [[#ivy--counsel][ivy & counsel]]
-  - [[#init-1][init]]
+  - [[#init][init]]
   - [[#ivy-minibuffer-key-bindings][ivy minibuffer key bindings]]
   - [[#saving-the-current-completion-session-to-a-buffer][saving the current completion session to a buffer]]
 - [[#helpful][helpful]]
@@ -60,7 +61,7 @@
   - [[#config-1][config]]
 - [[#flycheck][flycheck]]
 - [[#org-mode][org-mode]]
-  - [[#init-2][init]]
+  - [[#init-1][init]]
   - [[#add-agenda-files-into-emacs][add agenda files into =~/.emacs=]]
   - [[#org-mode-hook][org-mode-hook]]
   - [[#agenda-hook][agenda-hook]]
@@ -79,11 +80,11 @@
   - [[#dap-1][dap]]
   - [[#set-java_home--lsp-java-java-path-in-emacs][set JAVA_HOME & lsp-java-java-path in .emacs]]
 - [[#dired][dired]]
-  - [[#key-binding][key binding]]
+  - [[#key-binding-1][key binding]]
   - [[#listing-parameters][Listing Parameters]]
 - [[#folding][Folding]]
   - [[#main-code][Main Code]]
-  - [[#key-binding-1][Key Binding]]
+  - [[#key-binding-2][Key Binding]]
   - [[#example][Example]]
   - [[#test][Test]]
   - [[#todo][Todo]]
@@ -120,7 +121,7 @@
 This is an Emacs configuration file written in Org-mode. It is adapted
 from Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init.org][config file]] and Tianxiang Xiong's [[https://github.com/xiongtx/.emacs.d/blob/master/init.org][config]]
 on GitHub.
-** other reference
+** other references
 - https://github.com/daviwil/emacs-from-scratch
 * Dotemacs Path
 ** Define =cf-path=
@@ -504,11 +505,32 @@ From: http://blog.plover.com/prog/revert-all.html
   (minibufferp))
 (setq electric-pair-inhibit-predicate #'my-inhibit-electric-pair)
 #+END_SRC
-* evil
+* key binding
+** general / leader-keys
+#+begin_src emacs-lisp
+(use-package general
+  :after evil
+  :config
+  (general-create-definer cf/leader-keys
+    :keymaps '(normal insert visual emacs)
+    :prefix "SPC"
+    :global-prefix "C-M-SPC")
+   (cf/leader-keys
+     ;; avy jump
+     "j"  '(:ignore t :which-key "jump")
+     "jj"  'avy-goto-word-1
+     "jk"  'avy-goto-word-0
+     "jf"  'avy-goto-char-2
+     "jg"  'avy-goto-char
+     "jl"  'avy-goto-line))
+#+end_src
+** evil
 - github: https://github.com/emacs-evil/evil
 - doc: https://evil.readthedocs.io/en/latest/index.html
-** init
 #+begin_src emacs-lisp
+;; Make ESC quit prompts
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
 (use-package evil
   :init
   (setq evil-want-integration t)
