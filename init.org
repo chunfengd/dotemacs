@@ -587,7 +587,8 @@ https://github.com/seagle0128/doom-modeline
 ** Line Number
 #+begin_src emacs-lisp
 (global-display-line-numbers-mode)
-(setq display-line-numbers-type 'visual)
+;; (setq display-line-numbers-type 'visual)
+(setq display-line-numbers-type t)
 (dolist (mode '(org-mode-hook
                 shell-mode-hook
                 term-mode-hook
