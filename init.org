@@ -1454,8 +1454,8 @@ If it's found, then add it to the `exec-path'."
      ;;("M-s" comint-history-isearch-search)
      ("C-c h" comint-history-isearch-backward-regexp)
 
-     ("M-n" comint-next-input)
-     ("M-p" comint-previous-input)
+     ;;("C-n" comint-next-input)
+     ;;("C-p" comint-previous-input)
      ("C-M-n" comint-next-matching-input-from-input)
      ("C-M-p" comint-previous-matching-input-from-input)
 
