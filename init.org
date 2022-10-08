@@ -54,6 +54,7 @@
   - [[#saving-the-current-completion-session-to-a-buffer][saving the current completion session to a buffer]]
 - [[#helpful][helpful]]
 - [[#projectile][projectile]]
+  - [[#useful-commands][useful commands]]
 - [[#lsp][lsp]]
   - [[#config][config]]
 - [[#dap][dap]]
@@ -761,7 +762,7 @@ https://github.com/justbur/emacs-which-key
   ;; :requires (projectile counsel)
   :config (counsel-projectile-mode))
 #+end_src
-*** useful commands
+** useful commands
 |----+---------------------------|
 | p  | projectile-switch-project |
 | f  | projectile-find-file      |
