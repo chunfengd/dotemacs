@@ -546,7 +546,7 @@ From: http://blog.plover.com/prog/revert-all.html
   (define-key evil-replace-state-map (kbd "C-g") 'evil-normal-state)
   (define-key evil-replace-state-map (kbd "C-h")
     'evil-delete-backward-char-and-join)
-  (define-key evil-insert-state-map (kbd "C-n") nil)
+  ;(define-key evil-insert-state-map (kbd "C-n") nil)
 
   ;; Use visual line motions even outside of visual-line-mode buffers
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
@@ -673,22 +673,24 @@ https://github.com/justbur/emacs-which-key
          :map ivy-minibuffer-map
          ("TAB" . ivy-alt-done)
          ("C-l" . ivy-alt-done)
-         ("C-j" . ivy-next-line)
-         ("C-k" . ivy-previous-line)
+         ("C-p" . ivy-previous-line)
+         ("C-n" . ivy-next-line)
          ("C-f" . ivy-scroll-up-command)
          ("C-b" . ivy-scroll-down-command)
          ("C-w" . ivy-yank-word)
          :map ivy-switch-buffer-map
-         ("C-k" . ivy-previous-line)
+         ("C-p" . ivy-previous-line)
+         ("C-n" . ivy-next-line)
          ("C-l" . ivy-done)
          ("C-d" . ivy-switch-buffer-kill)
          :map ivy-reverse-i-search-map
-         ("C-k" . ivy-previous-line)
+         ("C-p" . ivy-previous-line)
+         ("C-n" . ivy-next-line)
          ("C-d" . ivy-reverse-i-search-kill))
   :config
   (ivy-mode 1)
   ;; add ‘recentf-mode’ and bookmarks to ‘ivy-switch-buffer’.
-  (setq ivy-use-virtual-buffers t)
+  (setq ivy-use-virtual-buffers nil)
 )
 
 (use-package ivy-rich
