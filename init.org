@@ -50,9 +50,11 @@
   - [[#emacs-default-auto-save][emacs default auto save]]
   - [[#auto-save][Auto Save]]
 - [[#vertico][vertico]]
+  - [[#vertico-1][vertico]]
   - [[#marginalia][marginalia]]
   - [[#orderless][orderless]]
   - [[#embark][embark]]
+  - [[#consult][consult]]
 - [[#ivy--counsel-deprecated][ivy & counsel (deprecated)]]
   - [[#init][init]]
   - [[#ivy-minibuffer-key-bindings][ivy minibuffer key bindings]]
@@ -699,6 +701,7 @@ https://github.com/Fanael/rainbow-delimiters
 (setup-auto-save)
 #+end_src
 * vertico
+** vertico
 - https://github.com/minad/vertico
 - https://systemcrafters.cc/emacs-tips/streamline-completions-with-vertico/
 #+begin_src emacs-lisp
@@ -719,6 +722,7 @@ https://github.com/Fanael/rainbow-delimiters
   (savehist-mode))
 #+end_src
 ** marginalia
+- https://github.com/minad/marginalia
 #+begin_src emacs-lisp
 (use-package marginalia
   :after vertico
@@ -730,6 +734,7 @@ https://github.com/Fanael/rainbow-delimiters
   (marginalia-mode))
 #+end_src
 ** orderless
+- https://github.com/oantolin/orderless
 #+begin_src emacs-lisp
 (use-package orderless
   :init
@@ -741,6 +746,7 @@ https://github.com/Fanael/rainbow-delimiters
         completion-category-overrides '((file (styles partial-completion)))))
 #+end_src
 ** embark
+- https://github.com/oantolin/embark
 #+begin_src emacs-lisp
 (use-package embark
   :ensure t
@@ -772,10 +778,118 @@ https://github.com/Fanael/rainbow-delimiters
 
 ;; Consult users will also want the embark-consult package.
 (use-package embark-consult
+  :after embark consult
   :ensure t ; only need to install it, embark loads it after consult if found
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 #+end_src
+** consult
+- https://github.com/minad/consult
+#+begin_src emacs-lisp
+(use-package consult
+  :bind (
+         :map minibuffer-local-map
+              ("M-s" . consult-history)
+         )
+  ;; Enable automatic preview at point in the *Completions* buffer. This is
+  ;; relevant when you use the default completion UI.
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+
+    ;; The :init configuration is always executed (Not lazy)
+  :init
+
+  ;; Optionally configure the register formatting. This improves the register
+  ;; preview for `consult-register', `consult-register-load',
+  ;; `consult-register-store' and the Emacs built-ins.
+  (setq register-preview-delay 0.5
+        register-preview-function #'consult-register-format)
+
+  ;; Optionally tweak the register preview window.
+  ;; This adds thin lines, sorting and hides the mode line of the window.
+  (advice-add #'register-preview :override #'consult-register-window)
+
+  ;; Use Consult to select xref locations with preview
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
+
+  ;; Configure other variables and modes in the :config section,
+  ;; after lazily loading the package.
+  :config
+
+  ;; Optionally configure preview. The default value
+  ;; is 'any, such that any key triggers the preview.
+  ;; (setq consult-preview-key 'any)
+  ;; (setq consult-preview-key "M-.")
+  ;; (setq consult-preview-key '("S-<down>" "S-<up>"))
+  ;; For some commands and buffer sources it is useful to configure the
+  ;; :preview-key on a per-command basis using the `consult-customize' macro.
+  (consult-customize
+   consult-theme :preview-key '(:debounce 0.2 any)
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-bookmark consult--source-file-register
+   consult--source-recent-file consult--source-project-recent-file
+   ;; :preview-key "M-."
+   :preview-key '(:debounce 0.4 any))
+
+  ;; Optionally configure the narrowing key.
+  ;; Both < and C-+ work reasonably well.
+  (setq consult-narrow-key "<") ;; "C-+"
+
+  (cf/leader-keys
+    "c"  '(:ignore t :which-key "consult")
+
+    "cl" 'consult-line
+    "cg" 'consult-grep
+    "cG" 'consult-git-grep
+    "cy" 'consult-yank-pop
+    "cm" 'consult-mark
+    )
+
+  ;; Optionally make narrowing help available in the minibuffer.
+  ;; You may want to use `embark-prefix-help-command' or which-key instead.
+  ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
+
+  ;; By default `consult-project-function' uses `project-root' from project.el.
+  ;; Optionally configure a different project root function.
+  ;;;; 1. project.el (the default)
+  ;; (setq consult-project-function #'consult--default-project--function)
+  ;;;; 2. vc.el (vc-root-dir)
+  ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
+  ;;;; 3. locate-dominating-file
+  ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
+  ;;;; 4. projectile.el (projectile-project-root)
+  ;; (autoload 'projectile-project-root "projectile")
+  ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
+  ;;;; 5. No project support
+  ;; (setq consult-project-function nil)
+
+  )
+#+end_src
+*** key functions
+|--------------------+------|
+| function           | desc |
+|--------------------+------|
+| Consult-history    |      |
+| consult-buffer     |      |
+| consult-bookmark   |      |
+| consult-yank-pop   |      |
+| consult-goto-line  |      |
+| consult-outline    |      |
+| consult-mark       |      |
+| consult-flymake    |      |
+| consult-imenu      |      |
+|                    |      |
+| consult-find       |      |
+| consult-locate     |      |
+|                    |      |
+| consult-grep       |      |
+| consult-git-grep   |      |
+| consult-ripgrep    |      |
+|                    |      |
+| consult-line       |      |
+| consult-line-multi |      |
+|--------------------+------|
 * ivy & counsel (deprecated)
 - https://github.com/abo-abo/swiper
 - https://oremacs.com/swiper/
