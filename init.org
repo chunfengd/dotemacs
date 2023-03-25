@@ -566,6 +566,17 @@ https://github.com/justbur/emacs-which-key
     :keymaps '(normal insert visual emacs)
     :prefix "SPC"
     :global-prefix "C-M-SPC")
+  (cf/leader-keys
+    ;; x
+    "x" '(:ignore t :which-key "x")
+    "xf" 'find-file
+    "xb" 'switch-to-buffer
+    "xk" 'kill-buffer
+
+    ;; x5
+    "x5" '(:ignore t :which-key "x5")
+    "x52" 'make-frame-command
+    )
   )
 #+end_src
 ** jump (avy)
