@@ -35,8 +35,8 @@
   - [[#customized-util-functions--bindings][Customized Util Functions & Bindings]]
   - [[#misc][Misc]]
 - [[#key-binding][key binding]]
-  - [[#general--leader-keys][general / leader-keys]]
   - [[#evil][evil]]
+  - [[#general--leader-keys][general / leader-keys]]
   - [[#evil-collection][evil-collection]]
 - [[#more-ui][More UI]]
   - [[#doom-modeline][doom-modeline]]
@@ -48,7 +48,9 @@
   - [[#emacs-default-auto-save][emacs default auto save]]
   - [[#auto-save][Auto Save]]
 - [[#which-key][which-key]]
-- [[#ivy--counsel][ivy & counsel]]
+- [[#vertico][vertico]]
+  - [[#marginalia][marginalia]]
+- [[#ivy--counsel-deprecated][ivy & counsel (deprecated)]]
   - [[#init][init]]
   - [[#ivy-minibuffer-key-bindings][ivy minibuffer key bindings]]
   - [[#saving-the-current-completion-session-to-a-buffer][saving the current completion session to a buffer]]
@@ -507,24 +509,6 @@ From: http://blog.plover.com/prog/revert-all.html
 (setq electric-pair-inhibit-predicate #'my-inhibit-electric-pair)
 #+END_SRC
 * key binding
-** general / leader-keys
-#+begin_src emacs-lisp
-(use-package general
-  :after evil
-  :config
-  (general-create-definer cf/leader-keys
-    :keymaps '(normal insert visual emacs)
-    :prefix "SPC"
-    :global-prefix "C-M-SPC")
-   (cf/leader-keys
-     ;; avy jump
-     "j"  '(:ignore t :which-key "jump")
-     "jj"  'avy-goto-word-1
-     "jk"  'avy-goto-word-0
-     "jf"  'avy-goto-char-2
-     "jg"  'avy-goto-char
-     "jl"  'avy-goto-line))
-#+end_src
 ** evil
 - github: https://github.com/emacs-evil/evil
 - doc: https://evil.readthedocs.io/en/latest/index.html
@@ -555,6 +539,24 @@ From: http://blog.plover.com/prog/revert-all.html
 
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
+#+end_src
+** general / leader-keys
+#+begin_src emacs-lisp
+(use-package general
+  :after evil
+  :config
+  (general-create-definer cf/leader-keys
+    :keymaps '(normal insert visual emacs)
+    :prefix "SPC"
+    :global-prefix "C-M-SPC")
+   (cf/leader-keys
+     ;; avy jump
+     "j"  '(:ignore t :which-key "jump")
+     "jj"  'avy-goto-word-1
+     "jk"  'avy-goto-word-0
+     "jf"  'avy-goto-char-2
+     "jg"  'avy-goto-char
+     "jl"  'avy-goto-line))
 #+end_src
 ** evil-collection
 https://github.com/emacs-evil/evil-collection
@@ -661,7 +663,37 @@ https://github.com/justbur/emacs-which-key
   :config
   (setq which-key-idle-delay 0.6))
 #+end_src
-* ivy & counsel
+* vertico
+- https://github.com/minad/vertico
+#+begin_src emacs-lisp
+(use-package vertico
+  :ensure t
+  :bind (:map vertico-map
+              ("C-n" . vertico-next)
+              ("C-p" . vertico-previous))
+  :init
+  (vertico-mode)
+  :custom
+  ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
+  (setq vertico-cycle t)
+  )
+
+(use-package savehist
+  :init
+  (savehist-mode))
+#+end_src
+** marginalia
+#+begin_src emacs-lisp
+(use-package marginalia
+  :after vertico
+  :ensure t
+  :custom
+  (marginalia-annotators
+   '(marginalia-annotators-heavy marginalia-annotators-light nil))
+  :init
+  (marginalia-mode))
+#+end_src
+* ivy & counsel (deprecated)
 - https://github.com/abo-abo/swiper
 - https://oremacs.com/swiper/
 - https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
@@ -669,6 +701,7 @@ https://github.com/justbur/emacs-which-key
 ** init
 #+begin_src emacs-lisp
 (use-package ivy
+  :disabled ;; switch to vertico
   :diminish
   :bind (("C-s" . swiper)
          :map ivy-minibuffer-map
@@ -696,9 +729,11 @@ https://github.com/justbur/emacs-which-key
 
 (use-package ivy-rich
   ;; :requires (ivy)
+  :disabled ;; switch to vertico
   :init (ivy-rich-mode 1))
 
 (use-package counsel
+  :disabled ;; switch to vertico
   :bind (("M-x" . counsel-M-x)
          ("C-x C-b" . counsel-switch-buffer)
          ("C-x C-f" . counsel-find-file)
@@ -734,6 +769,7 @@ https://github.com/justbur/emacs-which-key
 * helpful
 #+begin_src emacs-lisp
 (use-package helpful
+  :disabled
   :custom
   (counsel-describe-function-function #'helpful-callable)
   (counsel-describe-variable-function #'helpful-variable)
@@ -759,6 +795,7 @@ https://github.com/justbur/emacs-which-key
   (projectile-mode))
 
 (use-package counsel-projectile
+  :disabled ;; switch to vertico
   ;; :requires (projectile counsel)
   :config (counsel-projectile-mode))
 #+end_src
@@ -795,7 +832,7 @@ https://github.com/justbur/emacs-which-key
 (use-package lsp-treemacs
   :after lsp)
 
-(use-package lsp-ivy)
+;; (use-package lsp-ivy)
 #+end_src
 * dap
 #+begin_src emacs-lisp
