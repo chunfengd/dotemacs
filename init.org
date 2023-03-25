@@ -36,8 +36,10 @@
   - [[#misc][Misc]]
 - [[#key-binding][key binding]]
   - [[#evil][evil]]
-  - [[#general--leader-keys][general / leader-keys]]
   - [[#evil-collection][evil-collection]]
+  - [[#which-key][which-key]]
+  - [[#general--leader-keys][general / leader-keys]]
+  - [[#jump-avy][jump (avy)]]
 - [[#more-ui][More UI]]
   - [[#doom-modeline][doom-modeline]]
   - [[#doom-theme][doom-theme]]
@@ -47,7 +49,6 @@
   - [[#font][Font]]
   - [[#emacs-default-auto-save][emacs default auto save]]
   - [[#auto-save][Auto Save]]
-- [[#which-key][which-key]]
 - [[#vertico][vertico]]
   - [[#marginalia][marginalia]]
 - [[#ivy--counsel-deprecated][ivy & counsel (deprecated)]]
@@ -100,7 +101,6 @@
   - [[#js-mode][js-mode]]
   - [[#js2-mode][js2-mode]]
   - [[#json-mode][json-mode]]
-- [[#jump-avy][jump (avy)]]
 - [[#shell][shell]]
   - [[#sh-mode][sh mode]]
   - [[#shell-mode][shell mode]]
@@ -540,6 +540,23 @@ From: http://blog.plover.com/prog/revert-all.html
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
 #+end_src
+** evil-collection
+https://github.com/emacs-evil/evil-collection
+#+begin_src emacs-lisp
+(use-package evil-collection
+  :after evil
+  :config
+  (evil-collection-init))
+#+end_src
+** which-key
+https://github.com/justbur/emacs-which-key
+#+begin_src emacs-lisp
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 0.6))
+#+end_src
 ** general / leader-keys
 #+begin_src emacs-lisp
 (use-package general
@@ -549,23 +566,23 @@ From: http://blog.plover.com/prog/revert-all.html
     :keymaps '(normal insert visual emacs)
     :prefix "SPC"
     :global-prefix "C-M-SPC")
-   (cf/leader-keys
-     ;; avy jump
-     "j"  '(:ignore t :which-key "jump")
-     "jj"  'avy-goto-word-1
-     "jk"  'avy-goto-word-0
-     "jf"  'avy-goto-char-2
-     "jg"  'avy-goto-char
-     "jl"  'avy-goto-line))
+  )
 #+end_src
-** evil-collection
-https://github.com/emacs-evil/evil-collection
-#+begin_src emacs-lisp
-(use-package evil-collection
-  :after evil
+** jump (avy)
+#+BEGIN_SRC emacs-lisp
+(use-package avy
+  :after general
   :config
-  (evil-collection-init))
-#+end_src
+  (cf/leader-keys
+    ;; avy jump
+    "j"  '(:ignore t :which-key "jump")
+    "jj"  'avy-goto-word-1
+    "jk"  'avy-goto-word-0
+    "jf"  'avy-goto-char-2
+    "jg"  'avy-goto-char
+    "jl"  'avy-goto-line)
+  )
+#+END_SRC
 * More UI
 ** doom-modeline
 https://github.com/seagle0128/doom-modeline
@@ -654,17 +671,9 @@ https://github.com/Fanael/rainbow-delimiters
   (my-run-with-idle-timer 1 #'auto-save-enable))
 (setup-auto-save)
 #+end_src
-* which-key
-https://github.com/justbur/emacs-which-key
-#+begin_src emacs-lisp
-(use-package which-key
-  :init (which-key-mode)
-  :diminish which-key-mode
-  :config
-  (setq which-key-idle-delay 0.6))
-#+end_src
 * vertico
 - https://github.com/minad/vertico
+- https://systemcrafters.cc/emacs-tips/streamline-completions-with-vertico/
 #+begin_src emacs-lisp
 (use-package vertico
   :ensure t
@@ -1453,29 +1462,6 @@ If it's found, then add it to the `exec-path'."
 (if (package-installed-p 'json-mode)
     (cf-json-setup)
   (message "json-mode not installed"))
-#+END_SRC
-* TODO jump (avy)
-#+BEGIN_SRC emacs-lisp
-(defun cf-setup-avy ()
-  (cf-set-key-bindings
-   'global-set-key
-   '(
-     ("M-f" nil)
-
-     ("M-f M-f" avy-goto-word-1)
-     ("M-f M-g" avy-goto-word-0)
-
-     ("M-f M-j" avy-goto-char-2)
-     ("M-f M-k" avy-goto-char)
-
-     ("M-f M-d" avy-goto-char-in-line)
-
-     ("M-f M-l" avy-goto-line)
-     )))
-
-(if (package-installed-p 'avy)
-    (cf-setup-avy)
-  (message "avy not installed"))
 #+END_SRC
 * TODO shell
 ** sh mode
