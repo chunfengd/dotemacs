@@ -560,7 +560,7 @@ https://github.com/justbur/emacs-which-key
 ** general / leader-keys
 #+begin_src emacs-lisp
 (use-package general
-  :after evil
+  :after evil which-key
   :config
   (general-create-definer cf/leader-keys
     :keymaps '(normal insert visual emacs)
@@ -570,12 +570,26 @@ https://github.com/justbur/emacs-which-key
     ;; x
     "x" '(:ignore t :which-key "x")
     "xf" 'find-file
+    "x/" 'find-file-other-window
     "xb" 'switch-to-buffer
     "xk" 'kill-buffer
+    "xs" 'save-buffer
+    "xc" 'save-buffers-kill-terminal
+    "xg" 'save-buffers-kill-terminal
 
     ;; x5
     "x5" '(:ignore t :which-key "x5")
     "x52" 'make-frame-command
+
+    ;; h
+    "h" '(:ignore t :which-key "help")
+    "hk" 'describe-key
+    "hf" 'describe-function
+    "hv" 'describe-variable
+    )
+  (cf/leader-keys
+    "p" '(:ignore t :which-key "projectile")
+    "pp" 'projectile-switch-project
     )
   )
 #+end_src
@@ -803,7 +817,7 @@ https://github.com/Fanael/rainbow-delimiters
 #+begin_src emacs-lisp
 (use-package projectile
   :diminish projectile-mode
-  :custom ((projectile-completion-system 'ivy)
+  :custom (;;(projectile-completion-system 'ivy) switch to vertico
            )
   :bind-keymap ("C-x p" . projectile-command-map)
   :init
@@ -812,7 +826,8 @@ https://github.com/Fanael/rainbow-delimiters
     (setq projectile-project-search-path '("~/dev")))
   ;; (setq projectile-switch-project-action #'projectile-dired)
   :config
-  (projectile-mode))
+  (projectile-mode)
+  )
 
 (use-package counsel-projectile
   :disabled ;; switch to vertico
@@ -877,7 +892,8 @@ https://github.com/Fanael/rainbow-delimiters
 (use-package company
   ;; :after lsp-mode
   ;; :hook (lsp-mode . company-mode)
-  :bind (("C-n" . company-complete)
+  :bind (:map evil-insert-state-map
+         ("C-n" . company-complete)
          :map company-active-map
          ("C-n" . company-select-next)
          ("C-p" . company-select-previous)
