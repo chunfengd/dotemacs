@@ -51,6 +51,7 @@
   - [[#auto-save][Auto Save]]
 - [[#vertico][vertico]]
   - [[#marginalia][marginalia]]
+  - [[#orderless][orderless]]
 - [[#ivy--counsel-deprecated][ivy & counsel (deprecated)]]
   - [[#init][init]]
   - [[#ivy-minibuffer-key-bindings][ivy minibuffer key bindings]]
@@ -726,6 +727,17 @@ https://github.com/Fanael/rainbow-delimiters
    '(marginalia-annotators-heavy marginalia-annotators-light nil))
   :init
   (marginalia-mode))
+#+end_src
+** orderless
+#+begin_src emacs-lisp
+(use-package orderless
+  :init
+  ;; Configure a custom style dispatcher (see the Consult wiki)
+  ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
+  ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+  (setq completion-styles '(orderless basic)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion)))))
 #+end_src
 * ivy & counsel (deprecated)
 - https://github.com/abo-abo/swiper
