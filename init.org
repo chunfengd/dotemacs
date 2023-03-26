@@ -31,14 +31,18 @@
   - [[#about-me][About Me]]
   - [[#basic][Basic]]
   - [[#speed-bar][Speed Bar]]
-  - [[#keys][Keys]]
   - [[#customized-util-functions--bindings][Customized Util Functions & Bindings]]
   - [[#misc][Misc]]
 - [[#key-binding][key binding]]
+  - [[#switch-c-c--c-g][switch C-c & C-g]]
+  - [[#set-key-bindings-function][set key bindings function]]
+  - [[#general-keys][general keys]]
+  - [[#mac-key][mac key]]
   - [[#evil][evil]]
   - [[#evil-collection][evil-collection]]
   - [[#which-key][which-key]]
   - [[#general--leader-keys][general / leader-keys]]
+  - [[#leader-keys][leader-keys]]
   - [[#jump-avy][jump (avy)]]
 - [[#more-ui][More UI]]
   - [[#doom-modeline][doom-modeline]]
@@ -287,56 +291,6 @@ https://github.com/jwiegley/use-package
     (setq speedbar-show-unknown-files t)
     (display-line-numbers-mode 0)))
 #+END_SRC
-** Keys
-*** switch C-c & C-g
-#+BEGIN_SRC emacs-lisp
-(keyboard-translate ?\C-c ?\C-g)
-(keyboard-translate ?\C-g ?\C-c)
-#+END_SRC
-*** Set Key Bindings Function
-#+BEGIN_SRC emacs-lisp
-(defun cf-set-key-bindings (action bind-list &optional map)
-  "Set key bindings. 'bind-list' is 2-D list."
-  (dolist (pair bind-list)
-    (if (null map)
-	(funcall action (eval `(kbd ,(nth 0 pair))) (nth 1 pair))
-      (funcall action map (eval `(kbd ,(nth 0 pair))) (nth 1 pair)))))
-#+END_SRC
-*** General Keys
-#+BEGIN_SRC emacs-lisp
-(cf-set-key-bindings
- 'global-set-key
- '(
-   ("C-?" help-command)
-   ;;("C-x b" list-buffers)
-   ("C-c C-c" comment-or-uncomment-region)
-   ))
-(global-set-key [(hyper c)] 'kill-ring-save)
-(global-set-key [(hyper v)] 'yank)
-#+END_SRC
-*** Mac Key
-#+BEGIN_SRC emacs-lisp
-(cond
- ((string-equal system-type "windows-nt")
-  ;; windows
-  (progn
-    ))
- ((string-equal system-type "darwin")
-  ;; mac os x
-  (progn
-    ;; (setq mac-option-key-is-meta t)
-    ;; (setq mac-command-key-is-meta nil)
-
-    ;; works for Emacs Mac Port: https://github.com/railwaycat/homebrew-emacsmacport
-    ;; switch key https://gist.github.com/railwaycat/3498096
-    (setq mac-option-modifier 'meta)
-    (setq mac-command-modifier 'hyper)
-    ))
- ((string-equal system-type "gnu/linux")
-  (message "linux")
-  (progn
-    (defconst cf-system-include-dirs nil))))
-#+END_SRC
 ** Customized Util Functions & Bindings
 *** Find Map of Key Binding
 Find a key binding is in which map. From [[http://stackoverflow.com/questions/18801018/how-to-find-in-which-map-a-key-binding-is-from-programatically-in-emacs][stackoverflow]]
@@ -513,6 +467,55 @@ From: http://blog.plover.com/prog/revert-all.html
 (setq electric-pair-inhibit-predicate #'my-inhibit-electric-pair)
 #+END_SRC
 * key binding
+** switch C-c & C-g
+#+BEGIN_SRC emacs-lisp
+(keyboard-translate ?\C-c ?\C-g)
+(keyboard-translate ?\C-g ?\C-c)
+#+END_SRC
+** set key bindings function
+#+BEGIN_SRC emacs-lisp
+(defun cf-set-key-bindings (action bind-list &optional map)
+  "Set key bindings. 'bind-list' is 2-D list."
+  (dolist (pair bind-list)
+    (if (null map)
+	(funcall action (eval `(kbd ,(nth 0 pair))) (nth 1 pair))
+      (funcall action map (eval `(kbd ,(nth 0 pair))) (nth 1 pair)))))
+#+END_SRC
+** general keys
+#+BEGIN_SRC emacs-lisp
+(cf-set-key-bindings
+ 'global-set-key
+ '(
+   ("C-?" help-command)
+   ;;("C-x b" list-buffers)
+   ("C-c C-c" comment-or-uncomment-region)
+   ))
+(global-set-key [(hyper c)] 'kill-ring-save)
+(global-set-key [(hyper v)] 'yank)
+#+END_SRC
+** mac key
+#+BEGIN_SRC emacs-lisp
+(cond
+ ((string-equal system-type "windows-nt")
+  ;; windows
+  (progn
+    ))
+ ((string-equal system-type "darwin")
+  ;; mac os x
+  (progn
+    ;; (setq mac-option-key-is-meta t)
+    ;; (setq mac-command-key-is-meta nil)
+
+    ;; works for Emacs Mac Port: https://github.com/railwaycat/homebrew-emacsmacport
+    ;; switch key https://gist.github.com/railwaycat/3498096
+    (setq mac-option-modifier 'meta)
+    (setq mac-command-modifier 'hyper)
+    ))
+ ((string-equal system-type "gnu/linux")
+  (message "linux")
+  (progn
+    (defconst cf-system-include-dirs nil))))
+#+END_SRC
 ** evil
 - github: https://github.com/emacs-evil/evil
 - doc: https://evil.readthedocs.io/en/latest/index.html
@@ -536,6 +539,7 @@ From: http://blog.plover.com/prog/revert-all.html
   (define-key evil-replace-state-map (kbd "C-h")
     'evil-delete-backward-char-and-join)
   ;(define-key evil-insert-state-map (kbd "C-n") nil)
+  (define-key evil-normal-state-map (kbd "C-.") nil)
 
   ;; Use visual line motions even outside of visual-line-mode buffers
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
@@ -570,31 +574,44 @@ https://github.com/justbur/emacs-which-key
     :keymaps '(normal insert visual emacs)
     :prefix "SPC"
     :global-prefix "C-M-SPC")
-  (cf/leader-keys
-    ;; x
-    "x" '(:ignore t :which-key "x")
-    "xf" 'find-file
-    "x/" 'find-file-other-window
-    "xb" 'switch-to-buffer
-    "xk" 'kill-buffer
-    "xs" 'save-buffer
-    "xc" 'save-buffers-kill-terminal
-    "xg" 'save-buffers-kill-terminal
+  )
+#+end_src
+** leader-keys
+#+begin_src emacs-lisp
+(cf/leader-keys
+  ;; x
+  "x" '(:ignore t :which-key "x")
+  "xf" 'find-file
+  "x/" 'find-file-other-window
+  ;;"xb" 'switch-to-buffer
+  "xb" 'consult-buffer
+  "xk" 'kill-buffer
+  "xs" 'save-buffer
+  "xc" 'save-buffers-kill-terminal
+  "xg" 'save-buffers-kill-terminal
 
-    ;; x5
-    "x5" '(:ignore t :which-key "x5")
-    "x52" 'make-frame-command
+  ;; x5
+  "x5" '(:ignore t :which-key "x5")
+  "x52" 'make-frame-command
 
-    ;; h
-    "h" '(:ignore t :which-key "help")
-    "hk" 'describe-key
-    "hf" 'describe-function
-    "hv" 'describe-variable
-    )
-  (cf/leader-keys
-    "p" '(:ignore t :which-key "projectile")
-    "pp" 'projectile-switch-project
-    )
+  ;; h
+  "h" '(:ignore t :which-key "help")
+  "hk" 'describe-key
+  "hf" 'describe-function
+  "hv" 'describe-variable
+  )
+(cf/leader-keys
+  "p" '(:ignore t :which-key "projectile")
+  "pp" 'projectile-switch-project
+  )
+(cf/leader-keys
+  "v" '(:ignore t :which-key "vertico")
+  "vl" 'consult-line
+  "vg" 'consult-grep
+  "vG" 'consult-git-grep
+  "vr" 'consult-ripgrep
+  "vy" 'consult-yank-pop
+  "vm" 'consult-mark
   )
 #+end_src
 ** jump (avy)
@@ -761,7 +778,8 @@ https://github.com/Fanael/rainbow-delimiters
 
   ;; Optionally replace the key help with a completing-read interface
   (setq prefix-help-command #'embark-prefix-help-command)
-  (setq embark-prompter 'embark-completing-read-prompter)
+  ;;(setq embark-prompter 'embark-completing-read-prompter)
+  (setq embark-prompter 'embark-keymap-prompter)
 
   ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
   ;; strategy, if you want to see the documentation from multiple providers.
@@ -835,16 +853,6 @@ https://github.com/Fanael/rainbow-delimiters
   ;; Optionally configure the narrowing key.
   ;; Both < and C-+ work reasonably well.
   (setq consult-narrow-key "<") ;; "C-+"
-
-  (cf/leader-keys
-    "c"  '(:ignore t :which-key "consult")
-
-    "cl" 'consult-line
-    "cg" 'consult-grep
-    "cG" 'consult-git-grep
-    "cy" 'consult-yank-pop
-    "cm" 'consult-mark
-    )
 
   ;; Optionally make narrowing help available in the minibuffer.
   ;; You may want to use `embark-prefix-help-command' or which-key instead.
