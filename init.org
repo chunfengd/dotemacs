@@ -609,6 +609,8 @@ https://github.com/justbur/emacs-which-key
   "hk" 'describe-key
   "hf" 'describe-function
   "hv" 'describe-variable
+  "hm" 'describe-mode
+  "hb" 'describe-bindings
   )
 (cf/leader-keys
   "p" '(:ignore t :which-key "projectile")
@@ -623,6 +625,18 @@ https://github.com/justbur/emacs-which-key
   "vr" 'consult-ripgrep
   "vy" 'consult-yank-pop
   "vm" 'consult-mark
+  )
+(cf/leader-keys
+  "o" '(:ignore t :which-key "org")
+
+  "oi" 'org-insert-structure-template
+  "os" 'org-edit-special
+  "oe" 'org-edit-src-exit
+
+  "ob" 'org-backward-heading-same-level
+  "of" 'org-forward-heading-same-level
+  "on" 'outline-next-visible-heading
+  "op" 'outline-previous-visible-heading
   )
 #+end_src
 ** jump (avy)
