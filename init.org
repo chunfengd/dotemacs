@@ -52,6 +52,7 @@
   - [[#rainbow-delimiters][rainbow-delimiters]]
   - [[#font][Font]]
   - [[#emacs-default-auto-save][emacs default auto save]]
+  - [[#recent-files][recent files]]
   - [[#auto-save][Auto Save]]
 - [[#vertico][vertico]]
   - [[#vertico-1][vertico]]
@@ -584,7 +585,16 @@ https://github.com/justbur/emacs-which-key
   "xf" 'find-file
   "x/" 'find-file-other-window
   ;;"xb" 'switch-to-buffer
+  ;; consult-buffer shortcut
+  ;;   b<spc> Buffers
+  ;;   <spc> Hidden buffers
+  ;;   *<spc> Modified buffers
+  ;;   f<spc> files
+  ;;   r<spc> file registers
+  ;;   m<spc> bootmarks
+  ;;   p<spc> project
   "xb" 'consult-buffer
+  "xp" 'consult-project-buffer
   "xk" 'kill-buffer
   "xs" 'save-buffer
   "xc" 'save-buffers-kill-terminal
@@ -603,6 +613,7 @@ https://github.com/justbur/emacs-which-key
 (cf/leader-keys
   "p" '(:ignore t :which-key "projectile")
   "pp" 'projectile-switch-project
+  "pf" 'consult-project-buffer
   )
 (cf/leader-keys
   "v" '(:ignore t :which-key "vertico")
@@ -701,6 +712,15 @@ https://github.com/Fanael/rainbow-delimiters
 ;; https://emacs.stackexchange.com/questions/17210/how-to-place-all-auto-save-files-in-a-directory
 (setq auto-save-file-name-transforms
   `((".*" "~/.emacs-saves/" t)))
+#+end_src
+** recent files
+#+begin_src emacs-lisp
+(use-package recentf
+  :init (recentf-mode)
+  :config
+  (setq recentf-max-saved-items 200
+        recentf-max-menu-items 15)
+  )
 #+end_src
 ** Auto Save
 - refs
