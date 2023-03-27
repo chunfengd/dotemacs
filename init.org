@@ -615,7 +615,9 @@ https://github.com/justbur/emacs-which-key
 (cf/leader-keys
   "p" '(:ignore t :which-key "projectile")
   "pp" 'projectile-switch-project
-  "pf" 'consult-project-buffer
+  "pb" 'consult-project-buffer
+  "pf" 'counsel-projectile-find-file
+  ;;"pf" 'projectile-find-file
   )
 (cf/leader-keys
   "v" '(:ignore t :which-key "vertico")
@@ -628,6 +630,8 @@ https://github.com/justbur/emacs-which-key
   )
 (cf/leader-keys
   "o" '(:ignore t :which-key "org")
+
+  "oh" 'consult-org-heading
 
   "oi" 'org-insert-structure-template
   "os" 'org-edit-special
@@ -842,6 +846,7 @@ https://github.com/Fanael/rainbow-delimiters
   :bind (
          :map minibuffer-local-map
               ("M-s" . consult-history)
+              ("C-r" . consult-history)
          )
   ;; Enable automatic preview at point in the *Completions* buffer. This is
   ;; relevant when you use the default completion UI.
