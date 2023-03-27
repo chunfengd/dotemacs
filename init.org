@@ -41,7 +41,7 @@
   - [[#evil][evil]]
   - [[#evil-collection][evil-collection]]
   - [[#which-key][which-key]]
-  - [[#general--leader-keys][general / leader-keys]]
+  - [[#general][general]]
   - [[#leader-keys][leader-keys]]
   - [[#jump-avy][jump (avy)]]
 - [[#more-ui][More UI]]
@@ -566,7 +566,7 @@ https://github.com/justbur/emacs-which-key
   :config
   (setq which-key-idle-delay 0.6))
 #+end_src
-** general / leader-keys
+** general
 #+begin_src emacs-lisp
 (use-package general
   :after evil which-key
@@ -641,6 +641,7 @@ https://github.com/justbur/emacs-which-key
   "of" 'org-forward-heading-same-level
   "on" 'outline-next-visible-heading
   "op" 'outline-previous-visible-heading
+  "ou" 'outline-up-heading
   )
 #+end_src
 ** jump (avy)
