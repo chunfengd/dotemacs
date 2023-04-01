@@ -36,13 +36,13 @@
 - [[#key-binding][key binding]]
   - [[#switch-c-c--c-g][switch C-c & C-g]]
   - [[#set-key-bindings-function][set key bindings function]]
-  - [[#general-keys][general keys]]
+  - [[#global-keys][global keys]]
   - [[#mac-key][mac key]]
   - [[#evil][evil]]
   - [[#evil-collection][evil-collection]]
   - [[#which-key][which-key]]
-  - [[#general][general]]
-  - [[#leader-keys][leader-keys]]
+  - [[#general-leader][general leader]]
+  - [[#cfleader-keys][cf/leader-keys]]
   - [[#jump-avy][jump (avy)]]
 - [[#more-ui][More UI]]
   - [[#doom-modeline][doom-modeline]]
@@ -60,6 +60,7 @@
   - [[#orderless][orderless]]
   - [[#embark][embark]]
   - [[#consult][consult]]
+  - [[#consult-projectile][consult-projectile]]
 - [[#ivy--counsel-deprecated][ivy & counsel (deprecated)]]
   - [[#init][init]]
   - [[#ivy-minibuffer-key-bindings][ivy minibuffer key bindings]]
@@ -482,7 +483,7 @@ From: http://blog.plover.com/prog/revert-all.html
 	(funcall action (eval `(kbd ,(nth 0 pair))) (nth 1 pair))
       (funcall action map (eval `(kbd ,(nth 0 pair))) (nth 1 pair)))))
 #+END_SRC
-** general keys
+** global keys
 #+BEGIN_SRC emacs-lisp
 (cf-set-key-bindings
  'global-set-key
@@ -566,7 +567,7 @@ https://github.com/justbur/emacs-which-key
   :config
   (setq which-key-idle-delay 0.6))
 #+end_src
-** general
+** general leader
 #+begin_src emacs-lisp
 (use-package general
   :after evil which-key
@@ -577,7 +578,7 @@ https://github.com/justbur/emacs-which-key
     :global-prefix "C-M-SPC")
   )
 #+end_src
-** leader-keys
+** cf/leader-keys
 #+begin_src emacs-lisp
 (cf/leader-keys
   ;; x
@@ -594,7 +595,7 @@ https://github.com/justbur/emacs-which-key
   ;;   m<spc> bootmarks
   ;;   p<spc> project
   "xb" 'consult-buffer
-  "xp" 'consult-project-buffer
+  "xp" 'projectile-find-file
   "xk" 'kill-buffer
   "xs" 'save-buffer
   "xc" 'save-buffers-kill-terminal
@@ -616,8 +617,7 @@ https://github.com/justbur/emacs-which-key
   "p" '(:ignore t :which-key "projectile")
   "pp" 'projectile-switch-project
   "pb" 'consult-project-buffer
-  "pf" 'counsel-projectile-find-file
-  ;;"pf" 'projectile-find-file
+  "pf" 'projectile-find-file
   )
 (cf/leader-keys
   "v" '(:ignore t :which-key "vertico")
@@ -919,9 +919,9 @@ https://github.com/Fanael/rainbow-delimiters
   ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
   ;;;; 3. locate-dominating-file
   ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
-  ;;;; 4. projectile.el (projectile-project-root)
-  ;; (autoload 'projectile-project-root "projectile")
-  ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
+  ;; 4. projectile.el (projectile-project-root)
+  (autoload 'projectile-project-root "projectile")
+  (setq consult-project-function (lambda (_) (projectile-project-root)))
   ;;;; 5. No project support
   ;; (setq consult-project-function nil)
 
@@ -963,6 +963,17 @@ https://github.com/Fanael/rainbow-delimiters
 | consult-line       |      |
 | consult-line-multi |      |
 |--------------------+------|
+** consult-projectile
+- https://gitlab.com/OlMon/consult-projectile
+#+begin_src emacs-lisp
+;; (use-package consult-projectile
+;;   :straight
+;;   (consult-projectile
+;;    :type git
+;;    :host gitlab
+;;    :repo "OlMon/consult-projectile"
+;;    :branch "master"))
+#+end_src
 * ivy & counsel (deprecated)
 - https://github.com/abo-abo/swiper
 - https://oremacs.com/swiper/
