@@ -14,7 +14,7 @@
 - [[#introduction][Introduction]]
   - [[#other-references][other references]]
 - [[#dotemacs-path][Dotemacs Path]]
-  - [[#define-cf-path][Define =cf-path=]]
+  - [[#define-mypath][Define =my/path=]]
   - [[#extra-load-path][Extra load path]]
 - [[#how-to-install][How to Install]]
   - [[#install-emacs-on-mac][install Emacs on Mac]]
@@ -42,7 +42,7 @@
   - [[#evil-collection][evil-collection]]
   - [[#which-key][which-key]]
   - [[#general-leader][general leader]]
-  - [[#cfleader-keys][cf/leader-keys]]
+  - [[#myleader-keys][my/leader-keys]]
   - [[#jump-avy][jump (avy)]]
 - [[#more-ui][More UI]]
   - [[#doom-modeline][doom-modeline]]
@@ -137,18 +137,18 @@ on GitHub.
 ** other references
 - https://github.com/daviwil/emacs-from-scratch
 * Dotemacs Path
-** Define =cf-path=
+** Define =my/path=
 #+BEGIN_SRC emacs-lisp
-(defvar cf-dotemacs-home (file-name-directory load-file-name))
+(defvar my/dotemacs-home (file-name-directory load-file-name))
 
-(defun cf-path (path)
-  (expand-file-name path cf-dotemacs-home))
+(defun my/path (path)
+  (expand-file-name path my/dotemacs-home))
 #+END_SRC
 ** Extra load path
 - updated from
   https://github.com/redguardtoo/emacs.d/blob/master/init.el
 #+begin_src emacs-lisp
-(defun my-add-site-dir (site-dir)
+(defun my/add-site-dir (site-dir)
   "Add a directory into `load-path'."
   (setq load-path
         (append
@@ -158,7 +158,7 @@ on GitHub.
                            (expand-file-name dir site-dir)))
                        (directory-files site-dir)))
          load-path)))
-(my-add-site-dir (cf-path "site"))
+(my/add-site-dir (my/path "site"))
 #+end_src
 * How to Install
 After cloning from [[https://github.com/xiongtx/.emacs.d][GitHub]], there is no =init.el= file, only an
@@ -196,12 +196,12 @@ To avoid having to tangle manually each time a change is made, we can
 add a function to =after-save-hook= to tangle the =init.org= after
 saving.
 #+BEGIN_SRC emacs-lisp
-(defun cf-tangle-init-file ()
+(defun my/tangle-init-file ()
   "Tangle the current buffer if it is the init.org file."
-  (when (equal (buffer-file-name) (cf-path "init.org"))
+  (when (equal (buffer-file-name) (my/path "init.org"))
     (org-babel-tangle)))
 
-(add-hook 'after-save-hook 'cf-tangle-init-file)
+(add-hook 'after-save-hook 'my/tangle-init-file)
 #+END_SRC
 ** Add the following line into =~/.emacs=
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -215,7 +215,7 @@ Run =M-x all-the-icons-install-fonts=
 (require 'package)
 (setq package-archives
       '(
-        ;; ("cf-melpa" . ,(cf-path "../cf-melpa/packages"))
+        ;; ("cf-melpa" . ,(my/path "../cf-melpa/packages"))
         ("melpa-stable" . "https://stable.melpa.org/packages/")
         ("melpa" . "https://melpa.org/packages/")
         ("org" . "http://orgmode.org/elpa/")
@@ -297,7 +297,7 @@ https://github.com/jwiegley/use-package
 *** Find Map of Key Binding
 Find a key binding is in which map. From [[http://stackoverflow.com/questions/18801018/how-to-find-in-which-map-a-key-binding-is-from-programatically-in-emacs][stackoverflow]]
 #+BEGIN_SRC emacs-lisp
-(defun cf-overlay-key-binding (key)
+(defun my/overlay-key-binding (key)
   "Keymaps can also be attached to overlays, like yasnippet.
    From: http://stackoverflow.com/questions/18801018/how-to-find-in-which-map-a-key-binding-is-from-programatically-in-emacs"
   (mapcar (lambda (keymap) (lookup-key keymap key))
@@ -307,12 +307,12 @@ Find a key binding is in which map. From [[http://stackoverflow.com/questions/18
                      (overlay-get overlay 'keymap))
                    (overlays-at (point))))))
 
-(defun cf-find-kbd (key)
+(defun my/find-kbd (key)
   "From: http://stackoverflow.com/questions/18801018/how-to-find-in-which-map-a-key-binding-is-from-programatically-in-emacs"
   (interactive "kInput key: ")
   (message "%s"
    (list
-    (cf-overlay-key-binding key)
+    (my/overlay-key-binding key)
     (minor-mode-key-binding key)
     (local-key-binding key)
     (global-key-binding key))))
@@ -320,7 +320,7 @@ Find a key binding is in which map. From [[http://stackoverflow.com/questions/18
 *** Dos to Unix
 From [[http://www.emacswiki.org/emacs/DosToUnix][emacswiki]].
 #+BEGIN_SRC emacs-lisp
-(defun cf-dos2unix ()
+(defun my/dos2unix ()
   "From: http://www.emacswiki.org/emacs/DosToUnix
 Not exactly but it's easier to remember"
   (interactive)
@@ -328,7 +328,7 @@ Not exactly but it's easier to remember"
 #+END_SRC
 *** Path Related
 #+BEGIN_SRC emacs-lisp
-(defun cf-get-path ()
+(defun my/get-path ()
   ""
   (interactive)
   (let ((path
@@ -336,10 +336,10 @@ Not exactly but it's easier to remember"
     (message path)
     path))
 
-(defun cf-copy-path ()
+(defun my/copy-path ()
   ""
   (interactive)
-  (let ((path (cf-get-path)))
+  (let ((path (my/get-path)))
     (if path
         (kill-new path))))
 #+END_SRC
@@ -359,7 +359,7 @@ From: http://emacsredux.com/blog/2013/06/21/eval-and-replace/
 *** Revert All Buffers
 From: http://blog.plover.com/prog/revert-all.html
 #+BEGIN_SRC emacs-lisp
-(defun cf-revert-all-buffers ()
+(defun my/revert-all-buffers ()
   "Refreshes all open buffers from their respective files"
   (interactive)
   (let* ((list (buffer-list))
@@ -375,28 +375,28 @@ From: http://blog.plover.com/prog/revert-all.html
 #+END_SRC
 *** Open Webstorm
 #+BEGIN_SRC emacs-lisp
-(defun cf-run-cmd-on-current-file (command)
+(defun my/run-cmd-on-current-file (command)
   "run a command on the current file"
   (shell-command
    (format "open -a %s %s" command
            (shell-quote-argument (buffer-file-name)))))
 
-(defun cf-open-webstorm ()
+(defun my/open-webstorm ()
   (interactive)
-  (cf-run-cmd-on-current-file "webstorm"))
+  (my/run-cmd-on-current-file "webstorm"))
 
-;; (cf-set-key-bindings 'global-set-key '(("C-<f9>" cf-open-webstorm)))
+;; (my/set-key-bindings 'global-set-key '(("C-<f9>" my/open-webstorm)))
 #+END_SRC
 *** idle
 - ref: https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-utils.el
 #+begin_src emacs-lisp
-(defvar my-disable-idle-timer nil
-  "Function passed to `my-run-with-idle-timer' is run immediately.")
+(defvar my/disable-idle-timer nil
+  "Function passed to `my/run-with-idle-timer' is run immediately.")
 
-(defun my-run-with-idle-timer (seconds func)
+(defun my/run-with-idle-timer (seconds func)
   "After SECONDS, run function FUNC once."
   (cond
-   (my-disable-idle-timer
+   (my/disable-idle-timer
     (funcall func))
    (t
     (run-with-idle-timer seconds nil func))))
@@ -464,9 +464,9 @@ From: http://blog.plover.com/prog/revert-all.html
 *** electric pair
 #+BEGIN_SRC emacs-lisp
 (electric-pair-mode 1)
-(defun my-inhibit-electric-pair (char)
+(defun my/inhibit-electric-pair (char)
   (minibufferp))
-(setq electric-pair-inhibit-predicate #'my-inhibit-electric-pair)
+(setq electric-pair-inhibit-predicate #'my/inhibit-electric-pair)
 #+END_SRC
 * key binding
 ** switch C-c & C-g
@@ -476,7 +476,7 @@ From: http://blog.plover.com/prog/revert-all.html
 #+END_SRC
 ** set key bindings function
 #+BEGIN_SRC emacs-lisp
-(defun cf-set-key-bindings (action bind-list &optional map)
+(defun my/set-key-bindings (action bind-list &optional map)
   "Set key bindings. 'bind-list' is 2-D list."
   (dolist (pair bind-list)
     (if (null map)
@@ -485,7 +485,7 @@ From: http://blog.plover.com/prog/revert-all.html
 #+END_SRC
 ** global keys
 #+BEGIN_SRC emacs-lisp
-(cf-set-key-bindings
+(my/set-key-bindings
  'global-set-key
  '(
    ("C-?" help-command)
@@ -516,7 +516,7 @@ From: http://blog.plover.com/prog/revert-all.html
  ((string-equal system-type "gnu/linux")
   (message "linux")
   (progn
-    (defconst cf-system-include-dirs nil))))
+    (defconst my/system-include-dirs nil))))
 #+END_SRC
 ** evil
 - github: https://github.com/emacs-evil/evil
@@ -572,15 +572,15 @@ https://github.com/justbur/emacs-which-key
 (use-package general
   :after evil which-key
   :config
-  (general-create-definer cf/leader-keys
+  (general-create-definer my/leader-keys
     :keymaps '(normal insert visual emacs)
     :prefix "SPC"
     :global-prefix "C-M-SPC")
   )
 #+end_src
-** cf/leader-keys
+** my/leader-keys
 #+begin_src emacs-lisp
-(cf/leader-keys
+(my/leader-keys
   ;; x
   "x" '(:ignore t :which-key "x")
   "xf" 'find-file
@@ -613,13 +613,13 @@ https://github.com/justbur/emacs-which-key
   "hm" 'describe-mode
   "hb" 'describe-bindings
   )
-(cf/leader-keys
+(my/leader-keys
   "p" '(:ignore t :which-key "projectile")
   "pp" 'projectile-switch-project
   "pb" 'consult-project-buffer
   "pf" 'projectile-find-file
   )
-(cf/leader-keys
+(my/leader-keys
   "v" '(:ignore t :which-key "vertico")
   "vl" 'consult-line
   "vg" 'consult-grep
@@ -628,7 +628,7 @@ https://github.com/justbur/emacs-which-key
   "vy" 'consult-yank-pop
   "vm" 'consult-mark
   )
-(cf/leader-keys
+(my/leader-keys
   "o" '(:ignore t :which-key "org")
 
   "oh" 'consult-org-heading
@@ -649,7 +649,7 @@ https://github.com/justbur/emacs-which-key
 (use-package avy
   :after general
   :config
-  (cf/leader-keys
+  (my/leader-keys
     ;; avy jump
     "j"  '(:ignore t :which-key "jump")
     "jj"  'avy-goto-word-1
@@ -749,11 +749,11 @@ https://github.com/Fanael/rainbow-delimiters
 (defun setup-auto-save ()
   (autoload 'auto-save-enable "auto-save" "" t)
   (with-eval-after-load 'auto-save
-    (push 'my-file-too-big-p auto-save-exclude)
-    (push 'my-check-major-mode-for-auto-save auto-save-exclude)
+    ;; (push 'my-file-too-big-p auto-save-exclude)
+    ;; (push 'my-check-major-mode-for-auto-save auto-save-exclude)
     (setq auto-save-idle 1)
     (setq auto-save-slient t))
-  (my-run-with-idle-timer 1 #'auto-save-enable))
+  (my/run-with-idle-timer 1 #'auto-save-enable))
 (setup-auto-save)
 #+end_src
 * vertico
@@ -1176,8 +1176,8 @@ https://github.com/Fanael/rainbow-delimiters
 #+END_SRC
 ** org-mode-hook
 #+BEGIN_SRC emacs-lisp
-(defun cf-org-mode-hook-func ()
-  (cf-set-key-bindings
+(defun my/org-mode-hook-func ()
+  (my/set-key-bindings
    'local-set-key
    '(
      ;; "C-c C-b" org-backward-heading-same-level
@@ -1212,7 +1212,7 @@ https://github.com/Fanael/rainbow-delimiters
      ;; ("C-c [" nil) ;; org-agenda-file-to-front
      ;; ("C-c ]" nil) ;; org-remove-file
      ))
-  ;; (cf-set-key-bindings
+  ;; (my/set-key-bindings
   ;;  'define-key
   ;;  '(
   ;;    ("C-M-h" (lambda () (interactive)
@@ -1233,16 +1233,16 @@ https://github.com/Fanael/rainbow-delimiters
   (flyspell-mode-off)
   (setq org-src-fontify-natively t)
   (setq org-edit-src-content-indentation 0)
-  ;; (setq org-infojs-options cf-default-org-infojs-options)
+  ;; (setq org-infojs-options my/default-org-infojs-options)
   (setq org-export-html-use-infojs t) ; alternative: when-configured, nil
   (setq org-latex-preview-ltxpng-directory "/tmp/ltxpng/")
   )
-(add-hook 'org-mode-hook 'cf-org-mode-hook-func)
+(add-hook 'org-mode-hook 'my/org-mode-hook-func)
 #+END_SRC
 ** agenda-hook
 #+BEGIN_SRC emacs-lisp
-(defun cf-org-agenda-mode-hook-func ()
-  (cf-set-key-bindings
+(defun my/org-agenda-mode-hook-func ()
+  (my/set-key-bindings
    'define-key
    '(
      ("j" org-agenda-next-line)
@@ -1253,7 +1253,7 @@ https://github.com/Fanael/rainbow-delimiters
      ("G" org-agenda-clock-goto)
      )
    org-agenda-mode-map))
-(add-hook 'org-agenda-mode-hook 'cf-org-agenda-mode-hook-func)
+(add-hook 'org-agenda-mode-hook 'my/org-agenda-mode-hook-func)
 #+END_SRC
 ** custom agenda commands
 #+BEGIN_SRC emacs-lisp
@@ -1312,11 +1312,11 @@ https://github.com/Fanael/rainbow-delimiters
 #+END_SRC
 ** Use toc-org to automatically generate a table of contents for Org files.
 #+BEGIN_SRC emacs-lisp
-(defun cf-setup-toc-org ()
+(defun my/setup-toc-org ()
   (add-hook 'org-mode-hook #'toc-org-enable))
 
 (if (package-installed-p 'toc-org)
-    (cf-setup-toc-org)
+    (my/setup-toc-org)
   (message "toc-org not installed"))
 #+END_SRC
 * text-mode
@@ -1365,8 +1365,8 @@ Run M-x dap-debug to execute a java file.
 * TODO dired
 ** key binding
 #+BEGIN_SRC emacs-lisp
-(defun cf-dired-key-binding ()
-  (cf-set-key-bindings
+(defun my/dired-key-binding ()
+  (my/set-key-bindings
    'define-key
    '(
      ("j" dired-next-line)
@@ -1374,12 +1374,12 @@ Run M-x dap-debug to execute a java file.
      ("r" revert-buffer)
      ("C-t" set-mark-command))
    dired-mode-map))
-(add-hook 'dired-mode-hook 'cf-dired-key-binding)
+(add-hook 'dired-mode-hook 'my/dired-key-binding)
 #+END_SRC
 ** Listing Parameters
 #+BEGIN_SRC emacs-lisp
 (setq dired-listing-switches "-alnoh")
-(defun cf-set-ls (parameter)
+(defun my/set-ls (parameter)
   "Set ls parameter in dired mode"
   (interactive "s")
   (setq dired-listing-switches parameter))
@@ -1413,7 +1413,7 @@ Run M-x dap-debug to execute a java file.
                   (end-of-line)
                   (point)))
 
-(defun my-filter (condp lst)
+(defun my/filter (condp lst)
   (delq nil
         (mapcar (lambda (x) (and (funcall condp x) x)) lst)))
 
@@ -1447,7 +1447,7 @@ Run M-x dap-debug to execute a java file.
         (os (overlays-in start end)))
     (if (null tag)
         os
-      (my-filter (lambda (o)
+      (my/filter (lambda (o)
                    (if (null val)
                        (overlay-get o tag)
                      (equal (overlay-get o tag) val)))
@@ -1558,7 +1558,7 @@ Run M-x dap-debug to execute a java file.
 #+END_SRC
 ** Key Binding
 #+BEGIN_SRC emacs-lisp
-(cf-set-key-bindings
+(my/set-key-bindings
  'global-set-key
  '(("C-<tab>" toggle-fold-line)
    ("C-S-<tab>" toggle-fold-all)))
@@ -1608,21 +1608,21 @@ Run M-x dap-debug to execute a java file.
 - lightweight-macro
 * TODO Graphviz Dot Mode
 #+BEGIN_SRC emacs-lisp
-(defun cf-graphviz-mode ()
+(defun my/graphviz-mode ()
   ""
   (setq graphviz-dot-indent-width 2)
   ;; (setq graphviz-dot-auto-indent-on-semi nil)
   )
-(add-hook 'graphviz-dot-mode-hook 'cf-graphviz-mode)
+(add-hook 'graphviz-dot-mode-hook 'my/graphviz-mode)
 #+END_SRC
 * TODO html
 ** web-mode
 #+BEGIN_SRC emacs-lisp
-(defun cf-web-mode-setup ()
+(defun my/web-mode-setup ()
   (add-to-list 'auto-mode-alist '("\\.jsx" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.html$" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.hbs$" . web-mode))
-  (defun cf-web-mode-func()
+  (defun my/web-mode-func()
     (setq web-mode-markup-indent-offset 2)
     (setq web-mode-css-indent-offset 2)
     (setq web-mode-code-indent-offset 2)
@@ -1637,7 +1637,7 @@ Run M-x dap-debug to execute a java file.
     (setq web-mode-enable-sexp-functions t)
     ;; (setq web-mode-enable-auto-quoting nil)
     ;; (setq web-mode-enable-auto-indentation nil)
-    (cf-set-key-bindings
+    (my/set-key-bindings
      'define-key
      '(
        ;; ("C-t" nil)
@@ -1647,9 +1647,9 @@ Run M-x dap-debug to execute a java file.
        ;; ("C-c C-e C-/" web-mode-element-close)
        )
      web-mode-map))
-  (add-hook 'web-mode-hook 'cf-web-mode-func))
+  (add-hook 'web-mode-hook 'my/web-mode-func))
 (if (package-installed-p 'web-mode)
-    (cf-web-mode-setup)
+    (my/web-mode-setup)
   (message "web-mode not installed"))
 #+END_SRC
 * TODO imenu
@@ -1660,7 +1660,7 @@ Run M-x dap-debug to execute a java file.
 ** node-modules-path-setup
 From: https://github.com/codesuki/add-node-modules-path
 #+BEGIN_SRC emacs-lisp
-(defun cf-node-modules-path-setup ()
+(defun my/node-modules-path-setup ()
   (defvar add-node-modules-path-debug nil
     "Enable verbose output when non nil.")
 
@@ -1686,17 +1686,17 @@ If it's found, then add it to the `exec-path'."
   '(add-hook 'js2-mode-hook #'add-node-modules-path))
   (eval-after-load 'web-mode
     '(add-hook 'web-mode-hook #'add-node-modules-path)))
-(cf-node-modules-path-setup)
+(my/node-modules-path-setup)
 #+END_SRC
 ** js-mode
 #+BEGIN_SRC emacs-lisp :tangle no
-(defun cf-js-setup ()
+(defun my/js-setup ()
   (setq-default js-indent-level 2))
-(cf-js-setup)
+(my/js-setup)
 #+END_SRC
 ** js2-mode
 #+BEGIN_SRC emacs-lisp :tangle no
-(defun cf-js2-setup ()
+(defun my/js2-setup ()
   ;; js2-mode-hide-comments
   ;; js2-mode-hide-element
   ;; js2-mode-hide-functions
@@ -1719,22 +1719,22 @@ If it's found, then add it to the `exec-path'."
   (setq-default js2-mode-show-strict-warnings nil)
   (setq-default js2-bounce-indent-p t)
   ;; (setq-default js2-strict-inconsistent-return-warning nil)
-  (defun cf-init-js ()
+  (defun my/init-js ()
     ;; (electric-indent-mode -1)
-    (cf-set-key-bindings
+    (my/set-key-bindings
      'local-set-key
      '()))
-  (add-hook 'js2-mode-hook 'cf-init-js))
+  (add-hook 'js2-mode-hook 'my/init-js))
 
 (if (package-installed-p 'js2-mode)
-    (cf-js2-setup)
+    (my/js2-setup)
   (message "js2-mode not installed"))
 #+END_SRC
 ** json-mode
 #+BEGIN_SRC emacs-lisp
-(defun cf-json-setup ())
+(defun my/json-setup ())
 (if (package-installed-p 'json-mode)
-    (cf-json-setup)
+    (my/json-setup)
   (message "json-mode not installed"))
 #+END_SRC
 * TODO shell
@@ -1744,11 +1744,11 @@ If it's found, then add it to the `exec-path'."
 #+END_SRC
 ** shell mode
 #+BEGIN_SRC emacs-lisp
-(defun cf-shell-mode-hook-func ()
-  (cf-set-key-bindings
+(defun my/shell-mode-hook-func ()
+  (my/set-key-bindings
    'local-set-key
    '(
-     ;; ("C-d" cf-shell-kill)
+     ;; ("C-d" my/shell-kill)
      ("C-M-l" nil)
      ;;("C-c h" comint-history-isearch-backward)
      ;;("M-s" comint-history-isearch-search)
@@ -1772,17 +1772,17 @@ If it's found, then add it to the `exec-path'."
   (evil-define-key
     'insert shell-mode-map (kbd "C-p") 'comint-previous-input)
   )
-(add-hook 'shell-mode-hook 'cf-shell-mode-hook-func)
+(add-hook 'shell-mode-hook 'my/shell-mode-hook-func)
 #+END_SRC
 ** term mode
 #+BEGIN_SRC emacs-lisp
-(defun cf-term-mode-hook-func ()
+(defun my/term-mode-hook-func ()
   (setq-local scroll-margin 0)
-  (cf-set-key-bindings
+  (my/set-key-bindings
    'local-set-key
    '(
      ))
-  (cf-set-key-bindings
+  (my/set-key-bindings
    'define-key
    '(("C-b" scroll-up-command)
      ("C-f" scroll-down)
@@ -1793,7 +1793,7 @@ If it's found, then add it to the `exec-path'."
      ("C-c C-y" term-interrupt-subjob)
      )
    term-raw-map))
-(add-hook 'term-mode-hook 'cf-term-mode-hook-func)
+(add-hook 'term-mode-hook 'my/term-mode-hook-func)
 #+END_SRC
 ** tm function
 #+BEGIN_SRC emacs-lisp
@@ -1840,7 +1840,7 @@ If it's found, then add it to the `exec-path'."
 - https://github.com/prettier/prettier-emacs
 - https://prettier.io/
 #+BEGIN_SRC emacs-lisp :tangle no
-(defun cf-setup-prettier ()
+(defun my/setup-prettier ()
   ;; (add-hook 'js2-mode-hook
   ;;           #'(lambda ()
   ;;               (if (executable-find "prettier")
@@ -1858,14 +1858,14 @@ If it's found, then add it to the `exec-path'."
   (global-set-key [f8] 'prettier-js)
   )
 (if (package-installed-p 'prettier-js)
-    (cf-setup-prettier)
+    (my/setup-prettier)
   (message "prettier-js not installed"))
 #+END_SRC
 * TODO plantuml
 #+begin_src emacs-lisp
 ;; use M-x plantuml-download-jar<RET> to download jar
 ;; use M-x plantuml-preview<RET> to preview
-(defun cf-plantuml-setup ()
+(defun my/plantuml-setup ()
   (setq plantuml-jar-path "~/dev/lib/plantuml.jar")
   (setq plantuml-default-exec-mode 'jar)
   (add-to-list
@@ -1878,7 +1878,7 @@ If it's found, then add it to the `exec-path'."
       'org-src-lang-modes '("plantuml" . plantuml))))
   )
 (if (package-installed-p 'plantuml-mode)
-    (cf-plantuml-setup)
+    (my/plantuml-setup)
   (message "plantuml-mode not installed"))
 #+end_src
 * Todo List
