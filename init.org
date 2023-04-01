@@ -121,7 +121,9 @@
 - [[#tramp][tramp]]
 - [[#prettier][prettier]]
 - [[#plantuml][plantuml]]
-- [[#list][List]]
+- [[#todolist-05][todolist]]
+  - [[#straight][straight]]
+  - [[#yank-word][yank-word]]
   - [[#read-a-list-of-people-with-nice-emacs-config-files][read a list of people with nice emacs config files]]
   - [[#toc-org][toc-org]]
   - [[#magit][magit]]
@@ -1881,7 +1883,13 @@ If it's found, then add it to the `exec-path'."
     (my/plantuml-setup)
   (message "plantuml-mode not installed"))
 #+end_src
-* Todo List
+* todolist [0/5]
+** TODO straight
+- https://github.com/radian-software/straight.el
+- https://jeffkreeftmeijer.com/emacs-straight-use-package/
+** TODO yank-word
+- https://www.emacswiki.org/emacs/SearchAtPoint
+- https://emacs.stackexchange.com/questions/76463/cant-use-isearch-yank-word-or-char-in-minibuffer-local-map
 ** TODO read a list of people with nice emacs config files
 - https://github.com/zamansky/emacs.dz
 ** TODO toc-org
