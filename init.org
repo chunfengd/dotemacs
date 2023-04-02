@@ -17,11 +17,10 @@
   - [[#define-mypath][Define =my/path=]]
   - [[#extra-load-path][Extra load path]]
 - [[#how-to-install][How to Install]]
-  - [[#install-emacs-on-mac][install Emacs on Mac]]
   - [[#tangle-via-org-mode][Tangle via Org Mode]]
   - [[#tangle-via-command-line][Tangle via Command Line]]
   - [[#automatic-tangling][Automatic Tangling]]
-  - [[#add-the-following-line-into-emacs][Add the following line into =~/.emacs=]]
+  - [[#add-the-following-line-into-emacsdinitel][Add the following line into =~/.emacs.d/init.el=]]
   - [[#install-icons][Install icons]]
 - [[#package-management][Package Management]]
   - [[#package-init][package init]]
@@ -124,6 +123,7 @@
 - [[#todolist-05][todolist]]
   - [[#straight][straight]]
   - [[#yank-word][yank-word]]
+  - [[#use-emacsdinitel][use .emacs.d/init.el]]
   - [[#read-a-list-of-people-with-nice-emacs-config-files][read a list of people with nice emacs config files]]
   - [[#toc-org][toc-org]]
   - [[#magit][magit]]
@@ -165,21 +165,6 @@ on GitHub.
 * How to Install
 After cloning from [[https://github.com/xiongtx/.emacs.d][GitHub]], there is no =init.el= file, only an
 =init.org= file (this file). To produce an =init.el= file, either:
-** install Emacs on Mac
-- https://github.com/railwaycat/homebrew-emacsmacport
-- compatible with magnet
-#+begin_src sh
-# tap repo
-brew tap railwaycat/emacsmacport
-
-# install
-brew install emacs-mac
-# or
-brew install --cask emacs-mac
-
-# untap
-brew untap railwaycat/emacsmacport
-#+end_src
 ** Tangle via Org Mode
 Open =init.org= and call =M-x org-babel-tangle=, which extracts code
 blocks from the current file into =init.el=
@@ -205,7 +190,7 @@ saving.
 
 (add-hook 'after-save-hook 'my/tangle-init-file)
 #+END_SRC
-** Add the following line into =~/.emacs=
+** Add the following line into =~/.emacs.d/init.el=
 #+BEGIN_SRC emacs-lisp :tangle no
 (load "/path/to/init.el")
 #+END_SRC
@@ -1890,6 +1875,7 @@ If it's found, then add it to the `exec-path'."
 ** TODO yank-word
 - https://www.emacswiki.org/emacs/SearchAtPoint
 - https://emacs.stackexchange.com/questions/76463/cant-use-isearch-yank-word-or-char-in-minibuffer-local-map
+** TODO use .emacs.d/init.el
 ** TODO read a list of people with nice emacs config files
 - https://github.com/zamansky/emacs.dz
 ** TODO toc-org
