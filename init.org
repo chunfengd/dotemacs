@@ -117,7 +117,6 @@
 - [[#plantuml][plantuml]]
 - [[#todolist-05][todolist]]
   - [[#straight][straight]]
-  - [[#yank-word][yank-word]]
   - [[#use-emacsdinitel][use .emacs.d/init.el]]
   - [[#read-a-list-of-people-with-nice-emacs-config-files][read a list of people with nice emacs config files]]
   - [[#toc-org][toc-org]]
@@ -1786,9 +1785,6 @@ If it's found, then add it to the `exec-path'."
 ** TODO straight
 - https://github.com/radian-software/straight.el
 - https://jeffkreeftmeijer.com/emacs-straight-use-package/
-** TODO yank-word
-- https://www.emacswiki.org/emacs/SearchAtPoint
-- https://emacs.stackexchange.com/questions/76463/cant-use-isearch-yank-word-or-char-in-minibuffer-local-map
 ** TODO use .emacs.d/init.el
 ** TODO read a list of people with nice emacs config files
 - https://github.com/zamansky/emacs.dz
