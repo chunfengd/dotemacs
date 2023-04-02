@@ -60,11 +60,6 @@
   - [[#embark][embark]]
   - [[#consult][consult]]
   - [[#consult-projectile][consult-projectile]]
-- [[#ivy--counsel-deprecated][ivy & counsel (deprecated)]]
-  - [[#init][init]]
-  - [[#ivy-minibuffer-key-bindings][ivy minibuffer key bindings]]
-  - [[#saving-the-current-completion-session-to-a-buffer][saving the current completion session to a buffer]]
-- [[#helpful][helpful]]
 - [[#projectile][projectile]]
   - [[#useful-commands][useful commands]]
 - [[#lsp][lsp]]
@@ -74,7 +69,7 @@
   - [[#config-1][config]]
 - [[#flycheck][flycheck]]
 - [[#org-mode][org-mode]]
-  - [[#init-1][init]]
+  - [[#init][init]]
   - [[#add-agenda-files-into-emacs][add agenda files into =~/.emacs=]]
   - [[#org-mode-hook][org-mode-hook]]
   - [[#agenda-hook][agenda-hook]]
@@ -90,7 +85,7 @@
 - [[#java][java]]
   - [[#links][links]]
   - [[#lsp-java][lsp-java]]
-  - [[#dap-1][dap]]
+- [[#dap-1][dap]]
   - [[#set-java_home--lsp-java-java-path-in-emacs][set JAVA_HOME & lsp-java-java-path in .emacs]]
 - [[#dired][dired]]
   - [[#key-binding-1][key binding]]
@@ -961,92 +956,6 @@ https://github.com/Fanael/rainbow-delimiters
 ;;    :repo "OlMon/consult-projectile"
 ;;    :branch "master"))
 #+end_src
-* ivy & counsel (deprecated)
-- https://github.com/abo-abo/swiper
-- https://oremacs.com/swiper/
-- https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
-- https://sam217pa.github.io/2016/09/13/from-helm-to-ivy/
-** init
-#+begin_src emacs-lisp
-(use-package ivy
-  :disabled ;; switch to vertico
-  :diminish
-  :bind (("C-s" . swiper)
-         :map ivy-minibuffer-map
-         ("TAB" . ivy-alt-done)
-         ("C-l" . ivy-alt-done)
-         ("C-p" . ivy-previous-line)
-         ("C-n" . ivy-next-line)
-         ("C-f" . ivy-scroll-up-command)
-         ("C-b" . ivy-scroll-down-command)
-         ("C-w" . ivy-yank-word)
-         :map ivy-switch-buffer-map
-         ("C-p" . ivy-previous-line)
-         ("C-n" . ivy-next-line)
-         ("C-l" . ivy-done)
-         ("C-d" . ivy-switch-buffer-kill)
-         :map ivy-reverse-i-search-map
-         ("C-p" . ivy-previous-line)
-         ("C-n" . ivy-next-line)
-         ("C-d" . ivy-reverse-i-search-kill))
-  :config
-  (ivy-mode 1)
-  ;; add ‘recentf-mode’ and bookmarks to ‘ivy-switch-buffer’.
-  (setq ivy-use-virtual-buffers nil)
-)
-
-(use-package ivy-rich
-  ;; :requires (ivy)
-  :disabled ;; switch to vertico
-  :init (ivy-rich-mode 1))
-
-(use-package counsel
-  :disabled ;; switch to vertico
-  :bind (("M-x" . counsel-M-x)
-         ("C-x C-b" . counsel-switch-buffer)
-         ("C-x C-f" . counsel-find-file)
-         ("M-y" . counsel-yank-pop)
-         :map minibuffer-local-map
-         ("C-r" . 'counsel-minibuffer-history)))
-#+end_src
-** ivy minibuffer key bindings
-|-------+-------------------------+--------------------------------------------|
-| M-<   | ivy-beginning-of-buffer |                                            |
-| M->   | ivy-end-of-buffer       |                                            |
-| RET   | ivy-done                | calls the default action                   |
-| C-M-m | ivy-call                | calls the default action, keeps ivy open   |
-| M-o   | ivy-dispatching-done    | displays available actions                 |
-| C-M-o | ivy-dispatching-call    | displays available actions, keeps ivy open |
-|       | ivy-resume              | restart ivy before last action             |
-| M-j   | ivy-yank-word           |                                            |
-|-------+-------------------------+--------------------------------------------|
-*** copy paste text in ivy minibuffer
-- use M-j to yank current word
-- use C-y to yank current ring
-** saving the current completion session to a buffer
-|---------+-----------------------+----------------------------------------------------|
-| C-c C-o | ivy-occur             | save candidates to a buffer                        |
-| RET     | ivy-occur-press       | call the current action on candidate               |
-| mouse-1 | ivy-occur-click       |                                                    |
-| j       | next-line             |                                                    |
-| k       | previous-line         |                                                    |
-| a       | ivy-occur-read-action | read an action and make it current for this buffer |
-| o       | ivy-occur-dispatch    |                                                    |
-| q       | quit-window           |                                                    |
-|---------+-----------------------+----------------------------------------------------|
-* helpful
-#+begin_src emacs-lisp
-(use-package helpful
-  :disabled
-  :custom
-  (counsel-describe-function-function #'helpful-callable)
-  (counsel-describe-variable-function #'helpful-variable)
-  :bind
-  ([remap describe-function] . counsel-describe-function)
-  ([remap describe-command] . helpful-command)
-  ([remap describe-variable] . counsel-describe-variable)
-  ([remap describe-key] . helpful-key))
-#+end_src
 * projectile
 #+begin_src emacs-lisp
 (use-package projectile
@@ -1062,11 +971,6 @@ https://github.com/Fanael/rainbow-delimiters
   :config
   (projectile-mode)
   )
-
-(use-package counsel-projectile
-  :disabled ;; switch to vertico
-  ;; :requires (projectile counsel)
-  :config (counsel-projectile-mode))
 #+end_src
 ** useful commands
 |----+---------------------------|
@@ -1101,7 +1005,6 @@ https://github.com/Fanael/rainbow-delimiters
 (use-package lsp-treemacs
   :after lsp)
 
-;; (use-package lsp-ivy)
 #+end_src
 * dap
 #+begin_src emacs-lisp
@@ -1338,7 +1241,7 @@ https://github.com/Fanael/rainbow-delimiters
 (use-package lsp-java 
   :config (add-hook 'java-mode-hook 'lsp-deferred))
 #+end_src
-** dap
+* dap
 Run M-x dap-debug to execute a java file.
 #+begin_src emacs-lisp
 (use-package dap-java
