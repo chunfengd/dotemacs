@@ -184,6 +184,7 @@ saving.
 #+END_SRC
 ** add the following line into =~/.emacs.d/init.el=
 #+BEGIN_SRC emacs-lisp :tangle no
+;; (load "~/dev/dotemacs/init.el")
 (load "/path/to/init.el")
 #+END_SRC
 ** install icons
