@@ -11,26 +11,26 @@
 #   - https://github.com/xiongtx/.emacs.d/blob/master/init.org
 
 * Table of Contents                                                     :TOC:
-- [[#introduction][Introduction]]
+- [[#introduction][introduction]]
   - [[#other-references][other references]]
-- [[#dotemacs-path][Dotemacs Path]]
-  - [[#define-mypath][Define =my/path=]]
-  - [[#extra-load-path][Extra load path]]
-- [[#how-to-install][How to Install]]
-  - [[#tangle-via-org-mode][Tangle via Org Mode]]
-  - [[#tangle-via-command-line][Tangle via Command Line]]
-  - [[#automatic-tangling][Automatic Tangling]]
-  - [[#add-the-following-line-into-emacsdinitel][Add the following line into =~/.emacs.d/init.el=]]
-  - [[#install-icons][Install icons]]
-- [[#package-management][Package Management]]
+- [[#dotemacs-path][dotemacs path]]
+  - [[#define-mypath][define =my/path=]]
+  - [[#extra-load-path][extra load path]]
+- [[#how-to-install][how to install]]
+  - [[#tangle-via-org-mode][tangle via org mode]]
+  - [[#tangle-via-command-line][tangle via command line]]
+  - [[#automatic-tangling][automatic tangling]]
+  - [[#add-the-following-line-into-emacsdinitel][add the following line into =~/.emacs.d/init.el=]]
+  - [[#install-icons][install icons]]
+- [[#package-management][package management]]
   - [[#package-init][package init]]
   - [[#use-package][use-package]]
   - [[#install-packages-manually][install packages manually]]
-- [[#basic-ui][Basic UI]]
-  - [[#about-me][About Me]]
-  - [[#basic][Basic]]
-  - [[#speed-bar][Speed Bar]]
-  - [[#customized-util-functions--bindings][Customized Util Functions & Bindings]]
+- [[#basic-ui][basic ui]]
+  - [[#about-me][about me]]
+  - [[#basic][basic]]
+  - [[#speed-bar][speed bar]]
+  - [[#customized-util-functions--bindings][customized util functions & bindings]]
   - [[#misc][Misc]]
 - [[#key-binding][key binding]]
   - [[#switch-c-c--c-g][switch C-c & C-g]]
@@ -43,16 +43,16 @@
   - [[#general-leader][general leader]]
   - [[#myleader-keys][my/leader-keys]]
   - [[#jump-avy][jump (avy)]]
-- [[#more-ui][More UI]]
+- [[#more-ui][more ui]]
   - [[#doom-modeline][doom-modeline]]
   - [[#doom-theme][doom-theme]]
-  - [[#line-number][Line Number]]
+  - [[#line-number][line number]]
   - [[#parenthesis][parenthesis]]
   - [[#rainbow-delimiters][rainbow-delimiters]]
-  - [[#font][Font]]
+  - [[#font][font]]
   - [[#emacs-default-auto-save][emacs default auto save]]
   - [[#recent-files][recent files]]
-  - [[#auto-save][Auto Save]]
+  - [[#auto-save][auto save]]
 - [[#vertico][vertico]]
   - [[#vertico-1][vertico]]
   - [[#marginalia][marginalia]]
@@ -70,15 +70,15 @@
 - [[#flycheck][flycheck]]
 - [[#org-mode][org-mode]]
   - [[#init][init]]
-  - [[#add-agenda-files-into-emacs][add agenda files into =~/.emacs=]]
+  - [[#add-agenda-files-into-emacsdinitel][add agenda files into =~/.emacs.d/init.el=]]
   - [[#org-mode-hook][org-mode-hook]]
   - [[#agenda-hook][agenda-hook]]
   - [[#custom-agenda-commands][custom agenda commands]]
-  - [[#keyword-faces][Keyword Faces]]
-  - [[#deadline-warning-days][Deadline Warning Days]]
-  - [[#use-toc-org-to-automatically-generate-a-table-of-contents-for-org-files][Use toc-org to automatically generate a table of contents for Org files.]]
+  - [[#keyword-faces][keyword faces]]
+  - [[#deadline-warning-days][deadline warning days]]
+  - [[#use-toc-org-to-automatically-generate-a-table-of-contents-for-org-files][use toc-org to automatically generate a table of contents for org files.]]
 - [[#text-mode][text-mode]]
-  - [[#auto-fill][Auto Fill]]
+  - [[#auto-fill][auto fill]]
 - [[#typescript][typescript]]
   - [[#config-2][config]]
   - [[#manual][manual]]
@@ -90,13 +90,13 @@
 - [[#dired][dired]]
   - [[#key-binding-1][key binding]]
   - [[#listing-parameters][Listing Parameters]]
-- [[#folding][Folding]]
-  - [[#main-code][Main Code]]
-  - [[#key-binding-2][Key Binding]]
-  - [[#example][Example]]
-  - [[#test][Test]]
-  - [[#todo][Todo]]
-- [[#graphviz-dot-mode][Graphviz Dot Mode]]
+- [[#folding][folding]]
+  - [[#main-code][main code]]
+  - [[#key-binding-2][key binding]]
+  - [[#example][example]]
+  - [[#test][test]]
+  - [[#todo][todo]]
+- [[#graphviz-dot-mode][graphviz dot mode]]
 - [[#html][html]]
   - [[#web-mode][web-mode]]
 - [[#imenu][imenu]]
@@ -124,7 +124,7 @@
   - [[#magit][magit]]
 - [[#license][License]]
 
-* Introduction
+* introduction
 :PROPERTIES:
 :header-args: :tangle no
 :END:
@@ -133,15 +133,15 @@ from Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master
 on GitHub.
 ** other references
 - https://github.com/daviwil/emacs-from-scratch
-* Dotemacs Path
-** Define =my/path=
+* dotemacs path
+** define =my/path=
 #+BEGIN_SRC emacs-lisp
 (defvar my/dotemacs-home (file-name-directory load-file-name))
 
 (defun my/path (path)
   (expand-file-name path my/dotemacs-home))
 #+END_SRC
-** Extra load path
+** extra load path
 - updated from
   https://github.com/redguardtoo/emacs.d/blob/master/init.el
 #+begin_src emacs-lisp
@@ -157,13 +157,13 @@ on GitHub.
          load-path)))
 (my/add-site-dir (my/path "site"))
 #+end_src
-* How to Install
+* how to install
 After cloning from [[https://github.com/xiongtx/.emacs.d][GitHub]], there is no =init.el= file, only an
 =init.org= file (this file). To produce an =init.el= file, either:
-** Tangle via Org Mode
+** tangle via org mode
 Open =init.org= and call =M-x org-babel-tangle=, which extracts code
 blocks from the current file into =init.el=
-** Tangle via Command Line
+** tangle via command line
 #+BEGIN_SRC sh :tangle no
 $ ./tangle.sh
 #+END_SRC
@@ -173,7 +173,7 @@ $ emacs --batch \
         --eval "(require 'ob-tangle)" \
         --eval "(org-babel-tangle-file \"./init.org\")"
 #+END_SRC
-** Automatic Tangling
+** automatic tangling
 To avoid having to tangle manually each time a change is made, we can
 add a function to =after-save-hook= to tangle the =init.org= after
 saving.
@@ -185,13 +185,13 @@ saving.
 
 (add-hook 'after-save-hook 'my/tangle-init-file)
 #+END_SRC
-** Add the following line into =~/.emacs.d/init.el=
+** add the following line into =~/.emacs.d/init.el=
 #+BEGIN_SRC emacs-lisp :tangle no
 (load "/path/to/init.el")
 #+END_SRC
-** Install icons
+** install icons
 Run =M-x all-the-icons-install-fonts=
-* Package Management
+* package management
 ** package init
 #+begin_src emacs-lisp
 (require 'package)
@@ -225,13 +225,13 @@ https://github.com/jwiegley/use-package
 (package-refresh-contents nil)
 (package-install 'lsp-mode)
 #+end_src
-* Basic UI
-** About Me
+* basic ui
+** about me
 #+BEGIN_SRC emacs-lisp
 (customize-set-variable 'user-full-name "Chunfeng Dai")
 ;; (customize-set-variable 'user-mail-address "")
 #+END_SRC
-** Basic
+** basic
 #+begin_src emacs-lisp
 ;; (load-theme 'wombat)
 (setq inhibit-startup-message t)
@@ -266,7 +266,7 @@ https://github.com/jwiegley/use-package
 (setq-default indent-tabs-mode nil)
 (setq default-tab-width 8)
 #+end_src
-** Speed Bar
+** speed bar
 #+BEGIN_SRC emacs-lisp
 (add-hook
  'speedbar-load-hook
@@ -275,8 +275,8 @@ https://github.com/jwiegley/use-package
     (setq speedbar-show-unknown-files t)
     (display-line-numbers-mode 0)))
 #+END_SRC
-** Customized Util Functions & Bindings
-*** Find Map of Key Binding
+** customized util functions & bindings
+*** find map of key binding
 Find a key binding is in which map. From [[http://stackoverflow.com/questions/18801018/how-to-find-in-which-map-a-key-binding-is-from-programatically-in-emacs][stackoverflow]]
 #+BEGIN_SRC emacs-lisp
 (defun my/overlay-key-binding (key)
@@ -299,7 +299,7 @@ Find a key binding is in which map. From [[http://stackoverflow.com/questions/18
     (local-key-binding key)
     (global-key-binding key))))
 #+END_SRC
-*** Dos to Unix
+*** dos to unix
 From [[http://www.emacswiki.org/emacs/DosToUnix][emacswiki]].
 #+BEGIN_SRC emacs-lisp
 (defun my/dos2unix ()
@@ -308,7 +308,7 @@ Not exactly but it's easier to remember"
   (interactive)
   (set-buffer-file-coding-system 'unix 't))
 #+END_SRC
-*** Path Related
+*** path related
 #+BEGIN_SRC emacs-lisp
 (defun my/get-path ()
   ""
@@ -325,7 +325,7 @@ Not exactly but it's easier to remember"
     (if path
         (kill-new path))))
 #+END_SRC
-*** Eval and Replace
+*** eval and replace
 From: http://emacsredux.com/blog/2013/06/21/eval-and-replace/
 #+BEGIN_SRC emacs-lisp
 (defun my/eval-and-replace ()
@@ -338,7 +338,7 @@ From: http://emacsredux.com/blog/2013/06/21/eval-and-replace/
     (error (message "Invalid expression")
            (insert (current-kill 0)))))
 #+END_SRC
-*** Revert All Buffers
+*** revert all buffers
 From: http://blog.plover.com/prog/revert-all.html
 #+BEGIN_SRC emacs-lisp
 (defun my/revert-all-buffers ()
@@ -355,7 +355,7 @@ From: http://blog.plover.com/prog/revert-all.html
       (setq buffer (car list))))
   (message "Refreshed open files"))
 #+END_SRC
-*** Open Webstorm
+*** open webstorm
 #+BEGIN_SRC emacs-lisp
 (defun my/run-cmd-on-current-file (command)
   "run a command on the current file"
@@ -641,7 +641,7 @@ https://github.com/justbur/emacs-which-key
     "jl"  'avy-goto-line)
   )
 #+END_SRC
-* More UI
+* more ui
 ** doom-modeline
 https://github.com/seagle0128/doom-modeline
 #+begin_src emacs-lisp
@@ -662,7 +662,7 @@ https://github.com/seagle0128/doom-modeline
 (use-package doom-themes
   :init (load-theme 'doom-vibrant t))
 #+end_src
-** Line Number
+** line number
 #+begin_src emacs-lisp
 (global-display-line-numbers-mode)
 ;; (setq display-line-numbers-type 'visual)
@@ -684,11 +684,11 @@ https://github.com/Fanael/rainbow-delimiters
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 #+end_src
-** Font
+** font
 :PROPERTIES:
 :header-args: :tangle no
 :END:
-*** Default Font
+*** default font
 #+BEGIN_SRC emacs-lisp
 (cond
  ;; windows
@@ -723,7 +723,7 @@ https://github.com/Fanael/rainbow-delimiters
         recentf-max-menu-items 15)
   )
 #+end_src
-** Auto Save
+** auto save
 - refs
   - https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-misc.el
   - https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-autoload.el
@@ -1056,7 +1056,7 @@ https://github.com/Fanael/rainbow-delimiters
 (require 'org-install)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 #+END_SRC
-** add agenda files into =~/.emacs=
+** add agenda files into =~/.emacs.d/init.el=
 #+BEGIN_SRC emacs-lisp :tangle no
 (setq org-agenda-files
       '("~/path/to/todo/todo.org"))
@@ -1185,7 +1185,7 @@ https://github.com/Fanael/rainbow-delimiters
                           (org-agenda-skip-entry-if 'todo '("HOLD"))))
                     (org-agenda-overriding-header "Todo Tasks without time:")))))))
 #+END_SRC
-** Todo Keyword Faces
+** todo keyword faces
 #+BEGIN_SRC emacs-lisp
 (setq org-todo-keyword-faces
       '(("TODO" . org-warning)
@@ -1196,11 +1196,11 @@ https://github.com/Fanael/rainbow-delimiters
         ("HOLD" . "red")
         ("CANCELLED" . "purple1")))
 #+END_SRC
-** Deadline Warning Days
+** deadline warning days
 #+BEGIN_SRC emacs-lisp
 (setq org-deadline-warning-days 10)
 #+END_SRC
-** Use toc-org to automatically generate a table of contents for Org files.
+** TODO use toc-org to automatically generate a table of contents for org files.
 #+BEGIN_SRC emacs-lisp
 (defun my/setup-toc-org ()
   (add-hook 'org-mode-hook #'toc-org-enable))
@@ -1210,7 +1210,7 @@ https://github.com/Fanael/rainbow-delimiters
   (message "toc-org not installed"))
 #+END_SRC
 * text-mode
-** Auto Fill
+** auto fill
 #+BEGIN_SRC emacs-lisp
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 #+END_SRC
@@ -1274,8 +1274,8 @@ Run M-x dap-debug to execute a java file.
   (interactive "s")
   (setq dired-listing-switches parameter))
 #+END_SRC
-* Folding
-** Main Code
+* folding
+** main code
 #+BEGIN_SRC emacs-lisp
 (setq default-label 'cycle-fold)
 
@@ -1446,14 +1446,14 @@ Run M-x dap-debug to execute a java file.
              (while (goto-list 1 0)
                (fold-at-end))))))
 #+END_SRC
-** Key Binding
+** key binding
 #+BEGIN_SRC emacs-lisp
 (my/set-key-bindings
  'global-set-key
  '(("C-<tab>" toggle-fold-line)
    ("C-S-<tab>" toggle-fold-all)))
 #+END_SRC
-** Example
+** example
 :PROPERTIES:
 :header-args: :tangle no
 :END:
@@ -1469,7 +1469,7 @@ Run M-x dap-debug to execute a java file.
         (p q) (r s))
      o))
 #+END_SRC
-** Test
+** test
 :PROPERTIES:
 :header-args: :tangle no
 :END:
@@ -1489,14 +1489,14 @@ Run M-x dap-debug to execute a java file.
 (overlay-put o 'display `(:string "(...)"))
 (overlay-put o 'display nil)
 #+END_SRC
-** Todo
+** todo
 - minor mode
 - 'helm-after-action-hook
 - 'helm-after-persistent-action-hook
 - 'occur-mode-find-occurrence-hook
 - bug of [{\n},{\n},{\n}]
 - lightweight-macro
-* TODO Graphviz Dot Mode
+* TODO graphviz dot mode
 #+BEGIN_SRC emacs-lisp
 (defun my/graphviz-mode ()
   ""
