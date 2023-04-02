@@ -20,12 +20,13 @@
   - [[#tangle-via-org-mode][tangle via org mode]]
   - [[#tangle-via-command-line][tangle via command line]]
   - [[#automatic-tangling][automatic tangling]]
+  - [[#add-the-following-line-into-emacsdearly-initel][add the following line into =~/.emacs.d/early-init.el=]]
   - [[#add-the-following-line-into-emacsdinitel][add the following line into =~/.emacs.d/init.el=]]
   - [[#install-icons][install icons]]
 - [[#package-management][package management]]
-  - [[#package-init][package init]]
-  - [[#use-package][use-package]]
-  - [[#install-packages-manually][install packages manually]]
+  - [[#install-straightel][install straight.el]]
+  - [[#configure-use-package-to-use-straight][configure use-package to use straight]]
+  - [[#old-package][old package]]
 - [[#basic-ui][basic ui]]
   - [[#about-me][about me]]
   - [[#basic][basic]]
@@ -82,11 +83,10 @@
 - [[#typescript][typescript]]
   - [[#config-2][config]]
   - [[#manual][manual]]
+- [[#json-mode][json-mode]]
 - [[#java][java]]
   - [[#links][links]]
   - [[#lsp-java][lsp-java]]
-- [[#dap-1][dap]]
-  - [[#set-java_home--lsp-java-java-path-in-emacs][set JAVA_HOME & lsp-java-java-path in .emacs]]
 - [[#dired][dired]]
   - [[#key-binding-1][key binding]]
   - [[#listing-parameters][Listing Parameters]]
@@ -102,9 +102,8 @@
 - [[#imenu][imenu]]
 - [[#js][js]]
   - [[#node-modules-path-setup][node-modules-path-setup]]
-  - [[#js-mode][js-mode]]
-  - [[#js2-mode][js2-mode]]
-  - [[#json-mode][json-mode]]
+  - [[#js-mode-deprecated-to-typescript][js-mode (deprecated to typescript)]]
+  - [[#js2-mode-deprecated-to-typescript][js2-mode (deprecated to typescript)]]
 - [[#shell][shell]]
   - [[#sh-mode][sh mode]]
   - [[#shell-mode][shell mode]]
@@ -182,6 +181,11 @@ saving.
 
 (add-hook 'after-save-hook 'my/tangle-init-file)
 #+END_SRC
+** add the following line into =~/.emacs.d/early-init.el=
+#+begin_src emacs-lisp :tangle no
+;; Disable package.el in favor of straight.el
+(setq package-enable-at-startup nil)
+#+end_src
 ** add the following line into =~/.emacs.d/init.el=
 #+BEGIN_SRC emacs-lisp :tangle no
 ;; (load "~/dev/dotemacs/init.el")
@@ -190,7 +194,44 @@ saving.
 ** install icons
 Run =M-x all-the-icons-install-fonts=
 * package management
-** package init
+** install straight.el
+https://jeffkreeftmeijer.com/emacs-straight-use-package/
+https://github.com/radian-software/straight.el
+#+begin_src emacs-lisp
+(setq straight-repository-branch "master")
+
+;; Install straight.el
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el"
+        user-emacs-directory))
+      (bootstrap-version 6))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         (format
+          "%s/%s/install.el"
+          "https://raw.githubusercontent.com/radian-software/straight.el"
+          straight-repository-branch)
+         'silent
+         'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+#+end_src
+** configure use-package to use straight
+#+begin_src emacs-lisp
+(straight-use-package 'use-package)
+(use-package straight
+  :custom
+  (straight-use-package-by-default t))
+#+end_src
+** old package
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+*** package init
 #+begin_src emacs-lisp
 (require 'package)
 (setq package-archives
@@ -206,7 +247,7 @@ Run =M-x all-the-icons-install-fonts=
 (unless package-archive-contents
   (package-refresh-contents nil))
 #+end_src
-** use-package
+*** use-package
 https://github.com/jwiegley/use-package
 #+begin_src emacs-lisp
 (unless (package-installed-p 'use-package)
@@ -216,8 +257,8 @@ https://github.com/jwiegley/use-package
 ;; make sure packages are installed
 (setq use-package-always-ensure t)
 #+end_src
-** install packages manually
-#+begin_src emacs-lisp :tangle no
+*** install packages manually
+#+begin_src emacs-lisp
 ;; https://github.com/melpa/melpa/issues/7238
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 (package-refresh-contents nil)
@@ -418,7 +459,7 @@ From: http://blog.plover.com/prog/revert-all.html
 (server-start)
 #+END_SRC
 *** TODO exec-path-from-shell
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (if (package-installed-p 'exec-path-from-shell)
     (progn
      (require 'exec-path-from-shell)
@@ -649,7 +690,6 @@ https://github.com/seagle0128/doom-modeline
   :if (display-graphic-p))
 
 (use-package doom-modeline
-  :ensure t
   :init (doom-modeline-mode 1)
   :custom
   ((doom-modeline-height 15)
@@ -731,9 +771,9 @@ https://github.com/Fanael/rainbow-delimiters
   (with-eval-after-load 'auto-save
     ;; (push 'my-file-too-big-p auto-save-exclude)
     ;; (push 'my-check-major-mode-for-auto-save auto-save-exclude)
-    (setq auto-save-idle 1)
+    (setq auto-save-idle 2)
     (setq auto-save-slient t))
-  (my/run-with-idle-timer 1 #'auto-save-enable))
+  (my/run-with-idle-timer 2 #'auto-save-enable))
 (setup-auto-save)
 #+end_src
 * vertico
@@ -742,7 +782,6 @@ https://github.com/Fanael/rainbow-delimiters
 - https://systemcrafters.cc/emacs-tips/streamline-completions-with-vertico/
 #+begin_src emacs-lisp
 (use-package vertico
-  :ensure t
   :bind (:map vertico-map
               ("C-n" . vertico-next)
               ("C-p" . vertico-previous))
@@ -762,7 +801,6 @@ https://github.com/Fanael/rainbow-delimiters
 #+begin_src emacs-lisp
 (use-package marginalia
   :after vertico
-  :ensure t
   :custom
   (marginalia-annotators
    '(marginalia-annotators-heavy marginalia-annotators-light nil))
@@ -785,8 +823,6 @@ https://github.com/Fanael/rainbow-delimiters
 - https://github.com/oantolin/embark
 #+begin_src emacs-lisp
 (use-package embark
-  :ensure t
-
   :bind
   (("C-." . embark-act)         ;; pick some comfortable binding
    ;; executes the default action at point, good alternative: M-.
@@ -816,7 +852,6 @@ https://github.com/Fanael/rainbow-delimiters
 ;; Consult users will also want the embark-consult package.
 (use-package embark-consult
   :after embark consult
-  :ensure t ; only need to install it, embark loads it after consult if found
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 #+end_src
@@ -1209,14 +1244,11 @@ https://github.com/Fanael/rainbow-delimiters
 #+BEGIN_SRC emacs-lisp
 (setq org-deadline-warning-days 10)
 #+END_SRC
-** TODO use toc-org to automatically generate a table of contents for org files.
+** use toc-org to automatically generate a table of contents for org files.
 #+BEGIN_SRC emacs-lisp
-(defun my/setup-toc-org ()
+(use-package toc-org
+  :init
   (add-hook 'org-mode-hook #'toc-org-enable))
-
-(if (package-installed-p 'toc-org)
-    (my/setup-toc-org)
-  (message "toc-org not installed"))
 #+END_SRC
 * text-mode
 ** auto fill
@@ -1236,6 +1268,10 @@ https://github.com/Fanael/rainbow-delimiters
 - install js/ts server
 - install eslint globally
 - install eslint server by using M-x lsp-install-server
+* json-mode
+#+BEGIN_SRC emacs-lisp
+(use-package json-mode)
+#+END_SRC
 * java
 ** links
 - lsp-java
@@ -1249,17 +1285,6 @@ https://github.com/Fanael/rainbow-delimiters
 #+begin_src emacs-lisp
 (use-package lsp-java 
   :config (add-hook 'java-mode-hook 'lsp-deferred))
-#+end_src
-* dap
-Run M-x dap-debug to execute a java file.
-#+begin_src emacs-lisp
-(use-package dap-java
-  :ensure nil)
-#+end_src
-** set JAVA_HOME & lsp-java-java-path in .emacs
-#+begin_src emacs-lisp :tangle no
-(setenv "JAVA_HOME"  "/usr/local/Cellar/openjdk@11/11.0.10/libexec/openjdk.jdk/Contents/Home")
-(setq lsp-java-java-path "/usr/local/Cellar/openjdk@11/11.0.10/libexec/openjdk.jdk/Contents/Home/bin/java")
 #+end_src
 * TODO dired
 ** key binding
@@ -1514,42 +1539,27 @@ Run M-x dap-debug to execute a java file.
   )
 (add-hook 'graphviz-dot-mode-hook 'my/graphviz-mode)
 #+END_SRC
-* TODO html
+* html
 ** web-mode
 #+BEGIN_SRC emacs-lisp
-(defun my/web-mode-setup ()
-  (add-to-list 'auto-mode-alist '("\\.jsx" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.html$" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.hbs$" . web-mode))
-  (defun my/web-mode-func()
-    (setq web-mode-markup-indent-offset 2)
-    (setq web-mode-css-indent-offset 2)
-    (setq web-mode-code-indent-offset 2)
-    (setq web-mode-attr-indent-offset 2)
-    (setq web-mode-style-padding 2)
-    (setq web-mode-script-padding 2)
-    (setq web-mode-block-padding 0)
-    (set-face-attribute 'web-mode-html-tag-face nil :foreground "SkyBlue1")
-    (setq web-mode-enable-current-element-highlight t)
-    (set-face-attribute 'web-mode-current-element-highlight-face nil :background "honeydew4")
-    (setq web-mode-enable-current-column-highlight nil)
-    (setq web-mode-enable-sexp-functions t)
-    ;; (setq web-mode-enable-auto-quoting nil)
-    ;; (setq web-mode-enable-auto-indentation nil)
-    (my/set-key-bindings
-     'define-key
-     '(
-       ;; ("C-t" nil)
-       ;; ("M-t" nil)
-       ;; ("M-t" web-mode-mark-and-expand)
-       ;; ("C-c C-e C-c" web-mode-element-close)
-       ;; ("C-c C-e C-/" web-mode-element-close)
-       )
-     web-mode-map))
-  (add-hook 'web-mode-hook 'my/web-mode-func))
-(if (package-installed-p 'web-mode)
-    (my/web-mode-setup)
-  (message "web-mode not installed"))
+(use-package web-mode
+  :mode "\\.\\(jsx\\|html\\|hbs\\)\\'"
+  :config
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-code-indent-offset 2)
+  (setq web-mode-attr-indent-offset 2)
+  (setq web-mode-style-padding 2)
+  (setq web-mode-script-padding 2)
+  (setq web-mode-block-padding 0)
+  (set-face-attribute 'web-mode-html-tag-face nil :foreground "SkyBlue1")
+  (setq web-mode-enable-current-element-highlight t)
+  (set-face-attribute 'web-mode-current-element-highlight-face nil :background "honeydew4")
+  (setq web-mode-enable-current-column-highlight nil)
+  (setq web-mode-enable-sexp-functions t)
+  ;; (setq web-mode-enable-auto-quoting nil)
+  ;; (setq web-mode-enable-auto-indentation nil)
+  )
 #+END_SRC
 * TODO imenu
 #+BEGIN_SRC emacs-lisp
@@ -1587,14 +1597,20 @@ If it's found, then add it to the `exec-path'."
     '(add-hook 'web-mode-hook #'add-node-modules-path)))
 (my/node-modules-path-setup)
 #+END_SRC
-** js-mode
-#+BEGIN_SRC emacs-lisp :tangle no
+** js-mode (deprecated to typescript)
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+#+BEGIN_SRC emacs-lisp
 (defun my/js-setup ()
   (setq-default js-indent-level 2))
 (my/js-setup)
 #+END_SRC
-** js2-mode
-#+BEGIN_SRC emacs-lisp :tangle no
+** js2-mode (deprecated to typescript)
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+#+BEGIN_SRC emacs-lisp
 (defun my/js2-setup ()
   ;; js2-mode-hide-comments
   ;; js2-mode-hide-element
@@ -1625,16 +1641,9 @@ If it's found, then add it to the `exec-path'."
      '()))
   (add-hook 'js2-mode-hook 'my/init-js))
 
-(if (package-installed-p 'js2-mode)
-    (my/js2-setup)
-  (message "js2-mode not installed"))
-#+END_SRC
-** json-mode
-#+BEGIN_SRC emacs-lisp
-(defun my/json-setup ())
-(if (package-installed-p 'json-mode)
-    (my/json-setup)
-  (message "json-mode not installed"))
+;; (if (package-installed-p 'js2-mode)
+;;     (my/js2-setup)
+;;   (message "js2-mode not installed"))
 #+END_SRC
 * TODO shell
 ** sh mode
@@ -1756,9 +1765,9 @@ If it's found, then add it to the `exec-path'."
   ;;                   (prettier-js-mode))))
   (global-set-key [f8] 'prettier-js)
   )
-(if (package-installed-p 'prettier-js)
-    (my/setup-prettier)
-  (message "prettier-js not installed"))
+;; (if (package-installed-p 'prettier-js)
+;;     (my/setup-prettier)
+;;   (message "prettier-js not installed"))
 #+END_SRC
 * TODO plantuml
 #+begin_src emacs-lisp
@@ -1776,9 +1785,9 @@ If it's found, then add it to the `exec-path'."
      (add-to-list
       'org-src-lang-modes '("plantuml" . plantuml))))
   )
-(if (package-installed-p 'plantuml-mode)
-    (my/plantuml-setup)
-  (message "plantuml-mode not installed"))
+;; (if (package-installed-p 'plantuml-mode)
+;;     (my/plantuml-setup)
+;;   (message "plantuml-mode not installed"))
 #+end_src
 * todolist [0/3]
 ** TODO read a list of people with nice emacs config files
