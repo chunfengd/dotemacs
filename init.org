@@ -884,6 +884,17 @@ https://github.com/Fanael/rainbow-delimiters
    ;; consult--source-project-recent-file
    ;; :preview-key "C-l"
    )
+  (defalias 'consult-line-thing-at-point 'consult-line)
+  (consult-customize
+   consult-line
+   :initial
+   ;; use region text if selected
+   (if (use-region-p)
+       (let ((s (buffer-substring-no-properties (mark) (point))))
+         (deactivate-mark)
+         s))
+   consult-line-thing-at-point
+   :initial (thing-at-point 'symbol))
 
   ;; Optionally configure the narrowing key.
   ;; Both < and C-+ work reasonably well.
