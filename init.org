@@ -20,13 +20,17 @@
   - [[#tangle-via-org-mode][tangle via org mode]]
   - [[#tangle-via-command-line][tangle via command line]]
   - [[#automatic-tangling][automatic tangling]]
-  - [[#add-the-following-line-into-emacsdearly-initel][add the following line into =~/.emacs.d/early-init.el=]]
   - [[#add-the-following-line-into-emacsdinitel][add the following line into =~/.emacs.d/init.el=]]
   - [[#install-icons][install icons]]
-- [[#package-management][package management]]
-  - [[#install-straightel][install straight.el]]
+- [[#straight][straight]]
+  - [[#add-the-following-line-into-emacsdearly-initel][add the following line into =~/.emacs.d/early-init.el=]]
+  - [[#install][install]]
   - [[#configure-use-package-to-use-straight][configure use-package to use straight]]
-  - [[#old-package][old package]]
+- [[#package-management][package management]]
+  - [[#package-init][package init]]
+  - [[#use-package][use-package]]
+  - [[#install-packages-manually][install packages manually]]
+  - [[#quelpa][quelpa]]
 - [[#basic-ui][basic ui]]
   - [[#about-me][about me]]
   - [[#basic][basic]]
@@ -181,11 +185,6 @@ saving.
 
 (add-hook 'after-save-hook 'my/tangle-init-file)
 #+END_SRC
-** add the following line into =~/.emacs.d/early-init.el=
-#+begin_src emacs-lisp :tangle no
-;; Disable package.el in favor of straight.el
-(setq package-enable-at-startup nil)
-#+end_src
 ** add the following line into =~/.emacs.d/init.el=
 #+BEGIN_SRC emacs-lisp :tangle no
 ;; (load "~/dev/dotemacs/init.el")
@@ -193,8 +192,16 @@ saving.
 #+END_SRC
 ** install icons
 Run =M-x all-the-icons-install-fonts=
-* package management
-** install straight.el
+* straight
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+** add the following line into =~/.emacs.d/early-init.el=
+#+begin_src emacs-lisp :tangle no
+;; Disable package.el in favor of straight.el
+(setq package-enable-at-startup nil)
+#+end_src
+** install
 https://jeffkreeftmeijer.com/emacs-straight-use-package/
 https://github.com/radian-software/straight.el
 #+begin_src emacs-lisp
@@ -227,17 +234,13 @@ https://github.com/radian-software/straight.el
   :custom
   (straight-use-package-by-default t))
 #+end_src
-** old package
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-*** package init
+* package management
+** package init
 #+begin_src emacs-lisp
 (require 'package)
 (setq package-archives
       '(
-        ;; ("cf-melpa" . ,(my/path "../cf-melpa/packages"))
-        ("melpa-stable" . "https://stable.melpa.org/packages/")
+        ;; ("melpa-stable" . "https://stable.melpa.org/packages/")
         ("melpa" . "https://melpa.org/packages/")
         ("org" . "http://orgmode.org/elpa/")
         ("elpa" . "https://elpa.gnu.org/packages/")
@@ -247,7 +250,7 @@ https://github.com/radian-software/straight.el
 (unless package-archive-contents
   (package-refresh-contents nil))
 #+end_src
-*** use-package
+** use-package
 https://github.com/jwiegley/use-package
 #+begin_src emacs-lisp
 (unless (package-installed-p 'use-package)
@@ -257,12 +260,18 @@ https://github.com/jwiegley/use-package
 ;; make sure packages are installed
 (setq use-package-always-ensure t)
 #+end_src
-*** install packages manually
+** install packages manually
 #+begin_src emacs-lisp
 ;; https://github.com/melpa/melpa/issues/7238
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 (package-refresh-contents nil)
 (package-install 'lsp-mode)
+#+end_src
+** quelpa
+#+begin_src emacs-lisp
+(use-package quelpa)
+(use-package quelpa-use-package)
+(quelpa-use-package-activate-advice)
 #+end_src
 * basic ui
 ** about me
@@ -821,6 +830,7 @@ https://github.com/Fanael/rainbow-delimiters
 - https://github.com/oantolin/embark
 #+begin_src emacs-lisp
 (use-package embark
+  :quelpa (embark :fetcher github :repo "oantolin/embark")
   :bind
   (("C-." . embark-act)         ;; pick some comfortable binding
    ;; executes the default action at point, good alternative: M-.
@@ -858,6 +868,7 @@ https://github.com/Fanael/rainbow-delimiters
 *** config
 #+begin_src emacs-lisp
 (use-package consult
+  :quelpa (consult :fetcher github :repo "minad/consult")
   :bind (
          :map minibuffer-local-map
               ("M-s" . consult-history)
@@ -991,12 +1002,8 @@ https://github.com/Fanael/rainbow-delimiters
 - https://gitlab.com/OlMon/consult-projectile
 #+begin_src emacs-lisp
 (use-package consult-projectile
-  :straight
-  (consult-projectile
-   :type git
-   :host gitlab
-   :repo "OlMon/consult-projectile"
-   :branch "master"))
+  :quelpa
+  (consult-projectile :fetcher gitlab :repo "OlMon/consult-projectile"))
 #+end_src
 * projectile
 #+begin_src emacs-lisp
