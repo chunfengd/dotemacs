@@ -108,10 +108,10 @@
   - [[#node-modules-path-setup][node-modules-path-setup]]
   - [[#js-mode-deprecated-to-typescript][js-mode (deprecated to typescript)]]
   - [[#js2-mode-deprecated-to-typescript][js2-mode (deprecated to typescript)]]
-- [[#shell][shell]]
+- [[#shell-04][shell]]
+  - [[#term-mode][term mode]]
   - [[#sh-mode][sh mode]]
   - [[#shell-mode][shell mode]]
-  - [[#term-mode][term mode]]
   - [[#tm-function][tm function]]
   - [[#sh-function][sh function]]
 - [[#spell][spell]]
@@ -132,6 +132,7 @@ This is an Emacs configuration file written in Org-mode. It is adapted
 from Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init.org][config file]] and Tianxiang Xiong's [[https://github.com/xiongtx/.emacs.d/blob/master/init.org][config]]
 on GitHub.
 ** other references
+- https://systemcrafters.cc/
 - https://github.com/daviwil/emacs-from-scratch
 * dotemacs path
 ** define =my/path=
@@ -577,8 +578,16 @@ From: http://blog.plover.com/prog/revert-all.html
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 
+  ;; https://evil.readthedocs.io/en/latest/settings.html#the-initial-state
+  ;; config initial-state
+  ;;  - 'normal
+  ;;  - 'insert
+  ;;  - 'emacs
   (evil-set-initial-state 'messages-buffer-mode 'normal)
-  (evil-set-initial-state 'dashboard-mode 'normal))
+  (evil-set-initial-state 'dashboard-mode 'normal)
+  ;; don't use evil in term-mode
+  ;; (evil-set-initial-state 'term-mode 'emacs)
+  )
 #+end_src
 ** evil-collection
 https://github.com/emacs-evil/evil-collection
@@ -586,7 +595,9 @@ https://github.com/emacs-evil/evil-collection
 (use-package evil-collection
   :after evil
   :config
-  (evil-collection-init))
+  (evil-collection-init)
+  ;; (setq evil-collection-term-sync-state-and-mode-p nil)
+  )
 #+end_src
 ** which-key
 https://github.com/justbur/emacs-which-key
@@ -917,7 +928,7 @@ https://github.com/Fanael/rainbow-delimiters
    consult-xref
    :preview-key '(:debounce 0.4 any)
 
-   ;; use C-l to preview
+   ;; ; use C-l to preview
    ;; consult-bookmark
    ;; consult-recent-file
    ;; consult--source-bookmark
@@ -1099,7 +1110,7 @@ https://github.com/Fanael/rainbow-delimiters
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck)
 #+END_SRC
-* org-mode
+* TODO org-mode
 ** init
 #+BEGIN_SRC emacs-lisp
 (require 'org-install)
@@ -1650,12 +1661,49 @@ If it's found, then add it to the `exec-path'."
 ;;     (my/js2-setup)
 ;;   (message "js2-mode not installed"))
 #+END_SRC
-* TODO shell
-** sh mode
+* shell [0/4]
+** term mode
+*** config
+#+BEGIN_SRC emacs-lisp
+(use-package term
+  :config
+  (setq explicit-shell-file-name "bash")
+
+  ;; make sure C-c C-p / C-c C-n jump to the right place
+  (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
+
+  ;; :bind (:map term-raw-map
+  ;;        ("C-b" . scroll-up-command)
+  ;;        :map company-active-map
+  ;;        ("C-n" . company-select-next)
+  ;;        ("C-p" . company-select-previous)
+  ;;        :map company-active-map
+  ;;        ("C-n" . company-select-next)
+  ;;        ("C-p" . company-select-previous))
+  ;;  '(("C-b" scroll-up-command)
+  ;;    ("C-f" scroll-down)
+  ;;    ("C-y" term-paste)
+  ;;    ("s-v" term-paste)
+  ;;    ("M-x" nil)
+  ;;    ("C-u" universal-argument)
+  ;;    ("C-c C-y" term-interrupt-subjob)
+  ;;    )
+  )
+#+End_SRC
+*** keys
+|---------+------------|
+| key     | desc       |
+|---------+------------|
+| C-c C-k | char-mode  |
+| C-c C-j | line-mode  |
+| C-c C-p | go back    |
+| C-c C-n | go forward |
+|---------+------------|
+** TODO sh mode
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'auto-mode-alist '("/\\.bash_[^/]*\\'" . sh-mode))
 #+END_SRC
-** shell mode
+** TODO shell mode
 #+BEGIN_SRC emacs-lisp
 (defun my/shell-mode-hook-func ()
   (my/set-key-bindings
@@ -1687,28 +1735,7 @@ If it's found, then add it to the `exec-path'."
   )
 (add-hook 'shell-mode-hook 'my/shell-mode-hook-func)
 #+END_SRC
-** term mode
-#+BEGIN_SRC emacs-lisp
-(defun my/term-mode-hook-func ()
-  (setq-local scroll-margin 0)
-  (my/set-key-bindings
-   'local-set-key
-   '(
-     ))
-  (my/set-key-bindings
-   'define-key
-   '(("C-b" scroll-up-command)
-     ("C-f" scroll-down)
-     ("C-y" term-paste)
-     ("s-v" term-paste)
-     ("M-x" nil)
-     ("C-u" universal-argument)
-     ("C-c C-y" term-interrupt-subjob)
-     )
-   term-raw-map))
-(add-hook 'term-mode-hook 'my/term-mode-hook-func)
-#+END_SRC
-** tm function
+** TODO tm function
 #+BEGIN_SRC emacs-lisp
 (defun tm ()
   "start-ansi-term"
@@ -1725,7 +1752,7 @@ If it's found, then add it to the `exec-path'."
     (ansi-term sh-name)
     (rename-buffer bf-name)))
 #+END_SRC
-** sh function
+** TODO sh function
 #+BEGIN_SRC emacs-lisp
 (defun sh ()
   "start-shell"
