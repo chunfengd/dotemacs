@@ -108,11 +108,11 @@
   - [[#node-modules-path-setup][node-modules-path-setup]]
   - [[#js-mode-deprecated-to-typescript][js-mode (deprecated to typescript)]]
   - [[#js2-mode-deprecated-to-typescript][js2-mode (deprecated to typescript)]]
-- [[#shell-04][shell]]
+- [[#shell-03][shell]]
   - [[#term-mode][term mode]]
+  - [[#tm-function][tm function]]
   - [[#sh-mode][sh mode]]
   - [[#shell-mode][shell mode]]
-  - [[#tm-function][tm function]]
   - [[#sh-function][sh function]]
 - [[#spell][spell]]
 - [[#tramp][tramp]]
@@ -1661,7 +1661,7 @@ If it's found, then add it to the `exec-path'."
 ;;     (my/js2-setup)
 ;;   (message "js2-mode not installed"))
 #+END_SRC
-* shell [0/4]
+* shell [0/3]
 ** term mode
 *** config
 #+BEGIN_SRC emacs-lisp
@@ -1699,6 +1699,26 @@ If it's found, then add it to the `exec-path'."
 | C-c C-p | go back    |
 | C-c C-n | go forward |
 |---------+------------|
+** tm function
+#+begin_src emacs-lisp
+(defun tm ()
+  "start bash term with a different name"
+  (interactive)
+  (let ((sh-name "bash")
+        (bf-name "tm")
+        )
+    (if t ;;current-prefix-arg
+        (setq bf-name
+              (read-from-minibuffer "name (tm): " bf-name)))
+    (if (or (not bf-name)
+            (= (length bf-name) 0))
+        (setq bf-name "*tm*"))
+    (setq bf-name (generate-new-buffer-name bf-name))
+    (set-buffer (make-term bf-name sh-name))
+    (term-mode)
+    (term-char-mode)
+    (switch-to-buffer (concat "*" bf-name "*"))))
+#+end_src
 ** TODO sh mode
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'auto-mode-alist '("/\\.bash_[^/]*\\'" . sh-mode))
@@ -1734,23 +1754,6 @@ If it's found, then add it to the `exec-path'."
     'insert shell-mode-map (kbd "C-p") 'comint-previous-input)
   )
 (add-hook 'shell-mode-hook 'my/shell-mode-hook-func)
-#+END_SRC
-** TODO tm function
-#+BEGIN_SRC emacs-lisp
-(defun tm ()
-  "start-ansi-term"
-  (interactive)
-  (let (bf-name
-        (sh-name "/bin/bash"))
-    (if t ;;current-prefix-arg
-        (setq bf-name
-              (read-from-minibuffer "Buffer (*tm*): " bf-name)))
-    (if (or (not bf-name)
-            (= (length bf-name) 0))
-        (setq bf-name "*tm*"))
-    (setq bf-name (generate-new-buffer-name bf-name))
-    (ansi-term sh-name)
-    (rename-buffer bf-name)))
 #+END_SRC
 ** TODO sh function
 #+BEGIN_SRC emacs-lisp
