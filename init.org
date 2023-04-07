@@ -1671,7 +1671,7 @@ If it's found, then add it to the `exec-path'."
 
   ;; make sure C-c C-p / C-c C-n jump to the right place
   (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
-
+  (setq scroll-margin 0)
   ;; :bind (:map term-raw-map
   ;;        ("C-b" . scroll-up-command)
   ;;        :map company-active-map
