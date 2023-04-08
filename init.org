@@ -82,6 +82,12 @@
   - [[#keyword-faces][keyword faces]]
   - [[#deadline-warning-days][deadline warning days]]
   - [[#use-toc-org-to-automatically-generate-a-table-of-contents-for-org-files][use toc-org to automatically generate a table of contents for org files.]]
+- [[#shell-02][shell]]
+  - [[#term-mode][term mode]]
+  - [[#tm-function][tm function]]
+  - [[#sh-mode][sh mode]]
+  - [[#shell-mode][shell mode]]
+  - [[#sh-function][sh function]]
 - [[#text-mode][text-mode]]
   - [[#auto-fill][auto fill]]
 - [[#typescript][typescript]]
@@ -108,12 +114,6 @@
   - [[#node-modules-path-setup][node-modules-path-setup]]
   - [[#js-mode-deprecated-to-typescript][js-mode (deprecated to typescript)]]
   - [[#js2-mode-deprecated-to-typescript][js2-mode (deprecated to typescript)]]
-- [[#shell-03][shell]]
-  - [[#term-mode][term mode]]
-  - [[#tm-function][tm function]]
-  - [[#sh-mode][sh mode]]
-  - [[#shell-mode][shell mode]]
-  - [[#sh-function][sh function]]
 - [[#spell][spell]]
 - [[#tramp][tramp]]
 - [[#prettier][prettier]]
@@ -1266,6 +1266,113 @@ https://github.com/Fanael/rainbow-delimiters
   :init
   (add-hook 'org-mode-hook #'toc-org-enable))
 #+END_SRC
+* shell [0/2]
+** term mode
+*** config
+#+BEGIN_SRC emacs-lisp
+(use-package term
+  :config
+  (setq explicit-shell-file-name "bash")
+
+  ;; make sure C-c C-p / C-c C-n jump to the right place
+  (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
+  (setq scroll-margin 0)
+  ;; :bind (:map term-raw-map
+  ;;        ("C-b" . scroll-up-command)
+  ;;        :map company-active-map
+  ;;        ("C-n" . company-select-next)
+  ;;        ("C-p" . company-select-previous)
+  ;;        :map company-active-map
+  ;;        ("C-n" . company-select-next)
+  ;;        ("C-p" . company-select-previous))
+  ;;  '(("C-b" scroll-up-command)
+  ;;    ("C-f" scroll-down)
+  ;;    ("C-y" term-paste)
+  ;;    ("s-v" term-paste)
+  ;;    ("M-x" nil)
+  ;;    ("C-u" universal-argument)
+  ;;    ("C-c C-y" term-interrupt-subjob)
+  ;;    )
+  )
+#+End_SRC
+*** keys
+|---------+------------|
+| key     | desc       |
+|---------+------------|
+| C-c C-k | char-mode  |
+| C-c C-j | line-mode  |
+| C-c C-p | go back    |
+| C-c C-n | go forward |
+|---------+------------|
+** tm function
+#+begin_src emacs-lisp
+(defun tm ()
+  "start bash term with a different name"
+  (interactive)
+  (let ((sh-name "bash")
+        (bf-name "tm")
+        )
+    (if t ;;current-prefix-arg
+        (setq bf-name
+              (read-from-minibuffer "name (tm): " bf-name)))
+    (if (or (not bf-name)
+            (= (length bf-name) 0))
+        (setq bf-name "*tm*"))
+    (setq bf-name (generate-new-buffer-name bf-name))
+    (set-buffer (make-term bf-name sh-name))
+    (term-mode)
+    (term-char-mode)
+    (switch-to-buffer (concat "*" bf-name "*"))))
+#+end_src
+** sh mode
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("/\\.bash_[^/]*\\'" . sh-mode))
+#+END_SRC
+** TODO shell mode
+#+BEGIN_SRC emacs-lisp
+(defun my/shell-mode-hook-func ()
+  (my/set-key-bindings
+   'local-set-key
+   '(
+     ;; ("C-d" my/shell-kill)
+     ("C-M-l" nil)
+     ;;("C-c h" comint-history-isearch-backward)
+     ;;("M-s" comint-history-isearch-search)
+     ("C-c h" comint-history-isearch-backward-regexp)
+
+     ;;("C-n" comint-next-input)
+     ;;("C-p" comint-previous-input)
+     ("C-M-n" comint-next-matching-input-from-input)
+     ("C-M-p" comint-previous-matching-input-from-input)
+
+     ("C-c C-b" shell-backward-command)
+     ("C-c C-f" shell-forward-command)
+     ("C-c C-n" comint-next-prompt)
+     ("C-c C-p" comint-previous-prompt)
+
+     )
+   ;;shell-mode-map
+   )
+  (evil-define-key
+    'insert shell-mode-map (kbd "C-n") 'comint-next-input)
+  (evil-define-key
+    'insert shell-mode-map (kbd "C-p") 'comint-previous-input)
+  )
+(add-hook 'shell-mode-hook 'my/shell-mode-hook-func)
+#+END_SRC
+** TODO sh function
+#+BEGIN_SRC emacs-lisp
+(defun sh ()
+  "start-shell"
+  (interactive)
+  (let (bf-name)
+    (setq bf-name
+          (read-from-minibuffer "Buffer (*shell*): " bf-name))
+    (if (or (not bf-name)
+            (= (length bf-name) 0))
+        (shell)
+      (shell bf-name))))
+#+END_SRC
 * text-mode
 ** auto fill
 #+BEGIN_SRC emacs-lisp
@@ -1660,113 +1767,6 @@ If it's found, then add it to the `exec-path'."
 ;; (if (package-installed-p 'js2-mode)
 ;;     (my/js2-setup)
 ;;   (message "js2-mode not installed"))
-#+END_SRC
-* shell [0/3]
-** term mode
-*** config
-#+BEGIN_SRC emacs-lisp
-(use-package term
-  :config
-  (setq explicit-shell-file-name "bash")
-
-  ;; make sure C-c C-p / C-c C-n jump to the right place
-  (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
-  (setq scroll-margin 0)
-  ;; :bind (:map term-raw-map
-  ;;        ("C-b" . scroll-up-command)
-  ;;        :map company-active-map
-  ;;        ("C-n" . company-select-next)
-  ;;        ("C-p" . company-select-previous)
-  ;;        :map company-active-map
-  ;;        ("C-n" . company-select-next)
-  ;;        ("C-p" . company-select-previous))
-  ;;  '(("C-b" scroll-up-command)
-  ;;    ("C-f" scroll-down)
-  ;;    ("C-y" term-paste)
-  ;;    ("s-v" term-paste)
-  ;;    ("M-x" nil)
-  ;;    ("C-u" universal-argument)
-  ;;    ("C-c C-y" term-interrupt-subjob)
-  ;;    )
-  )
-#+End_SRC
-*** keys
-|---------+------------|
-| key     | desc       |
-|---------+------------|
-| C-c C-k | char-mode  |
-| C-c C-j | line-mode  |
-| C-c C-p | go back    |
-| C-c C-n | go forward |
-|---------+------------|
-** tm function
-#+begin_src emacs-lisp
-(defun tm ()
-  "start bash term with a different name"
-  (interactive)
-  (let ((sh-name "bash")
-        (bf-name "tm")
-        )
-    (if t ;;current-prefix-arg
-        (setq bf-name
-              (read-from-minibuffer "name (tm): " bf-name)))
-    (if (or (not bf-name)
-            (= (length bf-name) 0))
-        (setq bf-name "*tm*"))
-    (setq bf-name (generate-new-buffer-name bf-name))
-    (set-buffer (make-term bf-name sh-name))
-    (term-mode)
-    (term-char-mode)
-    (switch-to-buffer (concat "*" bf-name "*"))))
-#+end_src
-** TODO sh mode
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'auto-mode-alist '("/\\.bash_[^/]*\\'" . sh-mode))
-#+END_SRC
-** TODO shell mode
-#+BEGIN_SRC emacs-lisp
-(defun my/shell-mode-hook-func ()
-  (my/set-key-bindings
-   'local-set-key
-   '(
-     ;; ("C-d" my/shell-kill)
-     ("C-M-l" nil)
-     ;;("C-c h" comint-history-isearch-backward)
-     ;;("M-s" comint-history-isearch-search)
-     ("C-c h" comint-history-isearch-backward-regexp)
-
-     ;;("C-n" comint-next-input)
-     ;;("C-p" comint-previous-input)
-     ("C-M-n" comint-next-matching-input-from-input)
-     ("C-M-p" comint-previous-matching-input-from-input)
-
-     ("C-c C-b" shell-backward-command)
-     ("C-c C-f" shell-forward-command)
-     ("C-c C-n" comint-next-prompt)
-     ("C-c C-p" comint-previous-prompt)
-
-     )
-   ;;shell-mode-map
-   )
-  (evil-define-key
-    'insert shell-mode-map (kbd "C-n") 'comint-next-input)
-  (evil-define-key
-    'insert shell-mode-map (kbd "C-p") 'comint-previous-input)
-  )
-(add-hook 'shell-mode-hook 'my/shell-mode-hook-func)
-#+END_SRC
-** TODO sh function
-#+BEGIN_SRC emacs-lisp
-(defun sh ()
-  "start-shell"
-  (interactive)
-  (let (bf-name)
-    (setq bf-name
-          (read-from-minibuffer "Buffer (*shell*): " bf-name))
-    (if (or (not bf-name)
-            (= (length bf-name) 0))
-        (shell)
-      (shell bf-name))))
 #+END_SRC
 * TODO spell
 #+BEGIN_SRC emacs-lisp
