@@ -75,13 +75,9 @@
 - [[#flycheck][flycheck]]
 - [[#org-mode][org-mode]]
   - [[#init][init]]
-  - [[#add-agenda-files-into-emacsdinitel][add agenda files into =~/.emacs.d/init.el=]]
   - [[#org-mode-hook][org-mode-hook]]
-  - [[#agenda-hook][agenda-hook]]
-  - [[#custom-agenda-commands][custom agenda commands]]
-  - [[#keyword-faces][keyword faces]]
-  - [[#deadline-warning-days][deadline warning days]]
-  - [[#use-toc-org-to-automatically-generate-a-table-of-contents-for-org-files][use toc-org to automatically generate a table of contents for org files.]]
+  - [[#gtd][gtd]]
+  - [[#toc-org][toc-org]]
 - [[#shell-02][shell]]
   - [[#term-mode][term mode]]
   - [[#tm-function][tm function]]
@@ -120,7 +116,7 @@
 - [[#plantuml][plantuml]]
 - [[#todolist-03][todolist]]
   - [[#read-a-list-of-people-with-nice-emacs-config-files][read a list of people with nice emacs config files]]
-  - [[#toc-org][toc-org]]
+  - [[#toc-org-1][toc-org]]
   - [[#magit][magit]]
 - [[#license][License]]
 
@@ -1116,14 +1112,6 @@ https://github.com/Fanael/rainbow-delimiters
 (require 'org-install)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 #+END_SRC
-** add agenda files into =~/.emacs.d/init.el=
-#+BEGIN_SRC emacs-lisp :tangle no
-(setq org-agenda-files
-      '("~/path/to/todo/todo.org"))
-
-(setq org-agenda-tetra
-      "~/path/to/todo/tetra.org")
-#+END_SRC
 ** org-mode-hook
 #+BEGIN_SRC emacs-lisp
 (defun my/org-mode-hook-func ()
@@ -1189,7 +1177,16 @@ https://github.com/Fanael/rainbow-delimiters
   )
 (add-hook 'org-mode-hook 'my/org-mode-hook-func)
 #+END_SRC
-** agenda-hook
+** gtd
+*** add agenda files into =~/.emacs.d/init.el=
+#+BEGIN_SRC emacs-lisp :tangle no
+(setq org-agenda-files
+      '("~/path/to/todo/todo.org"))
+
+(setq org-agenda-tetra
+      "~/path/to/todo/tetra.org")
+#+END_SRC
+*** agenda-hook
 #+BEGIN_SRC emacs-lisp
 (defun my/org-agenda-mode-hook-func ()
   (my/set-key-bindings
@@ -1205,7 +1202,7 @@ https://github.com/Fanael/rainbow-delimiters
    org-agenda-mode-map))
 (add-hook 'org-agenda-mode-hook 'my/org-agenda-mode-hook-func)
 #+END_SRC
-** custom agenda commands
+*** custom agenda commands
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-custom-commands
       '(("d" "Daily Agenda and All TODOs"
@@ -1245,7 +1242,7 @@ https://github.com/Fanael/rainbow-delimiters
                           (org-agenda-skip-entry-if 'todo '("HOLD"))))
                     (org-agenda-overriding-header "Todo Tasks without time:")))))))
 #+END_SRC
-** todo keyword faces
+*** todo keyword faces
 #+BEGIN_SRC emacs-lisp
 (setq org-todo-keyword-faces
       '(("TODO" . org-warning)
@@ -1256,11 +1253,14 @@ https://github.com/Fanael/rainbow-delimiters
         ("HOLD" . "red")
         ("CANCELLED" . "purple1")))
 #+END_SRC
-** deadline warning days
+*** deadline warning days
 #+BEGIN_SRC emacs-lisp
 (setq org-deadline-warning-days 10)
 #+END_SRC
-** use toc-org to automatically generate a table of contents for org files.
+** toc-org
+Automatically generate a table of contents for org files.
+Use =org-set-tags-command= (C-c C-q) to add a TOC tag.
+Use TOC_2 tag to sets the max depth to 2.
 #+BEGIN_SRC emacs-lisp
 (use-package toc-org
   :init
