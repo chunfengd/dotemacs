@@ -22,7 +22,7 @@
   - [[#automatic-tangling][automatic tangling]]
   - [[#add-the-following-line-into-emacsdinitel][add the following line into =~/.emacs.d/init.el=]]
   - [[#install-icons][install icons]]
-- [[#straight][straight]]
+- [[#straight-deprecated][straight (deprecated)]]
   - [[#add-the-following-line-into-emacsdearly-initel][add the following line into =~/.emacs.d/early-init.el=]]
   - [[#install][install]]
   - [[#configure-use-package-to-use-straight][configure use-package to use straight]]
@@ -67,11 +67,8 @@
   - [[#consult-projectile][consult-projectile]]
 - [[#projectile][projectile]]
   - [[#useful-commands][useful commands]]
-- [[#lsp][lsp]]
-  - [[#config][config]]
-- [[#dap][dap]]
 - [[#company][company]]
-  - [[#config-1][config]]
+  - [[#config][config]]
 - [[#flycheck][flycheck]]
 - [[#org-mode][org-mode]]
   - [[#init][init]]
@@ -94,6 +91,9 @@
   - [[#sh-function][sh function]]
 - [[#text-mode][text-mode]]
   - [[#auto-fill][auto fill]]
+- [[#lsp-deprecated][lsp (deprecated)]]
+  - [[#config-1][config]]
+  - [[#dap][dap]]
 - [[#typescript][typescript]]
   - [[#config-2][config]]
   - [[#manual][manual]]
@@ -197,7 +197,7 @@ saving.
 #+END_SRC
 ** install icons
 Run =M-x all-the-icons-install-fonts=
-* straight
+* straight (deprecated)
 :PROPERTIES:
 :header-args: :tangle no
 :END:
@@ -266,7 +266,7 @@ https://github.com/jwiegley/use-package
 (setq use-package-always-ensure t)
 #+end_src
 ** install packages manually
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 ;; https://github.com/melpa/melpa/issues/7238
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 (package-refresh-contents nil)
@@ -1042,39 +1042,6 @@ https://github.com/Fanael/rainbow-delimiters
 | sr | projectile-ripgrep        |
 | sg | projectile-grep           |
 |----+---------------------------|
-* lsp
-- https://emacs-lsp.github.io/lsp-mode/
-- https://emacs-lsp.github.io/lsp-mode/page/languages/
-- https://langserver.org/
-** config
-#+begin_src emacs-lisp
-(defun my/lsp-mode-setup ()
-  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
-  (lsp-headerline-breadcrumb-mode))
-
-(use-package lsp-mode
-  :commands (lsp lsp-deferred)
-  :hook (lsp-mode . my/lsp-mode-setup)
-  :init
-  (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
-  :config
-  (lsp-enable-which-key-integration t))
-
-(use-package lsp-ui
-  :hook (lsp-mode . lsp-ui-mode)
-  :custom
-  (lsp-ui-doc-position 'bottom))
-
-(use-package lsp-treemacs
-  :after lsp)
-
-#+end_src
-* dap
-#+begin_src emacs-lisp
-(use-package dap-mode
-  :after lsp-mode
-  :config (dap-auto-configure-mode))
-#+end_src
 * company
 - user manual: http://company-mode.github.io/manual/index.html
 - useful functions
@@ -1404,6 +1371,42 @@ Set =VISIBILITY= property to =folded=, =children=, =content= or =all=.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 #+END_SRC
+* TODO lsp (deprecated)
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+- https://emacs-lsp.github.io/lsp-mode/
+- https://emacs-lsp.github.io/lsp-mode/page/languages/
+- https://langserver.org/
+** config
+#+begin_src emacs-lisp
+(defun my/lsp-mode-setup ()
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  (lsp-headerline-breadcrumb-mode))
+
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :hook (lsp-mode . my/lsp-mode-setup)
+  :init
+  (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+  :config
+  (lsp-enable-which-key-integration t))
+
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-position 'bottom))
+
+(use-package lsp-treemacs
+  :after lsp)
+
+#+end_src
+** dap
+#+begin_src emacs-lisp
+(use-package dap-mode
+  :after lsp-mode
+  :config (dap-auto-configure-mode))
+#+end_src
 * typescript
 ** config
 #+begin_src emacs-lisp
