@@ -76,6 +76,7 @@
 - [[#org-mode][org-mode]]
   - [[#init][init]]
   - [[#basic-config][basic config]]
+  - [[#org-appear][org-appear]]
   - [[#initial-visibility][initial visibility]]
   - [[#keys][keys]]
   - [[#gtd][gtd]]
@@ -1115,6 +1116,8 @@ https://github.com/Fanael/rainbow-delimiters
   :init
   ;; fold everything at the beginning
   (setq org-startup-folded t)
+  ;; hide = and *
+  (setq org-hide-emphasis-markers t)
   )
 #+END_SRC
 ** basic config
@@ -1130,6 +1133,33 @@ https://github.com/Fanael/rainbow-delimiters
   )
 (add-hook 'org-mode-hook 'my/org-mode-setup)
 #+END_SRC
+** org-appear
+When =org-hide-emphasis-markers= is turned on. It temporarily shows the
+emphasis markers around certain markup elements when you place your
+cursor inside of them.
+#+begin_src emacs-lisp
+;; function to show in evil insert mode
+(defun my/org-setup-appear ()
+  (org-appear-mode)
+  (add-hook 'evil-insert-state-entry-hook
+            #'org-appear-manual-start
+            nil
+            t)
+  (add-hook 'evil-insert-state-exit-hook
+            #'org-appear-manual-stop
+            nil
+            t)
+  )
+(use-package org-appear
+  :after org
+  ;; :init
+  ;; (setq org-appear-trigger 'manual)
+  ;; (setq org-appear-autolinks t)
+  :hook
+  ;; (org-mode . my/org-setup-appear)
+  (org-mode . org-appear-mode)
+  )
+#+end_src
 ** initial visibility
 *** per-file setting
 #+begin_src org :tangle no
