@@ -91,13 +91,13 @@
   - [[#sh-function][sh function]]
 - [[#text-mode][text-mode]]
   - [[#auto-fill][auto fill]]
-- [[#lsp-deprecated][lsp (deprecated)]]
-  - [[#config-1][config]]
-  - [[#dap][dap]]
 - [[#typescript][typescript]]
-  - [[#config-2][config]]
+  - [[#config-1][config]]
   - [[#manual][manual]]
 - [[#json-mode][json-mode]]
+- [[#lsp-deprecated][lsp (deprecated)]]
+  - [[#config-2][config]]
+  - [[#dap][dap]]
 - [[#java][java]]
   - [[#links][links]]
   - [[#lsp-java][lsp-java]]
@@ -113,7 +113,6 @@
 - [[#graphviz-dot-mode][graphviz dot mode]]
 - [[#html][html]]
   - [[#web-mode][web-mode]]
-- [[#imenu][imenu]]
 - [[#js][js]]
   - [[#node-modules-path-setup][node-modules-path-setup]]
   - [[#js-mode-deprecated-to-typescript][js-mode (deprecated to typescript)]]
@@ -122,9 +121,12 @@
 - [[#tramp][tramp]]
 - [[#prettier][prettier]]
 - [[#plantuml][plantuml]]
-- [[#todolist-03][todolist]]
+- [[#todolist-02][todolist]]
+  - [[#update-org-mode-key][update org-mode key]]
+  - [[#func-to-toggle-auto-save-and-auto-tangle][func to toggle auto-save and auto-tangle]]
+  - [[#super-save][super-save]]
+  - [[#origamiel-for-folding][origami.el for folding]]
   - [[#read-a-list-of-people-with-nice-emacs-config-files][read a list of people with nice emacs config files]]
-  - [[#toc-org-1][toc-org]]
   - [[#magit][magit]]
 - [[#license][License]]
 
@@ -781,6 +783,7 @@ https://github.com/Fanael/rainbow-delimiters
 #+begin_src emacs-lisp
 ;; https://emacs.stackexchange.com/questions/17210/how-to-place-all-auto-save-files-in-a-directory
 ;; https://superuser.com/questions/131538/can-i-create-directories-that-dont-exist-while-creating-a-new-file-in-emacs
+;; https://emacsredux.com/blog/2013/05/09/keep-backup-and-auto-save-files-out-of-the-way/
 (let ((my-backup-directory "~/.emacs-saves/"))
   (unless (file-exists-p my-backup-directory)
     (message "creating backup dir: %s" my-backup-directory)
@@ -1379,6 +1382,23 @@ Set =VISIBILITY= property to =folded=, =children=, =content= or =all=.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 #+END_SRC
+* typescript
+** config
+#+begin_src emacs-lisp
+(use-package typescript-mode
+  :mode "\\.\\(js\\|jsx\\|ts\\)\\'"
+  :hook (typescript-mode . lsp-deferred)
+  :config
+  (setq typescript-indent-level 2))
+#+end_src
+** manual
+- install js/ts server
+- install eslint globally
+- install eslint server by using M-x lsp-install-server
+* json-mode
+#+BEGIN_SRC emacs-lisp
+(use-package json-mode)
+#+END_SRC
 * TODO lsp (deprecated)
 :PROPERTIES:
 :header-args: :tangle no
@@ -1415,23 +1435,6 @@ Set =VISIBILITY= property to =folded=, =children=, =content= or =all=.
   :after lsp-mode
   :config (dap-auto-configure-mode))
 #+end_src
-* typescript
-** config
-#+begin_src emacs-lisp
-(use-package typescript-mode
-  :mode "\\.\\(js\\|jsx\\|ts\\)\\'"
-  :hook (typescript-mode . lsp-deferred)
-  :config
-  (setq typescript-indent-level 2))
-#+end_src
-** manual
-- install js/ts server
-- install eslint globally
-- install eslint server by using M-x lsp-install-server
-* json-mode
-#+BEGIN_SRC emacs-lisp
-(use-package json-mode)
-#+END_SRC
 * java
 ** links
 - lsp-java
@@ -1721,10 +1724,6 @@ Set =VISIBILITY= property to =folded=, =children=, =content= or =all=.
   ;; (setq web-mode-enable-auto-indentation nil)
   )
 #+END_SRC
-* TODO imenu
-#+BEGIN_SRC emacs-lisp
-(setq imenu-auto-rescan nil)
-#+END_SRC
 * TODO js
 ** node-modules-path-setup
 From: https://github.com/codesuki/add-node-modules-path
@@ -1861,11 +1860,16 @@ If it's found, then add it to the `exec-path'."
 ;;     (my/plantuml-setup)
 ;;   (message "plantuml-mode not installed"))
 #+end_src
-* todolist [0/3]
+* todolist [0/2]
+** TODO update org-mode key
+- https://github.com/daviwil/dotfiles/blob/master/Emacs.org#org-configuration
+** TODO func to toggle auto-save and auto-tangle
+** TODO super-save
+- https://github.com/daviwil/dotfiles/blob/master/Emacs.org#auto-saving-changed-files
+** TODO origami.el for folding
+- https://github.com/daviwil/dotfiles/blob/master/Emacs.org#origamiel-for-folding
 ** TODO read a list of people with nice emacs config files
 - https://github.com/zamansky/emacs.dz
-** TODO toc-org
-- https://github.com/snosov1/toc-org
 ** TODO magit
 * License
 My Emacs configurations written in Org mode.
