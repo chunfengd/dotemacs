@@ -77,10 +77,15 @@
   - [[#init][init]]
   - [[#basic-config][basic config]]
   - [[#org-appear][org-appear]]
+  - [[#toc-org][toc-org]]
   - [[#initial-visibility][initial visibility]]
   - [[#keys][keys]]
-  - [[#gtd][gtd]]
-  - [[#toc-org][toc-org]]
+- [[#org-gtd][org-gtd]]
+  - [[#add-agenda-files-into-emacsdinitel][add agenda files into =~/.emacs.d/init.el=]]
+  - [[#agenda-hook][agenda-hook]]
+  - [[#custom-agenda-commands][custom agenda commands]]
+  - [[#keyword-faces][keyword faces]]
+  - [[#deadline-warning-days][deadline warning days]]
 - [[#shell-02][shell]]
   - [[#term-mode][term mode]]
   - [[#tm-function][tm function]]
@@ -1108,7 +1113,7 @@ https://github.com/Fanael/rainbow-delimiters
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck)
 #+END_SRC
-* TODO org-mode
+* org-mode
 ** init
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
@@ -1160,6 +1165,15 @@ cursor inside of them.
   (org-mode . org-appear-mode)
   )
 #+end_src
+** toc-org
+Automatically generate a table of contents for org files.
+Use =org-set-tags-command= (C-c C-q) to add a TOC tag.
+Use TOC_2 tag to sets the max depth to 2.
+#+BEGIN_SRC emacs-lisp
+(use-package toc-org
+  :init
+  (add-hook 'org-mode-hook #'toc-org-enable))
+#+END_SRC
 ** initial visibility
 *** per-file setting
 #+begin_src org :tangle no
@@ -1198,8 +1212,8 @@ Set =VISIBILITY= property to =folded=, =children=, =content= or =all=.
      ("C-<tab>" org-cycle)
      ("C-S-<tab>" org-shifttab)
      ("C-c RET" nil)
-** gtd
-*** add agenda files into =~/.emacs.d/init.el=
+* TODO org-gtd
+** add agenda files into =~/.emacs.d/init.el=
 #+BEGIN_SRC emacs-lisp :tangle no
 (setq org-agenda-files
       '("~/path/to/todo/todo.org"))
@@ -1207,7 +1221,7 @@ Set =VISIBILITY= property to =folded=, =children=, =content= or =all=.
 (setq org-agenda-tetra
       "~/path/to/todo/tetra.org")
 #+END_SRC
-*** agenda-hook
+** agenda-hook
 #+BEGIN_SRC emacs-lisp
 (defun my/org-agenda-mode-hook-func ()
   (my/set-key-bindings
@@ -1223,7 +1237,7 @@ Set =VISIBILITY= property to =folded=, =children=, =content= or =all=.
    org-agenda-mode-map))
 (add-hook 'org-agenda-mode-hook 'my/org-agenda-mode-hook-func)
 #+END_SRC
-*** custom agenda commands
+** custom agenda commands
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-custom-commands
       '(("d" "Daily Agenda and All TODOs"
@@ -1263,7 +1277,7 @@ Set =VISIBILITY= property to =folded=, =children=, =content= or =all=.
                           (org-agenda-skip-entry-if 'todo '("HOLD"))))
                     (org-agenda-overriding-header "Todo Tasks without time:")))))))
 #+END_SRC
-*** todo keyword faces
+** todo keyword faces
 #+BEGIN_SRC emacs-lisp
 (setq org-todo-keyword-faces
       '(("TODO" . org-warning)
@@ -1274,18 +1288,9 @@ Set =VISIBILITY= property to =folded=, =children=, =content= or =all=.
         ("HOLD" . "red")
         ("CANCELLED" . "purple1")))
 #+END_SRC
-*** deadline warning days
+** deadline warning days
 #+BEGIN_SRC emacs-lisp
 (setq org-deadline-warning-days 10)
-#+END_SRC
-** toc-org
-Automatically generate a table of contents for org files.
-Use =org-set-tags-command= (C-c C-q) to add a TOC tag.
-Use TOC_2 tag to sets the max depth to 2.
-#+BEGIN_SRC emacs-lisp
-(use-package toc-org
-  :init
-  (add-hook 'org-mode-hook #'toc-org-enable))
 #+END_SRC
 * shell [0/2]
 ** term mode
