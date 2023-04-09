@@ -55,8 +55,8 @@
   - [[#parenthesis][parenthesis]]
   - [[#rainbow-delimiters][rainbow-delimiters]]
   - [[#font][font]]
-  - [[#emacs-default-auto-save][emacs default auto save]]
   - [[#recent-files][recent files]]
+  - [[#emacs-default-auto-save][emacs default auto save]]
   - [[#auto-save][auto save]]
 - [[#vertico][vertico]]
   - [[#vertico-1][vertico]]
@@ -768,12 +768,6 @@ https://github.com/Fanael/rainbow-delimiters
  ;; linux
  ((string-equal system-type "gnu/linux")))
 #+END_SRC
-** emacs default auto save
-#+begin_src emacs-lisp
-;; https://emacs.stackexchange.com/questions/17210/how-to-place-all-auto-save-files-in-a-directory
-(setq auto-save-file-name-transforms
-  `((".*" "~/.emacs-saves/" t)))
-#+end_src
 ** recent files
 #+begin_src emacs-lisp
 (use-package recentf
@@ -781,6 +775,20 @@ https://github.com/Fanael/rainbow-delimiters
   :config
   (setq recentf-max-saved-items 200
         recentf-max-menu-items 15)
+  )
+#+end_src
+** emacs default auto save
+#+begin_src emacs-lisp
+;; https://emacs.stackexchange.com/questions/17210/how-to-place-all-auto-save-files-in-a-directory
+;; https://superuser.com/questions/131538/can-i-create-directories-that-dont-exist-while-creating-a-new-file-in-emacs
+(let ((my-backup-directory "~/.emacs-saves/"))
+  (unless (file-exists-p my-backup-directory)
+    (message "creating backup dir: %s" my-backup-directory)
+    (make-directory my-backup-directory t))
+  (setq backup-directory-alist
+        `((".*" . ,my-backup-directory)))
+  (setq auto-save-file-name-transforms
+        `((".*" ,my-backup-directory t)))
   )
 #+end_src
 ** auto save
