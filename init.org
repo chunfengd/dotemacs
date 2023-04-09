@@ -75,7 +75,9 @@
 - [[#flycheck][flycheck]]
 - [[#org-mode][org-mode]]
   - [[#init][init]]
-  - [[#org-mode-hook][org-mode-hook]]
+  - [[#basic-config][basic config]]
+  - [[#initial-visibility][initial visibility]]
+  - [[#keys][keys]]
   - [[#gtd][gtd]]
   - [[#toc-org][toc-org]]
 - [[#shell-02][shell]]
@@ -946,8 +948,7 @@ https://github.com/Fanael/rainbow-delimiters
    :initial (thing-at-point 'symbol))
 
   ;; Optionally configure the narrowing key.
-  ;; Both < and C-+ work reasonably well.
-  (setq consult-narrow-key "<") ;; "C-+"
+  (setq consult-narrow-key "<") ;; "C-+" also works
 
   ;; Optionally make narrowing help available in the minibuffer.
   ;; You may want to use `embark-prefix-help-command' or which-key instead.
@@ -1109,15 +1110,41 @@ https://github.com/Fanael/rainbow-delimiters
 * TODO org-mode
 ** init
 #+BEGIN_SRC emacs-lisp
-(require 'org-install)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(use-package org
+  :init
+  ;; fold everything at the beginning
+  (setq org-startup-folded t)
+  )
 #+END_SRC
-** org-mode-hook
+** basic config
 #+BEGIN_SRC emacs-lisp
-(defun my/org-mode-hook-func ()
-  (my/set-key-bindings
-   'local-set-key
-   '(
+(defun my/org-mode-setup ()
+  (org-indent-mode t)
+  (flyspell-mode-off)
+  (setq org-src-fontify-natively t)
+  (setq org-edit-src-content-indentation 0)
+  ;; (setq org-infojs-options my/default-org-infojs-options)
+  (setq org-export-html-use-infojs t) ; alternative: when-configured, nil
+  (setq org-latex-preview-ltxpng-directory "/tmp/ltxpng/")
+  )
+(add-hook 'org-mode-hook 'my/org-mode-setup)
+#+END_SRC
+** initial visibility
+*** per-file setting
+#+begin_src org :tangle no
+#+STARTUP: overview
+#+STARTUP: content
+#+STARTUP: showall
+#+STARTUP: show2levels
+#+STARTUP: show3levels
+#+STARTUP: show4levels
+#+STARTUP: show5levels
+#+STARTUP: showeverything
+#+end_src
+*** per entry setting
+Set =VISIBILITY= property to =folded=, =children=, =content= or =all=.
+** keys
      ;; "C-c C-b" org-backward-heading-same-level
      ;; "C-c C-f" org-forward-heading-same-level
      ;; "C-c C-n" outline-next-visible-heading
@@ -1141,42 +1168,6 @@ https://github.com/Fanael/rainbow-delimiters
      ("C-<tab>" org-cycle)
      ("C-S-<tab>" org-shifttab)
      ("C-c RET" nil)
-
-     ;; ("C-S-i" org-table-previous-field)
-     ;; ("M-S-RET" org-table-wrap-region)
-
-     ;; ("C-c C-x C-p" org-preview-latex-fragment)
-
-     ;; ("C-c [" nil) ;; org-agenda-file-to-front
-     ;; ("C-c ]" nil) ;; org-remove-file
-     ))
-  ;; (my/set-key-bindings
-  ;;  'define-key
-  ;;  '(
-  ;;    ("C-M-h" (lambda () (interactive)
-  ;;               (org-eval-in-calendar '(calendar-backward-day 1))))
-  ;;    ("C-M-l" (lambda () (interactive)
-  ;;               (org-eval-in-calendar '(calendar-forward-day 1))))
-  ;;    ("C-M-k" (lambda () (interactive)
-  ;;               (org-eval-in-calendar '(calendar-backward-week 1))))
-  ;;    ("C-M-j" (lambda () (interactive)
-  ;;               (org-eval-in-calendar '(calendar-forward-week 1))))
-  ;;    ("C-M-S-h" (lambda () (interactive)
-  ;;               (org-eval-in-calendar '(calendar-backward-month 1))))
-  ;;    ("C-M-S-l" (lambda () (interactive)
-  ;;               (org-eval-in-calendar '(calendar-forward-month 1))))
-  ;;    )
-  ;; org-read-date-minibuffer-local-map)
-  (org-indent-mode t)
-  (flyspell-mode-off)
-  (setq org-src-fontify-natively t)
-  (setq org-edit-src-content-indentation 0)
-  ;; (setq org-infojs-options my/default-org-infojs-options)
-  (setq org-export-html-use-infojs t) ; alternative: when-configured, nil
-  (setq org-latex-preview-ltxpng-directory "/tmp/ltxpng/")
-  )
-(add-hook 'org-mode-hook 'my/org-mode-hook-func)
-#+END_SRC
 ** gtd
 *** add agenda files into =~/.emacs.d/init.el=
 #+BEGIN_SRC emacs-lisp :tangle no
