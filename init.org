@@ -121,11 +121,13 @@
 - [[#tramp][tramp]]
 - [[#prettier][prettier]]
 - [[#plantuml][plantuml]]
-- [[#todolist-02][todolist]]
+- [[#todolist-07][todolist]]
   - [[#update-org-mode-key][update org-mode key]]
-  - [[#func-to-toggle-auto-save-and-auto-tangle][func to toggle auto-save and auto-tangle]]
   - [[#super-save][super-save]]
+  - [[#func-to-toggle-auto-save][func to toggle auto-save]]
   - [[#origamiel-for-folding][origami.el for folding]]
+  - [[#undo--redo][undo & redo]]
+  - [[#update-face-of-mode--status-bar][update face of mode / status bar]]
   - [[#read-a-list-of-people-with-nice-emacs-config-files][read a list of people with nice emacs config files]]
   - [[#magit][magit]]
 - [[#license][License]]
@@ -176,7 +178,8 @@ $ ./tangle.sh
 #+END_SRC
 or
 #+BEGIN_SRC sh :tangle no
-$ emacs --batch \
+$ \
+emacs --batch \
         --eval "(require 'ob-tangle)" \
         --eval "(org-babel-tangle-file \"./init.org\")"
 #+END_SRC
@@ -185,9 +188,11 @@ To avoid having to tangle manually each time a change is made, we can
 add a function to =after-save-hook= to tangle the =init.org= after
 saving.
 #+BEGIN_SRC emacs-lisp
+(defvar my/auto-tangle-init t "auto tangle dotemacs/init.org")
 (defun my/tangle-init-file ()
   "Tangle the current buffer if it is the init.org file."
-  (when (equal (buffer-file-name) (my/path "init.org"))
+  (when (and my/auto-tangle-init
+             (equal (buffer-file-name) (my/path "init.org")))
     (org-babel-tangle)))
 
 (add-hook 'after-save-hook 'my/tangle-init-file)
@@ -1860,14 +1865,16 @@ If it's found, then add it to the `exec-path'."
 ;;     (my/plantuml-setup)
 ;;   (message "plantuml-mode not installed"))
 #+end_src
-* todolist [0/2]
+* todolist [0/7]
 ** TODO update org-mode key
 - https://github.com/daviwil/dotfiles/blob/master/Emacs.org#org-configuration
-** TODO func to toggle auto-save and auto-tangle
 ** TODO super-save
 - https://github.com/daviwil/dotfiles/blob/master/Emacs.org#auto-saving-changed-files
+** TODO func to toggle auto-save
 ** TODO origami.el for folding
 - https://github.com/daviwil/dotfiles/blob/master/Emacs.org#origamiel-for-folding
+** TODO undo & redo
+** TODO update face of mode / status bar
 ** TODO read a list of people with nice emacs config files
 - https://github.com/zamansky/emacs.dz
 ** TODO magit
