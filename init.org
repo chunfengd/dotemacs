@@ -138,9 +138,7 @@
 :PROPERTIES:
 :header-args: :tangle no
 :END:
-This is an Emacs configuration file written in Org-mode. It is adapted
-from Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init.org][config file]] and Tianxiang Xiong's [[https://github.com/xiongtx/.emacs.d/blob/master/init.org][config]]
-on GitHub.
+This is an Emacs configuration file written in Org-mode. It is adapted from Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init.org][config file]] and Tianxiang Xiong's [[https://github.com/xiongtx/.emacs.d/blob/master/init.org][config]] on GitHub.
 ** other references
 - https://systemcrafters.cc/
 - https://github.com/daviwil/emacs-from-scratch
@@ -169,11 +167,9 @@ on GitHub.
 (my/add-site-dir (my/path "site"))
 #+end_src
 * how to install
-After cloning from [[https://github.com/xiongtx/.emacs.d][GitHub]], there is no =init.el= file, only an
-=init.org= file (this file). To produce an =init.el= file, either:
+After cloning from [[https://github.com/xiongtx/.emacs.d][GitHub]], there is no =init.el= file, only an =init.org= file (this file). To produce an =init.el= file, either:
 ** tangle via org mode
-Open =init.org= and call =M-x org-babel-tangle=, which extracts code
-blocks from the current file into =init.el=
+Open =init.org= and call =M-x org-babel-tangle=, which extracts code blocks from the current file into =init.el=
 ** tangle via command line
 #+BEGIN_SRC sh :tangle no
 $ ./tangle.sh
@@ -186,9 +182,7 @@ emacs --batch \
         --eval "(org-babel-tangle-file \"./init.org\")"
 #+END_SRC
 ** automatic tangling
-To avoid having to tangle manually each time a change is made, we can
-add a function to =after-save-hook= to tangle the =init.org= after
-saving.
+To avoid having to tangle manually each time a change is made, we can add a function to =after-save-hook= to tangle the =init.org= after saving.
 #+BEGIN_SRC emacs-lisp
 (defvar my/auto-tangle-init t "auto tangle dotemacs/init.org")
 (defun my/tangle-init-file ()
@@ -758,6 +752,7 @@ https://github.com/Fanael/rainbow-delimiters
 #+end_src
 ** font
 *** defaults
+https://zzamboni.org/post/beautifying-org-mode-in-emacs/
 #+begin_src emacs-lisp
 (defvar my/default-font-size 128)
 (defvar my/default-variable-font-size 130)
@@ -767,16 +762,17 @@ https://github.com/Fanael/rainbow-delimiters
                     :height my/default-font-size)
 
 ;; Set the fixed pitch face
+;; On Mac, find "family" in the "Font Book" application.
 (set-face-attribute 'fixed-pitch
                     nil
-                    :font (face-attribute 'default :font)
+                    :family (face-attribute 'default :family)
                     ;; :font "Fira Code Retina"
                     :height my/default-font-size)
 
 ;; Set the variable pitch face
 (set-face-attribute 'variable-pitch
                     nil
-                    :font "Helvetica"
+                    :family "Helvetica"
                     :height my/default-variable-font-size
                     :weight 'regular)
 #+end_src
