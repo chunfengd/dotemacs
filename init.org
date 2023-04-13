@@ -129,6 +129,7 @@
   - [[#func-to-toggle-auto-save][func to toggle auto-save]]
   - [[#origamiel-for-folding][origami.el for folding]]
   - [[#undo--redo][undo & redo]]
+  - [[#vertico-cycle-to-solve-consult-line][vertico-cycle to solve consult-line]]
   - [[#update-face-of-mode--status-bar][update face of mode / status bar]]
   - [[#read-a-list-of-people-with-nice-emacs-config-files][read a list of people with nice emacs config files]]
   - [[#magit][magit]]
@@ -1958,6 +1959,7 @@ If it's found, then add it to the `exec-path'."
 ** TODO origami.el for folding
 - https://github.com/daviwil/dotfiles/blob/master/Emacs.org#origamiel-for-folding
 ** TODO undo & redo
+** TODO vertico-cycle to solve consult-line
 ** TODO update face of mode / status bar
 ** TODO read a list of people with nice emacs config files
 - https://github.com/zamansky/emacs.dz
