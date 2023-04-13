@@ -1177,6 +1177,8 @@ https://zzamboni.org/post/beautifying-org-mode-in-emacs/
                       nil  :inherit 'fixed-pitch)
   (set-face-attribute 'org-code
                       nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-date
+                      nil  :inherit 'fixed-pitch)
   (set-face-attribute 'org-document-info
                       nil :inherit '(shadow fixed-pitch))
   (set-face-attribute 'org-meta-line
