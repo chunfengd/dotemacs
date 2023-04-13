@@ -260,7 +260,8 @@ https://github.com/radian-software/straight.el
   (package-refresh-contents nil))
 #+end_src
 ** use-package
-https://github.com/jwiegley/use-package
+github: https://github.com/jwiegley/use-package
+doc: https://jwiegley.github.io/use-package/
 #+begin_src emacs-lisp
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
@@ -1136,7 +1137,6 @@ https://github.com/oantolin/embark
 ** basic config
 #+BEGIN_SRC emacs-lisp
 (defun my/org-mode-setup ()
-  (org-indent-mode t)
   (flyspell-mode-off)
   (setq org-src-fontify-natively t)
   (setq org-edit-src-content-indentation 0)
@@ -1147,6 +1147,7 @@ https://github.com/oantolin/embark
 (add-hook 'org-mode-hook 'my/org-mode-setup)
 #+END_SRC
 ** fonts
+https://zzamboni.org/post/beautifying-org-mode-in-emacs/
 #+begin_src emacs-lisp
 (defun my/org-font-setup ()
   ;; set for variable pitch
@@ -1172,32 +1173,42 @@ https://github.com/oantolin/embark
   ;; appears that way
   (set-face-attribute 'org-block
                       nil :foreground nil :inherit 'fixed-pitch)
-  (set-face-attribute 'org-table
-                      nil :inherit 'fixed-pitch)
-  (set-face-attribute 'org-formula
-                      nil :inherit 'fixed-pitch)
-  (set-face-attribute 'org-code
-                      nil :inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-table
-                      nil :inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-verbatim
-                      nil :inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-special-keyword
-                      nil :inherit '(font-lock-comment-face fixed-pitch))
-  (set-face-attribute 'org-meta-line
-                      nil :inherit '(font-lock-comment-face fixed-pitch))
   (set-face-attribute 'org-checkbox
                       nil  :inherit 'fixed-pitch)
-  (set-face-attribute 'line-number
+  (set-face-attribute 'org-code
+                      nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-document-info
+                      nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-meta-line
+                      nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-special-keyword
+                      nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-table
                       nil :inherit 'fixed-pitch)
-  (set-face-attribute 'line-number-current-line
-                      nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-verbatim
+                      nil :inherit '(shadow fixed-pitch))
+
+  ;; fix indent faces
+  ;; https://emacs.stackexchange.com/a/76133
+  (org-indent-mode t)
+  (set-face-attribute 'org-indent
+                    nil :inherit '(org-hide fixed-pitch))
+  (set-face-attribute 'org-hide
+                    nil :inherit 'fixed-pitch)
+
+  ;; (set-face-attribute 'org-formula
+  ;;                     nil :inherit 'fixed-pitch)
+  ;; (set-face-attribute 'line-number
+  ;;                     nil :inherit 'fixed-pitch)
+  ;; (set-face-attribute 'line-number-current-line
+  ;;                     nil :inherit 'fixed-pitch)
   )
 (add-hook 'org-mode-hook 'my/org-font-setup)
 #+end_src
 ** org-superstar
 #+begin_src emacs-lisp :tangle no
 (use-package org-superstar
+  :disabled
   :after org
   :hook (org-mode . org-superstar-mode)
   :init
