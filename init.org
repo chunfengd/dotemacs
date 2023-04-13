@@ -74,6 +74,7 @@
   - [[#init][init]]
   - [[#basic-config][basic config]]
   - [[#fonts][fonts]]
+  - [[#org-superstar][org-superstar]]
   - [[#org-appear][org-appear]]
   - [[#toc-org][toc-org]]
   - [[#initial-visibility][initial visibility]]
@@ -1196,6 +1197,17 @@ https://github.com/oantolin/embark
                       nil :inherit 'fixed-pitch)
   )
 (add-hook 'org-mode-hook 'my/org-font-setup)
+#+end_src
+** org-superstar
+#+begin_src emacs-lisp :tangle no
+(use-package org-superstar
+  :after org
+  :hook (org-mode . org-superstar-mode)
+  :init
+  (setq org-superstar-remove-leading-stars t)
+  (setq org-superstar-headline-bullets-list
+        '("◉" "○" "●" "○" "●" "○" "●"))
+  )
 #+end_src
 ** org-appear
 When =org-hide-emphasis-markers= is turned on. It temporarily shows the
