@@ -123,6 +123,7 @@
 - [[#prettier][prettier]]
 - [[#plantuml][plantuml]]
 - [[#todolist-07][todolist]]
+  - [[#facemenu-set-face][=facemenu-set-face=]]
   - [[#update-org-mode-key][update org-mode key]]
   - [[#super-save][super-save]]
   - [[#func-to-toggle-auto-save][func to toggle auto-save]]
@@ -1963,6 +1964,7 @@ If it's found, then add it to the `exec-path'."
 ;;   (message "plantuml-mode not installed"))
 #+end_src
 * todolist [0/7]
+** TODO =facemenu-set-face=
 ** TODO update org-mode key
 - https://github.com/daviwil/dotfiles/blob/master/Emacs.org#org-configuration
 ** TODO super-save
