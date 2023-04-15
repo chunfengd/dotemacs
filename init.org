@@ -1177,6 +1177,13 @@ https://zzamboni.org/post/beautifying-org-mode-in-emacs/
                         :weight 'bold
                         :height (cdr face)))
 
+  (font-lock-add-keywords
+   'org-mode
+   '(("^ *\\([-]\\) "
+      (0 (prog1 ()
+           (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+
   ;; Ensure that anything that should be fixed-pitch in Org files
   ;; appears that way
   (set-face-attribute 'org-block
