@@ -122,8 +122,7 @@
 - [[#tramp][tramp]]
 - [[#prettier][prettier]]
 - [[#plantuml][plantuml]]
-- [[#todolist-09][todolist]]
-  - [[#undo--redo][undo & redo]]
+- [[#todolist-08][todolist]]
   - [[#facemenu-set-face][=facemenu-set-face=]]
   - [[#update-org-mode-key][update org-mode key]]
   - [[#super-save][super-save]]
@@ -549,9 +548,15 @@ From: http://blog.plover.com/prog/revert-all.html
 ** evil
 - github: https://github.com/emacs-evil/evil
 - doc: https://evil.readthedocs.io/en/latest/index.html
+- reference: https://github.com/daviwil/dotfiles/blob/master/Emacs.org#lets-be-evil
 #+begin_src emacs-lisp
 ;; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+(use-package undo-tree
+  :init
+  (setq undo-tree-auto-save-history nil)
+  (global-undo-tree-mode 1))
 
 (use-package evil
   :init
@@ -562,7 +567,7 @@ From: http://blog.plover.com/prog/revert-all.html
   (setq evil-want-Y-yank-to-eol t)
   (setq evil-shift-width 2)
   (setq evil-respect-visual-line-mode t)
-  ;; (setq evil-undo-system 'undo-tree)
+  (setq evil-undo-system 'undo-tree)
   :config
   (evil-mode 1)
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
@@ -1978,8 +1983,7 @@ If it's found, then add it to the `exec-path'."
 ;;     (my/plantuml-setup)
 ;;   (message "plantuml-mode not installed"))
 #+end_src
-* todolist [0/9]
-** TODO undo & redo
+* todolist [0/8]
 ** TODO =facemenu-set-face=
 ** TODO update org-mode key
 - https://github.com/daviwil/dotfiles/blob/master/Emacs.org#org-configuration
