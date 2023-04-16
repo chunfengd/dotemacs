@@ -12,6 +12,7 @@
 * Table of Contents                                                     :TOC:
 - [[#introduction][introduction]]
   - [[#other-references][other references]]
+  - [[#about-me][about me]]
 - [[#dotemacs-path][dotemacs path]]
   - [[#define-mypath][define =my/path=]]
   - [[#extra-load-path][extra load path]]
@@ -30,12 +31,9 @@
   - [[#use-package][use-package]]
   - [[#install-packages-manually][install packages manually]]
   - [[#quelpa][quelpa]]
-- [[#basic-ui][basic ui]]
-  - [[#about-me][about me]]
+- [[#before-key-binding][before key binding]]
   - [[#basic][basic]]
-  - [[#speed-bar][speed bar]]
-  - [[#customized-util-functions--bindings][customized util functions & bindings]]
-  - [[#misc][Misc]]
+  - [[#move-backup--auto-save-files-out-of-cwd][move backup / auto save files out of cwd]]
 - [[#key-binding][key binding]]
   - [[#switch-c-c--c-g][switch C-c & C-g]]
   - [[#set-key-bindings-function][set key bindings function]]
@@ -47,7 +45,17 @@
   - [[#general-leader][general leader]]
   - [[#myleader-keys][my/leader-keys]]
   - [[#jump-avy][jump (avy)]]
-- [[#more-ui][more ui]]
+- [[#after-key-binding][after key binding]]
+  - [[#exec-path-from-shell][exec-path-from-shell]]
+  - [[#auto-reload][auto reload]]
+  - [[#uniquify-buffer-name][uniquify buffer name]]
+  - [[#default-major-mode][default major mode]]
+  - [[#electric-pair][electric pair]]
+  - [[#daemon-server][daemon server]]
+  - [[#narrow][narrow]]
+  - [[#save-place][save place]]
+  - [[#speed-bar][speed bar]]
+  - [[#diff][diff]]
   - [[#doom-modeline][doom-modeline]]
   - [[#doom-theme][doom-theme]]
   - [[#line-number][line number]]
@@ -55,8 +63,8 @@
   - [[#rainbow-delimiters][rainbow-delimiters]]
   - [[#font][font]]
   - [[#recent-files][recent files]]
-  - [[#emacs-default-auto-save][emacs default auto save]]
   - [[#auto-save][auto save]]
+  - [[#my-commands][my commands]]
 - [[#vertico][vertico]]
   - [[#vertico-1][vertico]]
   - [[#marginalia][marginalia]]
@@ -141,6 +149,11 @@ This is an Emacs configuration file written in Org-mode. It is adapted from Lars
 ** other references
 - https://systemcrafters.cc/
 - https://github.com/daviwil/emacs-from-scratch
+** about me
+#+BEGIN_SRC emacs-lisp
+(customize-set-variable 'user-full-name "chunfengd")
+;; (customize-set-variable 'user-mail-address "")
+#+END_SRC
 * dotemacs path
 ** define =my/path=
 #+BEGIN_SRC emacs-lisp
@@ -281,12 +294,7 @@ doc: https://jwiegley.github.io/use-package/
 (use-package quelpa-use-package)
 (quelpa-use-package-activate-advice)
 #+end_src
-* basic ui
-** about me
-#+BEGIN_SRC emacs-lisp
-(customize-set-variable 'user-full-name "chunfengd")
-;; (customize-set-variable 'user-mail-address "")
-#+END_SRC
+* before key binding
 ** basic
 #+begin_src emacs-lisp
 ;; (load-theme 'wombat)
@@ -321,180 +329,36 @@ doc: https://jwiegley.github.io/use-package/
 
 (setq-default indent-tabs-mode nil)
 (setq default-tab-width 8)
-#+end_src
-** speed bar
-#+BEGIN_SRC emacs-lisp
-(add-hook
- 'speedbar-load-hook
- '(lambda ()
-    (add-to-list 'speedbar-frame-parameters '(width . 35))
-    (setq speedbar-show-unknown-files t)
-    (display-line-numbers-mode 0)))
-#+END_SRC
-** customized util functions & bindings
-*** find map of key binding
-Find a key binding is in which map. From [[http://stackoverflow.com/questions/18801018/how-to-find-in-which-map-a-key-binding-is-from-programatically-in-emacs][stackoverflow]]
-#+BEGIN_SRC emacs-lisp
-(defun my/overlay-key-binding (key)
-  "Keymaps can also be attached to overlays, like yasnippet.
-   From: http://stackoverflow.com/questions/18801018/how-to-find-in-which-map-a-key-binding-is-from-programatically-in-emacs"
-  (mapcar (lambda (keymap) (lookup-key keymap key))
-          (cl-remove-if-not
-           #'keymapp
-           (mapcar (lambda (overlay)
-                     (overlay-get overlay 'keymap))
-                   (overlays-at (point))))))
-
-(defun my/find-kbd (key)
-  "From: http://stackoverflow.com/questions/18801018/how-to-find-in-which-map-a-key-binding-is-from-programatically-in-emacs"
-  (interactive "kInput key: ")
-  (message "%s"
-   (list
-    (my/overlay-key-binding key)
-    (minor-mode-key-binding key)
-    (local-key-binding key)
-    (global-key-binding key))))
-#+END_SRC
-*** dos to unix
-From [[http://www.emacswiki.org/emacs/DosToUnix][emacswiki]].
-#+BEGIN_SRC emacs-lisp
-(defun my/dos2unix ()
-  "From: http://www.emacswiki.org/emacs/DosToUnix
-Not exactly but it's easier to remember"
-  (interactive)
-  (set-buffer-file-coding-system 'unix 't))
-#+END_SRC
-*** path related
-#+BEGIN_SRC emacs-lisp
-(defun my/get-path ()
-  ""
-  (interactive)
-  (let ((path
-         (or buffer-file-name default-directory)))
-    (message path)
-    path))
-
-(defun my/copy-path ()
-  ""
-  (interactive)
-  (let ((path (my/get-path)))
-    (if path
-        (kill-new path))))
-#+END_SRC
-*** eval and replace
-From: http://emacsredux.com/blog/2013/06/21/eval-and-replace/
-#+BEGIN_SRC emacs-lisp
-(defun my/eval-and-replace ()
-  "Replace the preceding sexp with its value."
-  (interactive)
-  (backward-kill-sexp)
-  (condition-case nil
-      (prin1 (eval (read (current-kill 0)))
-             (current-buffer))
-    (error (message "Invalid expression")
-           (insert (current-kill 0)))))
-#+END_SRC
-**** revert all buffers
-From: http://blog.plover.com/prog/revert-all.html
-#+BEGIN_SRC emacs-lisp
-(defun my/revert-all-buffers ()
-  "Refreshes all open buffers from their respective files"
-  (interactive)
-  (let* ((list (buffer-list))
-         (buffer (car list)))
-    (while buffer
-      (when (and (buffer-file-name buffer)
-                 (not (buffer-modified-p buffer)))
-        (set-buffer buffer)
-        (revert-buffer t t t))
-      (setq list (cdr list))
-      (setq buffer (car list))))
-  (message "Refreshed open files"))
-#+END_SRC
-*** open webstorm (deprecated)
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-#+BEGIN_SRC emacs-lisp
-(defun my/run-cmd-on-current-file (command)
-  "run a command on the current file"
-  (shell-command
-   (format "open -a %s %s" command
-           (shell-quote-argument (buffer-file-name)))))
-
-(defun my/open-webstorm ()
-  (interactive)
-  (my/run-cmd-on-current-file "webstorm"))
-
-;; (my/set-key-bindings 'global-set-key '(("C-<f9>" my/open-webstorm)))
-#+END_SRC
-** Misc
-*** Backup Files
-#+BEGIN_SRC emacs-lisp
-(setq-default make-backup-files nil)
-#+END_SRC
-*** Narrow
-#+BEGIN_SRC emacs-lisp
-(put 'narrow-to-region 'disabled nil)
-#+END_SRC
-*** Delete Selection Mode
-#+BEGIN_SRC emacs-lisp
-(delete-selection-mode 1)
-#+END_SRC
-*** Sentence End Double Space
-#+BEGIN_SRC emacs-lisp
+;; disable sentence end double space
 (setq sentence-end-double-space nil)
-#+END_SRC
-*** Uniquify Buffer Name
-#+BEGIN_SRC emacs-lisp
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'forward)
-#+END_SRC
-*** Diff
-#+BEGIN_SRC emacs-lisp
-(setq ediff-window-setup-function 'ediff-setup-windows-plain)
-(setq diff-switches "-u")
-#+END_SRC
-*** Save Place
-#+BEGIN_SRC emacs-lisp
-(setq save-place-file (concat user-emacs-directory "places"))
-#+END_SRC
-*** Daemon Server
-#+BEGIN_SRC emacs-lisp
-(setq server-name "emacs-server")
-(server-start)
-#+END_SRC
-*** TODO exec-path-from-shell
-#+BEGIN_SRC emacs-lisp :tangle no
-(if (package-installed-p 'exec-path-from-shell)
-    (progn
-     (require 'exec-path-from-shell)
-     (cond
-      ((string-equal system-type "windows-nt")
-       ;; windows
-       (progn
-         (exec-path-from-shell-initialize)))
-      ((string-equal system-type "darwin")
-       ;; mac os x
-       (progn
-         (exec-path-from-shell-initialize)))))
-  (message "exec-path-from-shell not installed"))
-#+END_SRC
-*** Default major mode
-#+BEGIN_SRC emacs-lisp
-(setq default-major-mode 'text-mode)
-#+END_SRC
-*** auto reload
-#+BEGIN_SRC emacs-lisp
-(global-auto-revert-mode t)
-#+END_SRC
-*** electric pair
-#+BEGIN_SRC emacs-lisp
-(electric-pair-mode 1)
-(defun my/inhibit-electric-pair (char)
-  (minibufferp))
-(setq electric-pair-inhibit-predicate #'my/inhibit-electric-pair)
-#+END_SRC
+
+;; delete selection
+(delete-selection-mode 1)
+#+end_src
+** move backup / auto save files out of cwd
+- =#xxx#= files: [[info:emacs#Auto Save Files][emacs#Auto Save Files]]
+- =xxx~= files: [[info:emacs#Backup Names][emacs#Backup Files/Names]]
+- =.#xxx= files: [[info:emacs#Interlocking][emacs#Interlocking]]
+#+begin_src emacs-lisp
+;; (setq-default make-backup-files nil)
+;; https://emacs.stackexchange.com/questions/17210/how-to-place-all-auto-save-files-in-a-directory
+;; https://superuser.com/questions/131538/can-i-create-directories-that-dont-exist-while-creating-a-new-file-in-emacs
+;; https://emacsredux.com/blog/2013/05/09/keep-backup-and-auto-save-files-out-of-the-way/
+(let ((my-backup-directory "~/.emacs-saves/"))
+  (unless (file-exists-p my-backup-directory)
+    (message "creating backup dir: %s" my-backup-directory)
+    (make-directory my-backup-directory t))
+  ;; `xxx~` files
+  (setq backup-directory-alist
+        `((".*" . ,my-backup-directory)))
+  ;; `#xxx#` files
+  (setq auto-save-file-name-transforms
+        `((".*" ,my-backup-directory t)))
+  ;; `.#xxx` interlocking files
+  (setq lock-file-name-transforms
+        `((".*" ,my-backup-directory t)))
+  )
+#+end_src
 * key binding
 ** switch C-c & C-g
 #+BEGIN_SRC emacs-lisp
@@ -703,7 +567,73 @@ https://github.com/justbur/emacs-which-key
     "jl"  'avy-goto-line)
   )
 #+END_SRC
-* more ui
+* after key binding
+** TODO exec-path-from-shell
+#+BEGIN_SRC emacs-lisp :tangle no
+(if (package-installed-p 'exec-path-from-shell)
+    (progn
+     (require 'exec-path-from-shell)
+     (cond
+      ((string-equal system-type "windows-nt")
+       ;; windows
+       (progn
+         (exec-path-from-shell-initialize)))
+      ((string-equal system-type "darwin")
+       ;; mac os x
+       (progn
+         (exec-path-from-shell-initialize)))))
+  (message "exec-path-from-shell not installed"))
+#+END_SRC
+** auto reload
+#+BEGIN_SRC emacs-lisp
+(global-auto-revert-mode t)
+#+END_SRC
+** uniquify buffer name
+#+BEGIN_SRC emacs-lisp
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+#+END_SRC
+** default major mode
+#+BEGIN_SRC emacs-lisp
+(setq default-major-mode 'text-mode)
+#+END_SRC
+** electric pair
+#+BEGIN_SRC emacs-lisp
+(electric-pair-mode 1)
+(defun my/inhibit-electric-pair (char)
+  (minibufferp))
+(setq electric-pair-inhibit-predicate #'my/inhibit-electric-pair)
+#+END_SRC
+** daemon server
+#+BEGIN_SRC emacs-lisp
+(setq server-name "emacs-server")
+(server-start)
+#+END_SRC
+** narrow
+#+BEGIN_SRC emacs-lisp
+;; Enable narrow-to-region
+(put 'narrow-to-region 'disabled nil)
+#+END_SRC
+** save place
+When you visit a file, point goes to the last place where it was when you previously visited the same file.
+#+BEGIN_SRC emacs-lisp
+(setq save-place-file (concat user-emacs-directory "places"))
+(save-place-mode 1) 
+#+END_SRC
+** speed bar
+#+BEGIN_SRC emacs-lisp
+(add-hook
+ 'speedbar-load-hook
+ '(lambda ()
+    (add-to-list 'speedbar-frame-parameters '(width . 35))
+    (setq speedbar-show-unknown-files t)
+    (display-line-numbers-mode 0)))
+#+END_SRC
+** diff
+#+BEGIN_SRC emacs-lisp
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+(setq diff-switches "-u")
+#+END_SRC
 ** doom-modeline
 https://github.com/seagle0128/doom-modeline
 #+begin_src emacs-lisp
@@ -803,29 +733,6 @@ https://zzamboni.org/post/beautifying-org-mode-in-emacs/
         recentf-max-menu-items 15)
   )
 #+end_src
-** emacs default auto save
-- =#xxx#= files: [[info:emacs#Auto Save Files][emacs#Auto Save Files]]
-- =xxx~= files: [[info:emacs#Backup Names][emacs#Backup Files/Names]]
-- =.#xxx= files: [[info:emacs#Interlocking][emacs#Interlocking]]
-#+begin_src emacs-lisp
-;; https://emacs.stackexchange.com/questions/17210/how-to-place-all-auto-save-files-in-a-directory
-;; https://superuser.com/questions/131538/can-i-create-directories-that-dont-exist-while-creating-a-new-file-in-emacs
-;; https://emacsredux.com/blog/2013/05/09/keep-backup-and-auto-save-files-out-of-the-way/
-(let ((my-backup-directory "~/.emacs-saves/"))
-  (unless (file-exists-p my-backup-directory)
-    (message "creating backup dir: %s" my-backup-directory)
-    (make-directory my-backup-directory t))
-  ;; `xxx~` files
-  (setq backup-directory-alist
-        `((".*" . ,my-backup-directory)))
-  ;; `#xxx#` files
-  (setq auto-save-file-name-transforms
-        `((".*" ,my-backup-directory t)))
-  ;; `.#xxx` interlocking files
-  (setq lock-file-name-transforms
-        `((".*" ,my-backup-directory t)))
-  )
-#+end_src
 ** auto save
 - refs
   - https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-utils.el
@@ -853,6 +760,103 @@ https://zzamboni.org/post/beautifying-org-mode-in-emacs/
   (my/run-with-idle-timer 2 #'auto-save-enable))
 (setup-auto-save)
 #+end_src
+** my commands
+*** find map of key binding
+Find a key binding is in which map. From [[http://stackoverflow.com/questions/18801018/how-to-find-in-which-map-a-key-binding-is-from-programatically-in-emacs][stackoverflow]]
+#+BEGIN_SRC emacs-lisp
+(defun my/overlay-key-binding (key)
+  "Keymaps can also be attached to overlays, like yasnippet.
+   From: http://stackoverflow.com/questions/18801018/how-to-find-in-which-map-a-key-binding-is-from-programatically-in-emacs"
+  (mapcar (lambda (keymap) (lookup-key keymap key))
+          (cl-remove-if-not
+           #'keymapp
+           (mapcar (lambda (overlay)
+                     (overlay-get overlay 'keymap))
+                   (overlays-at (point))))))
+
+(defun my/find-kbd (key)
+  "From: http://stackoverflow.com/questions/18801018/how-to-find-in-which-map-a-key-binding-is-from-programatically-in-emacs"
+  (interactive "kInput key: ")
+  (message "%s"
+   (list
+    (my/overlay-key-binding key)
+    (minor-mode-key-binding key)
+    (local-key-binding key)
+    (global-key-binding key))))
+#+END_SRC
+*** dos to unix
+From [[http://www.emacswiki.org/emacs/DosToUnix][emacswiki]].
+#+BEGIN_SRC emacs-lisp
+(defun my/dos2unix ()
+  "From: http://www.emacswiki.org/emacs/DosToUnix
+Not exactly but it's easier to remember"
+  (interactive)
+  (set-buffer-file-coding-system 'unix 't))
+#+END_SRC
+*** path related
+#+BEGIN_SRC emacs-lisp
+(defun my/get-path ()
+  ""
+  (interactive)
+  (let ((path
+         (or buffer-file-name default-directory)))
+    (message path)
+    path))
+
+(defun my/copy-path ()
+  ""
+  (interactive)
+  (let ((path (my/get-path)))
+    (if path
+        (kill-new path))))
+#+END_SRC
+*** eval and replace
+From: http://emacsredux.com/blog/2013/06/21/eval-and-replace/
+#+BEGIN_SRC emacs-lisp
+(defun my/eval-and-replace ()
+  "Replace the preceding sexp with its value."
+  (interactive)
+  (backward-kill-sexp)
+  (condition-case nil
+      (prin1 (eval (read (current-kill 0)))
+             (current-buffer))
+    (error (message "Invalid expression")
+           (insert (current-kill 0)))))
+#+END_SRC
+*** revert all buffers
+From: http://blog.plover.com/prog/revert-all.html
+#+BEGIN_SRC emacs-lisp
+(defun my/revert-all-buffers ()
+  "Refreshes all open buffers from their respective files"
+  (interactive)
+  (let* ((list (buffer-list))
+         (buffer (car list)))
+    (while buffer
+      (when (and (buffer-file-name buffer)
+                 (not (buffer-modified-p buffer)))
+        (set-buffer buffer)
+        (revert-buffer t t t))
+      (setq list (cdr list))
+      (setq buffer (car list))))
+  (message "Refreshed open files"))
+#+END_SRC
+*** open webstorm (deprecated)
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+#+BEGIN_SRC emacs-lisp
+(defun my/run-cmd-on-current-file (command)
+  "run a command on the current file"
+  (shell-command
+   (format "open -a %s %s" command
+           (shell-quote-argument (buffer-file-name)))))
+
+(defun my/open-webstorm ()
+  (interactive)
+  (my/run-cmd-on-current-file "webstorm"))
+
+;; (my/set-key-bindings 'global-set-key '(("C-<f9>" my/open-webstorm)))
+#+END_SRC
 * vertico
 ** vertico
 - https://github.com/minad/vertico
