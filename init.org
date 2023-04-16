@@ -1191,10 +1191,14 @@ https://zzamboni.org/post/beautifying-org-mode-in-emacs/
 
   ;; Ensure that anything that should be fixed-pitch in Org files
   ;; appears that way
+  ;;
+  ;; To find the face at the point, use `describe-char` function
   (set-face-attribute 'org-block
                       nil :foreground nil :inherit 'fixed-pitch)
-  (set-face-attribute 'org-checkbox
-                      nil  :inherit 'fixed-pitch)
+  (set-face-attribute 'org-checkbox-statistics-todo
+                      nil  :inherit '(fixed-pitch org-todo))
+  (set-face-attribute 'org-checkbox-statistics-done
+                      nil  :inherit '(fixed-pitch org-done))
   (set-face-attribute 'org-code
                       nil :inherit '(shadow fixed-pitch))
   (set-face-attribute 'org-date
