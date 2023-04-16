@@ -196,7 +196,7 @@ emacs --batch \
 ** automatic tangling
 To avoid having to tangle manually each time a change is made, we can add a function to =after-save-hook= to tangle the =init.org= after saving.
 #+BEGIN_SRC emacs-lisp
-(defvar my/auto-tangle-init t "auto tangle dotemacs/init.org")
+(defvar my/auto-tangle-init t "tuggle auto tangle dotemacs/init.org")
 (defun my/tangle-init-file ()
   "Tangle the current buffer if it is the init.org file."
   (when (and my/auto-tangle-init
@@ -1405,6 +1405,7 @@ Set =VISIBILITY= property to =folded=, =children=, =content= or =all=.
 #+END_SRC
 * shell [0/2]
 ** term mode
+ref: https://oremacs.com/2015/01/01/three-ansi-term-tips/
 *** config
 #+BEGIN_SRC emacs-lisp
 (use-package term
@@ -1414,6 +1415,14 @@ Set =VISIBILITY= property to =folded=, =children=, =content= or =all=.
   ;; make sure C-c C-p / C-c C-n jump to the right place
   (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
   (setq scroll-margin 0)
+  :bind (:map term-raw-map
+         ("H-v" . term-paste)
+         ("C-x C-b" . consult-buffer)
+         ;; doesn't work with C-w
+         ;; use "C-x o" to jump to the next window
+         ;; ("C-w" . nil)
+         ;; ("C-w C-w" . evil-window-next)
+         )
   ;; :bind (:map term-raw-map
   ;;        ("C-b" . scroll-up-command)
   ;;        :map company-active-map
@@ -1444,7 +1453,7 @@ Set =VISIBILITY= property to =folded=, =children=, =content= or =all=.
 ** tm function
 #+begin_src emacs-lisp
 (defun tm ()
-  "start bash term with a different name"
+  "start bash ansi-term with a different name"
   (interactive)
   (let ((sh-name "bash")
         (bf-name "tm")
@@ -1456,10 +1465,17 @@ Set =VISIBILITY= property to =folded=, =children=, =content= or =all=.
             (= (length bf-name) 0))
         (setq bf-name "*tm*"))
     (setq bf-name (generate-new-buffer-name bf-name))
-    (set-buffer (make-term bf-name sh-name))
-    (term-mode)
-    (term-char-mode)
-    (switch-to-buffer (concat "*" bf-name "*"))))
+
+    ;; term-mode
+    ;; (set-buffer (make-term bf-name sh-name))
+    ;; (term-mode)
+    ;; (term-char-mode)
+    ;; (switch-to-buffer (concat "*" bf-name "*"))
+
+    ;; ansi-term
+    (ansi-term sh-name)
+    (rename-buffer bf-name)
+    ))
 #+end_src
 ** sh mode
 #+BEGIN_SRC emacs-lisp
