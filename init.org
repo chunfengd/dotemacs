@@ -380,8 +380,10 @@ doc: https://jwiegley.github.io/use-package/
  'global-set-key
  '(
    ("C-?" help-command)
-   ;;("C-x b" list-buffers)
    ("C-c C-c" comment-or-uncomment-region)
+   ;; ("C-x C-b" consult-buffer)
+   ;; ("C-x b" list-buffers)
+   ("C-x b" consult-buffer)
    ))
 (global-set-key [(hyper c)] 'kill-ring-save)
 (global-set-key [(hyper v)] 'yank)
@@ -1417,7 +1419,7 @@ ref: https://oremacs.com/2015/01/01/three-ansi-term-tips/
   (setq scroll-margin 0)
   :bind (:map term-raw-map
          ("H-v" . term-paste)
-         ("C-x C-b" . consult-buffer)
+         ;; ("C-x C-b" . consult-buffer)
          ;; doesn't work with C-w
          ;; use "C-x o" to jump to the next window
          ;; ("C-w" . nil)
