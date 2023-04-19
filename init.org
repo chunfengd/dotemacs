@@ -757,9 +757,9 @@ https://zzamboni.org/post/beautifying-org-mode-in-emacs/
   (with-eval-after-load 'auto-save
     ;; (push 'my-file-too-big-p auto-save-exclude)
     ;; (push 'my-check-major-mode-for-auto-save auto-save-exclude)
-    (setq auto-save-idle 2)
+    (setq auto-save-idle 1)
     (setq auto-save-slient t))
-  (my/run-with-idle-timer 2 #'auto-save-enable))
+  (my/run-with-idle-timer 1 #'auto-save-enable))
 (setup-auto-save)
 #+end_src
 ** my commands
