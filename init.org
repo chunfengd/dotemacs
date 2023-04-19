@@ -80,12 +80,13 @@
 - [[#org-mode][org-mode]]
   - [[#init][init]]
   - [[#basic-config][basic config]]
+  - [[#keys][keys]]
   - [[#fonts][fonts]]
   - [[#org-superstar][org-superstar]]
   - [[#org-appear][org-appear]]
   - [[#toc-org][toc-org]]
   - [[#initial-visibility][initial visibility]]
-  - [[#keys][keys]]
+  - [[#key-shortcut][key shortcut]]
 - [[#org-gtd][org-gtd]]
   - [[#add-agenda-files-into-emacsdinitel][add agenda files into =~/.emacs.d/init.el=]]
   - [[#agenda-hook][agenda-hook]]
@@ -130,9 +131,8 @@
 - [[#tramp][tramp]]
 - [[#prettier][prettier]]
 - [[#plantuml][plantuml]]
-- [[#todolist-08][todolist]]
+- [[#todolist-07][todolist]]
   - [[#facemenu-set-face][=facemenu-set-face=]]
-  - [[#update-org-mode-key][update org-mode key]]
   - [[#super-save][super-save]]
   - [[#func-to-toggle-auto-save][func to toggle auto-save]]
   - [[#origamiel-for-folding][origami.el for folding]]
@@ -1165,6 +1165,28 @@ https://github.com/oantolin/embark
   )
 (add-hook 'org-mode-hook 'my/org-mode-setup)
 #+END_SRC
+** keys
+#+begin_src emacs-lisp
+(defun my/org-mode-keys ()
+  (local-unset-key (kbd "M-j"))
+  (local-unset-key (kbd "M-k"))
+  (evil-define-key '(normal visual)
+    org-mode-map (kbd "M-j") 'org-next-visible-heading)
+  (evil-define-key '(normal visual)
+    org-mode-map (kbd "M-k") 'org-previous-visible-heading)
+
+  ;; up level
+  (evil-define-key '(normal visual)
+    org-mode-map (kbd "M-u") 'outline-up-heading)
+  ;; previous same level
+  (evil-define-key '(normal visual)
+    org-mode-map (kbd "M-h") 'org-backward-heading-same-level)
+  ;; next same level
+  (evil-define-key '(normal visual)
+    org-mode-map (kbd "M-l") 'org-forward-heading-same-level)
+  )
+(add-hook 'org-mode-hook 'my/org-mode-keys)
+#+end_src
 ** fonts
 https://zzamboni.org/post/beautifying-org-mode-in-emacs/
 #+begin_src emacs-lisp
@@ -1301,30 +1323,30 @@ Use TOC_2 tag to sets the max depth to 2.
 #+end_src
 *** per entry setting
 Set =VISIBILITY= property to =folded=, =children=, =content= or =all=.
-** keys
-     ;; "C-c C-b" org-backward-heading-same-level
-     ;; "C-c C-f" org-forward-heading-same-level
-     ;; "C-c C-n" outline-next-visible-heading
-     ("C-c C-p" outline-previous-visible-heading)
-     ;; "C-c C-j" org-goto
-
-     ;; ("M-<left>" org-metaleft)
-     ;; ("M-<righ>" org-metaright)
-     ;; ("M-<up>" org-metaup)
-     ;; ("M-<down>" org-metadown)
-
-     ;; ("M-S-<left>" org-shiftmetaleft)
-     ;; ("M-S-<right>" org-shiftmetaright)
-     ;; ("M-S-<up>" org-shiftmetaup)
-     ;; ("M-S-<down>" org-shiftmetadown)
-
-     ;; "M-h" org-mark-element
-
-     ;; ("C-c C-f" org-kill-note-or-show-branches) ;; used to be 'C-c C-k'
-
-     ("C-<tab>" org-cycle)
-     ("C-S-<tab>" org-shifttab)
-     ("C-c RET" nil)
+** key shortcut
+|----------------+----------------------------------|
+| key            | func                             |
+|----------------+----------------------------------|
+| M-h or C-c C-b | org-backward-heading-same-level  |
+| M-l or C-c C-f | org-forward-heading-same-level   |
+| M-j or C-c C-n | outline-next-visible-heading     |
+| M-k or C-c C-p | outline-previous-visible-heading |
+|----------------+----------------------------------|
+|                | (shift current item)             |
+| M-<left>       | org-metaleft                     |
+| M-<right>      | org-metaright                    |
+| M-<up>         | org-metaup                       |
+| M-<down>       | org-metadown                     |
+|----------------+----------------------------------|
+|                | (shift recursively)              |
+| M-S-<left>     | org-shiftmetaleft                |
+| M-S-<right>    | org-shiftmetaright               |
+| M-S-<up>       | org-shiftmetaup                  |
+| M-S-<down>     | org-shiftmetadown                |
+|----------------+----------------------------------|
+| <tab>          | org-cycle                        |
+| S-<tab>        | org-shifttab (tab all)           |
+|----------------+----------------------------------|
 * TODO org-gtd
 ** add agenda files into =~/.emacs.d/init.el=
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -2011,10 +2033,8 @@ If it's found, then add it to the `exec-path'."
 ;;     (my/plantuml-setup)
 ;;   (message "plantuml-mode not installed"))
 #+end_src
-* todolist [0/8]
+* todolist [0/7]
 ** TODO =facemenu-set-face=
-** TODO update org-mode key
-- https://github.com/daviwil/dotfiles/blob/master/Emacs.org#org-configuration
 ** TODO super-save
 - https://github.com/daviwil/dotfiles/blob/master/Emacs.org#auto-saving-changed-files
 ** TODO func to toggle auto-save
