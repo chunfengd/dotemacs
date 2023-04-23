@@ -1241,6 +1241,8 @@ https://zzamboni.org/post/beautifying-org-mode-in-emacs/
                       nil :inherit '(font-lock-comment-face fixed-pitch))
   (set-face-attribute 'org-table
                       nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-formula
+                      nil :inherit 'fixed-pitch)
   (set-face-attribute 'org-verbatim
                       nil :inherit '(shadow fixed-pitch))
 
