@@ -81,7 +81,7 @@
   - [[#init][init]]
   - [[#basic-config][basic config]]
   - [[#keys][keys]]
-  - [[#fonts][fonts]]
+  - [[#appearance][appearance]]
   - [[#org-superstar][org-superstar]]
   - [[#org-appear][org-appear]]
   - [[#toc-org][toc-org]]
@@ -163,8 +163,7 @@ This is an Emacs configuration file written in Org-mode. It is adapted from Lars
   (expand-file-name path my/dotemacs-home))
 #+END_SRC
 ** extra load path
-- updated from
-  https://github.com/redguardtoo/emacs.d/blob/master/init.el
+- updated from https://github.com/redguardtoo/emacs.d/blob/master/init.el
 #+begin_src emacs-lisp
 (defun my/add-site-dir (site-dir)
   "Add a directory into `load-path'."
@@ -1187,12 +1186,29 @@ https://github.com/oantolin/embark
   )
 (add-hook 'org-mode-hook 'my/org-mode-keys)
 #+end_src
-** fonts
+** appearance
 https://zzamboni.org/post/beautifying-org-mode-in-emacs/
+Set up category table. Use =M-x describe-categories= to view existing categories.
 #+begin_src emacs-lisp
-(defun my/org-font-setup ()
+(defun my/setup-org-category-table ()
+  "enable word wrap at - and /"
+  ;; https://emacs.stackexchange.com/questions/19027/how-to-wrap-line-at-some-characters-other-than-space
+  (setq my/org-category-table (copy-category-table))
+  (modify-category-entry ?- ?| my/org-category-table)
+  (modify-category-entry ?/ ?| my/org-category-table)
+  )
+(my/setup-org-category-table)
+#+end_src
+
+Set up appearance.
+#+begin_src emacs-lisp
+(defun my/org-appearance-setup ()
   ;; set for variable pitch
   (variable-pitch-mode 1)
+
+  ;; visual-line-mode
+  (set-category-table my/org-category-table)
+  (setq-local word-wrap-by-category t)
   (auto-fill-mode 0)
   (visual-line-mode 1)
 
@@ -1261,7 +1277,7 @@ https://zzamboni.org/post/beautifying-org-mode-in-emacs/
   ;; (set-face-attribute 'line-number-current-line
   ;;                     nil :inherit 'fixed-pitch)
   )
-(add-hook 'org-mode-hook 'my/org-font-setup)
+(add-hook 'org-mode-hook 'my/org-appearance-setup)
 #+end_src
 ** org-superstar
 #+begin_src emacs-lisp :tangle no
