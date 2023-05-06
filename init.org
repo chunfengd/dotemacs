@@ -195,12 +195,21 @@ emacs --batch \
 ** automatic tangling
 To avoid having to tangle manually each time a change is made, we can add a function to =after-save-hook= to tangle the =init.org= after saving.
 #+BEGIN_SRC emacs-lisp
-(defvar my/auto-tangle-init t "tuggle auto tangle dotemacs/init.org")
+(defvar my/auto-tangle-init t "auto tangle dotemacs/init.org")
 (defun my/tangle-init-file ()
   "Tangle the current buffer if it is the init.org file."
+  (interactive)
   (when (and my/auto-tangle-init
              (equal (buffer-file-name) (my/path "init.org")))
     (org-babel-tangle)))
+
+(defun my/toggle-auto-tangle-init ()
+  "auto tangle dotemacs/init.org"
+  (interactive)
+  (setq my/auto-tangle-init (not my/auto-tangle-init))
+  (message "auto-tangle-init %s"
+	   (if my/auto-tangle-init "enabled" "disabled"))
+  (my/tangle-init-file))
 
 (add-hook 'after-save-hook 'my/tangle-init-file)
 #+END_SRC
