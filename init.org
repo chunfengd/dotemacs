@@ -1205,6 +1205,9 @@ Set up category table. Use =M-x describe-categories= to view existing categories
   (setq my/org-category-table (copy-category-table))
   (modify-category-entry ?- ?| my/org-category-table)
   (modify-category-entry ?/ ?| my/org-category-table)
+  (modify-category-entry ?& ?| my/org-category-table)
+  (modify-category-entry ?? ?| my/org-category-table)
+  (modify-category-entry ?# ?| my/org-category-table)
   )
 (my/setup-org-category-table)
 #+end_src
