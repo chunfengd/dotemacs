@@ -456,6 +456,12 @@ doc: https://jwiegley.github.io/use-package/
   ;; Use visual line motions even outside of visual-line-mode buffers
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+  (evil-global-set-key 'motion "0" 'evil-beginning-of-visual-line)
+  (evil-global-set-key 'motion "$" 'evil-end-of-visual-line)
+  (evil-global-set-key 'motion "gj" 'evil-next-line)
+  (evil-global-set-key 'motion "gk" 'evil-previous-line)
+  (evil-global-set-key 'motion "g0" 'evil-beginning-of-line)
+  (evil-global-set-key 'motion "g$" 'evil-end-of-line)
 
   ;; https://evil.readthedocs.io/en/latest/settings.html#the-initial-state
   ;; config initial-state
