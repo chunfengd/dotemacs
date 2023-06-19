@@ -105,6 +105,7 @@
   - [[#config-1][config]]
   - [[#manual][manual]]
 - [[#json-mode][json-mode]]
+- [[#rust][rust]]
 - [[#lsp-deprecated][lsp (deprecated)]]
   - [[#config-2][config]]
   - [[#dap][dap]]
@@ -1608,6 +1609,10 @@ ref: https://oremacs.com/2015/01/01/three-ansi-term-tips/
 #+BEGIN_SRC emacs-lisp
 (use-package json-mode)
 #+END_SRC
+* rust
+#+begin_src emacs-lisp
+(use-package rust-mode)
+#+end_src
 * TODO lsp (deprecated)
 :PROPERTIES:
 :header-args: :tangle no
