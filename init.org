@@ -84,6 +84,7 @@
   - [[#appearance][appearance]]
   - [[#org-superstar][org-superstar]]
   - [[#org-appear][org-appear]]
+  - [[#structure-templates][structure templates]]
   - [[#toc-org][toc-org]]
   - [[#initial-visibility][initial visibility]]
   - [[#key-shortcut][key shortcut]]
@@ -1336,6 +1337,25 @@ cursor inside of them.
   ;; (org-mode . my/org-setup-appear)
   (org-mode . org-appear-mode)
   )
+#+end_src
+** structure templates
+#+begin_src emacs-lisp
+(with-eval-after-load 'org
+  ;; This is needed as of Org 9.2
+  (require 'org-tempo)
+  (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist '("ru" . "src rust"))
+  )
+;; ref: https://stackoverflow.com/a/69765466/3078372
+(defun my/org-structure-templates-setup ()
+  (setq-local electric-pair-inhibit-predicate
+              `(lambda (c)
+                 (if (char-equal c ?<)
+                     t
+                   (,electric-pair-inhibit-predicate c))))
+  )
+(add-hook 'org-mode-hook 'my/org-structure-templates-setup)
 #+end_src
 ** toc-org
 Automatically generate a table of contents for org files.
