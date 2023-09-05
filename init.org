@@ -9,6 +9,8 @@
 #   - https://github.com/larstvei/dot-emacs/blob/master/init.org
 #   - https://github.com/xiongtx/.emacs.d/blob/master/init.org
 
+#+STARTUP: num
+
 * Table of Contents                                                     :TOC:
 - [[#introduction][introduction]]
   - [[#other-references][other references]]
@@ -569,6 +571,9 @@ https://github.com/justbur/emacs-which-key
   "op" 'outline-previous-visible-heading
   "ou" 'outline-up-heading
   )
+
+(my/leader-keys
+  "." 'embark-act)
 #+end_src
 ** jump (avy)
 #+BEGIN_SRC emacs-lisp
@@ -1343,6 +1348,13 @@ cursor inside of them.
 (with-eval-after-load 'org
   ;; This is needed as of Org 9.2
   (require 'org-tempo)
+  ;; common structure template:
+  ;; C: comment
+  ;; e: example
+  ;; q: quote
+  ;; s: src
+  ;; v: verse
+  ;; For full list, checkout 'org-structure-template-alist
   (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
   (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("ru" . "src rust"))
