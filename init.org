@@ -109,6 +109,9 @@
   - [[#manual][manual]]
 - [[#json-mode][json-mode]]
 - [[#rust][rust]]
+- [[#plantuml][plantuml]]
+  - [[#org-babel-for-plantuml][org-babel for plantuml]]
+  - [[#setup][setup]]
 - [[#lsp-deprecated][lsp (deprecated)]]
   - [[#config-2][config]]
   - [[#dap][dap]]
@@ -134,7 +137,6 @@
 - [[#spell][spell]]
 - [[#tramp][tramp]]
 - [[#prettier][prettier]]
-- [[#plantuml][plantuml]]
 - [[#todolist-07][todolist]]
   - [[#facemenu-set-face][=facemenu-set-face=]]
   - [[#super-save][super-save]]
@@ -198,6 +200,8 @@ emacs --batch \
 #+END_SRC
 ** automatic tangling
 To avoid having to tangle manually each time a change is made, we can add a function to =after-save-hook= to tangle the =init.org= after saving.
+
+To toggle auto tangle, use =M-x my/toggle-auto-tangle-init=
 #+BEGIN_SRC emacs-lisp
 (defvar my/auto-tangle-init t "auto tangle dotemacs/init.org")
 (defun my/tangle-init-file ()
@@ -1646,6 +1650,40 @@ ref: https://oremacs.com/2015/01/01/three-ansi-term-tips/
 #+begin_src emacs-lisp
 (use-package rust-mode)
 #+end_src
+* TODO plantuml
+- https://github.com/skuro/plantuml-mode
+** org-babel for plantuml
+- https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-plantuml.html
+#+begin_src emacs-lisp
+(defun my/setup-org-plantuml ()
+  (add-to-list
+   'org-src-lang-modes '("plantuml" . plantuml))
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((plantuml . t)))
+  )
+#+end_src
+*** results
+- file: ~#+begin_src plantuml :file images/hello-uml.png~
+- ASCII diagram: ~#+begin_src plantuml :results verbatim~
+*** example
+#+begin_src plantuml :file demo.png :dir images :mkdirp yes :tangle no
+Bob -> Alice : Hello World!
+#+end_src
+** setup
+#+begin_src emacs-lisp
+;; use M-x plantuml-download-jar<RET> to download jar
+;; use M-x plantuml-preview<RET> to preview
+(use-package plantuml-mode
+  :init
+  (setq plantuml-jar-path (my/path "lib/plantuml.jar"))
+  (setq org-plantuml-jar-path (my/path "lib/plantuml.jar"))
+  (setq plantuml-default-exec-mode 'jar)
+  (add-to-list
+   'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
+  ;; add to org-mode
+  (add-hook 'org-mode-hook 'my/setup-org-plantuml))
+#+end_src
 * TODO lsp (deprecated)
 :PROPERTIES:
 :header-args: :tangle no
@@ -2087,26 +2125,6 @@ If it's found, then add it to the `exec-path'."
 ;;     (my/setup-prettier)
 ;;   (message "prettier-js not installed"))
 #+END_SRC
-* TODO plantuml
-#+begin_src emacs-lisp
-;; use M-x plantuml-download-jar<RET> to download jar
-;; use M-x plantuml-preview<RET> to preview
-(defun my/plantuml-setup ()
-  (setq plantuml-jar-path "~/dev/lib/plantuml.jar")
-  (setq plantuml-default-exec-mode 'jar)
-  (add-to-list
-   'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
-  ;; add to org-mode
-  (add-hook
-   'org-mode-hook
-   (lambda ()
-     (add-to-list
-      'org-src-lang-modes '("plantuml" . plantuml))))
-  )
-;; (if (package-installed-p 'plantuml-mode)
-;;     (my/plantuml-setup)
-;;   (message "plantuml-mode not installed"))
-#+end_src
 * todolist [0/7]
 ** TODO =facemenu-set-face=
 ** TODO super-save
