@@ -573,7 +573,8 @@ https://github.com/justbur/emacs-which-key
   )
 
 (my/leader-keys
-  "." 'embark-act)
+  "." 'embark-act
+  ";" 'embark-dwim)
 #+end_src
 ** jump (avy)
 #+BEGIN_SRC emacs-lisp
