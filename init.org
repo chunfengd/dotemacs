@@ -47,6 +47,7 @@
   - [[#general-leader][general leader]]
   - [[#myleader-keys][my/leader-keys]]
   - [[#jump-avy][jump (avy)]]
+  - [[#info][info]]
 - [[#after-key-binding][after key binding]]
   - [[#exec-path-from-shell][exec-path-from-shell]]
   - [[#auto-reload][auto reload]]
@@ -595,6 +596,14 @@ https://github.com/justbur/emacs-which-key
     "jl"  'avy-goto-line)
   )
 #+END_SRC
+** info
+#+begin_src emacs-lisp
+;; unset space to enable my/leader-keys
+(general-define-key
+ :keymaps 'Info-mode-map
+ :states 'normal
+ "SPC" nil)
+#+end_src
 * after key binding
 ** TODO exec-path-from-shell
 #+BEGIN_SRC emacs-lisp :tangle no
