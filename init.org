@@ -105,16 +105,13 @@
   - [[#sh-function][sh function]]
 - [[#text-mode][text-mode]]
   - [[#auto-fill][auto fill]]
-- [[#typescript][typescript]]
-  - [[#config-1][config]]
-  - [[#manual][manual]]
 - [[#json-mode][json-mode]]
 - [[#rust][rust]]
 - [[#plantuml][plantuml]]
   - [[#org-babel-for-plantuml][org-babel for plantuml]]
   - [[#setup][setup]]
 - [[#lsp-deprecated][lsp (deprecated)]]
-  - [[#config-2][config]]
+  - [[#config-1][config]]
   - [[#dap][dap]]
 - [[#java][java]]
   - [[#links][links]]
@@ -129,6 +126,9 @@
   - [[#test][test]]
   - [[#todo][todo]]
 - [[#graphviz-dot-mode][graphviz dot mode]]
+- [[#typescript][typescript]]
+  - [[#config-2][config]]
+  - [[#manual][manual]]
 - [[#html][html]]
   - [[#web-mode][web-mode]]
 - [[#js][js]]
@@ -1271,6 +1271,8 @@ Set up appearance.
       (0 (prog1 ()
            (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
+  ;; (setq org-src-fontify-natively t)
+  ;; (setq org-src-tab-acts-natively t)
 
   ;; Ensure that anything that should be fixed-pitch in Org files
   ;; appears that way
@@ -1278,8 +1280,10 @@ Set up appearance.
   ;; To find the face at the point, use `describe-char` function
   (set-face-attribute 'org-block
                       nil :foreground nil :inherit 'fixed-pitch)
+  ;; (set-face-attribute 'org-block
+  ;;                     nil :inherit 'fixed-pitch)
   (set-face-attribute 'org-checkbox
-                      nil  :inherit 'fixed-pitch)
+                      nil :inherit 'fixed-pitch)
   (set-face-attribute 'org-checkbox-statistics-todo
                       nil  :inherit '(fixed-pitch org-todo))
   (set-face-attribute 'org-checkbox-statistics-done
@@ -1638,19 +1642,6 @@ ref: https://oremacs.com/2015/01/01/three-ansi-term-tips/
 #+BEGIN_SRC emacs-lisp
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 #+END_SRC
-* typescript
-** config
-#+begin_src emacs-lisp
-(use-package typescript-mode
-  :mode "\\.\\(js\\|jsx\\|ts\\)\\'"
-  :hook (typescript-mode . lsp-deferred)
-  :config
-  (setq typescript-indent-level 2))
-#+end_src
-** manual
-- install js/ts server
-- install eslint globally
-- install eslint server by using M-x lsp-install-server
 * json-mode
 #+BEGIN_SRC emacs-lisp
 (use-package json-mode)
@@ -1996,6 +1987,20 @@ Bob -> Alice : Hello World!
   )
 (add-hook 'graphviz-dot-mode-hook 'my/graphviz-mode)
 #+END_SRC
+* typescript
+** config
+#+begin_src emacs-lisp
+(use-package typescript-mode
+  :mode "\\.\\(js\\|jsx\\|ts\\)\\'"
+  :hook (typescript-mode . lsp-deferred)
+  :config
+  (setq typescript-indent-level 2)
+  )
+#+end_src
+** manual
+- install js/ts server
+- install eslint globally
+- install eslint server by using M-x lsp-install-server
 * html
 ** web-mode
 #+BEGIN_SRC emacs-lisp
@@ -2016,6 +2021,13 @@ Bob -> Alice : Hello World!
   (setq web-mode-enable-sexp-functions t)
   ;; (setq web-mode-enable-auto-quoting nil)
   ;; (setq web-mode-enable-auto-indentation nil)
+
+  ;; setup for org-mode
+  (add-to-list
+   'org-src-lang-modes '("web" . web))
+  (org-babel-do-load-languages
+    'org-babel-load-languages
+    '((web . t)))
   )
 #+END_SRC
 * TODO js
