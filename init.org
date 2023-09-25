@@ -1197,6 +1197,7 @@ https://github.com/oantolin/embark
   ;; (setq org-infojs-options my/default-org-infojs-options)
   (setq org-export-html-use-infojs t) ; alternative: when-configured, nil
   (setq org-latex-preview-ltxpng-directory "/tmp/ltxpng/")
+  (setq org-log-into-drawer t)
   )
 (add-hook 'org-mode-hook 'my/org-mode-setup)
 #+END_SRC
@@ -2142,6 +2143,7 @@ If it's found, then add it to the `exec-path'."
   ;;                   (prettier-js-mode))))
   (global-set-key [f8] 'prettier-js)
   )
+(my/setup-prettier)
 ;; (if (package-installed-p 'prettier-js)
 ;;     (my/setup-prettier)
 ;;   (message "prettier-js not installed"))
