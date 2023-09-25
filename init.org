@@ -1132,12 +1132,13 @@ https://github.com/oantolin/embark
   )
 #+end_src
 ** useful commands
-|----+---------------------------|
-| p  | projectile-switch-project |
-| f  | projectile-find-file      |
-| sr | projectile-ripgrep        |
-| sg | projectile-grep           |
-|----+---------------------------|
+|----+---------------------------------|
+| p  | projectile-switch-project       |
+| f  | projectile-find-file            |
+| sr | projectile-ripgrep              |
+| sg | projectile-grep                 |
+|    | projectile-remove-known-project |
+|----+---------------------------------|
 * company
 - user manual: http://company-mode.github.io/manual/index.html
 - useful functions
@@ -1440,9 +1441,6 @@ Set =VISIBILITY= property to =folded=, =children=, =content= or =all=.
 #+BEGIN_SRC emacs-lisp :tangle no
 (setq org-agenda-files
       '("~/path/to/todo/todo.org"))
-
-(setq org-agenda-tetra
-      "~/path/to/todo/tetra.org")
 #+END_SRC
 ** agenda-hook
 #+BEGIN_SRC emacs-lisp
@@ -1483,22 +1481,7 @@ Set =VISIBILITY= property to =folded=, =children=, =content= or =all=.
                      '(org-agenda-skip-entry-if
                        'todo '("TODO" "PROG" "MISS")))
                     (org-agenda-overriding-header "In Progress Tasks:")))))
-        ("t" "Tetrascience"
-         ((agenda ""
-                  ((org-agenda-files `(,org-agenda-tetra))
-                   (org-agenda-ndays 1)))
-          (alltodo ""
-                   ((org-agenda-files `(,org-agenda-tetra))
-                    (org-agenda-skip-function
-                     '(org-agenda-skip-entry-if
-                       'todo '("TODO" "HOLD" "MISS")))
-                    (org-agenda-overriding-header "In Progress Tasks:")))
-          (alltodo ""
-                   ((org-agenda-files `(,org-agenda-tetra))
-                    (org-agenda-skip-function
-                     '(or (org-agenda-skip-entry-if 'scheduled 'deadline)
-                          (org-agenda-skip-entry-if 'todo '("HOLD"))))
-                    (org-agenda-overriding-header "Todo Tasks without time:")))))))
+        ))
 #+END_SRC
 ** todo keyword faces
 #+BEGIN_SRC emacs-lisp
