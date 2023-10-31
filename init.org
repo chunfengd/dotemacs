@@ -330,6 +330,9 @@ doc: https://jwiegley.github.io/use-package/
 
 (setq default-fill-column 70)
 
+;; display the current column in the mode line
+(setq column-number-mode t)
+
 (setq-default scroll-margin 3
               scroll-conservatively 10000)
 
