@@ -1202,6 +1202,9 @@ https://github.com/oantolin/embark
   (setq org-export-html-use-infojs t) ; alternative: when-configured, nil
   (setq org-latex-preview-ltxpng-directory "/tmp/ltxpng/")
   (setq org-log-into-drawer t)
+
+  ;; skip num for toc
+  (setq org-num-skip-tags '("toc" "TOC"))
   )
 (add-hook 'org-mode-hook 'my/org-mode-setup)
 #+END_SRC
