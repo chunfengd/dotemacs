@@ -1205,6 +1205,7 @@ https://github.com/oantolin/embark
 
   ;; skip num for toc
   (setq org-num-skip-tags '("toc" "TOC"))
+  (setq org-num-max-level 3)
   )
 (add-hook 'org-mode-hook 'my/org-mode-setup)
 #+END_SRC
