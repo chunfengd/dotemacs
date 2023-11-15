@@ -110,6 +110,9 @@
 - [[#plantuml][plantuml]]
   - [[#org-babel-for-plantuml][org-babel for plantuml]]
   - [[#setup][setup]]
+- [[#python][python]]
+  - [[#setup-1][setup]]
+  - [[#org-bable-for-python][org-bable for python]]
 - [[#lsp-deprecated][lsp (deprecated)]]
   - [[#config-1][config]]
   - [[#dap][dap]]
@@ -1641,7 +1644,7 @@ ref: https://oremacs.com/2015/01/01/three-ansi-term-tips/
 #+begin_src emacs-lisp
 (use-package rust-mode)
 #+end_src
-* TODO plantuml
+* plantuml
 - https://github.com/skuro/plantuml-mode
 ** org-babel for plantuml
 - https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-plantuml.html
@@ -1675,6 +1678,72 @@ Bob -> Alice : Hello World!
   ;; add to org-mode
   (add-hook 'org-mode-hook 'my/setup-org-plantuml))
 #+end_src
+* python
+** setup
+#+begin_src emacs-lisp
+(setq python-python-command "python3")
+(setq py-default-interpreter "python3")
+#+end_src
+** org-bable for python
+ref: https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-python.html
+*** setup
+#+begin_src emacs-lisp
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)))
+#+end_src
+*** header args
+- =:results {output, value}=
+- =:results graphics file {output, value}=
+- =:python=: name of the command for executing python code
+- non-python specific
+  - =:session [name]=
+  - =:var data=data-table=
+  - =:exports {code, results, both, none}=
+  - =:file=: Filename to save results to (e.g. for graphics)
+*** examples
+**** default (non-session + reture)
+Entire source block will get indented and used as the body of main()
+#+begin_src python
+def foo(x):
+  if x>0:
+    return x+1
+  else:
+    return x-1
+
+return foo(5)
+#+end_src
+
+#+RESULTS:
+: 6
+**** session mode
+#+begin_src python :session test
+def foo(x):
+  if x>0:
+    return x+1
+  else:
+    return x-1
+foo(1)
+#+end_src
+
+#+RESULTS:
+: 2
+
+#+begin_src python :session test
+foo(2)
+#+end_src
+
+#+RESULTS:
+: 3
+
+**** result output
+#+begin_src python :results output
+print(2)
+#+end_src
+
+#+RESULTS:
+: 2
+
 * TODO lsp (deprecated)
 :PROPERTIES:
 :header-args: :tangle no
