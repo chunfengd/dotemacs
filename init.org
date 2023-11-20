@@ -101,6 +101,7 @@
   - [[#term-mode][term mode]]
   - [[#tm-function][tm function]]
   - [[#sh-mode][sh mode]]
+  - [[#org-babel][org-babel]]
   - [[#shell-mode][shell mode]]
   - [[#sh-function][sh function]]
 - [[#text-mode][text-mode]]
@@ -112,7 +113,7 @@
   - [[#setup][setup]]
 - [[#python][python]]
   - [[#setup-1][setup]]
-  - [[#org-bable-for-python][org-bable for python]]
+  - [[#org-babel-for-python][org-babel for python]]
 - [[#lsp-deprecated][lsp (deprecated)]]
   - [[#config-1][config]]
   - [[#dap][dap]]
@@ -1586,6 +1587,12 @@ ref: https://oremacs.com/2015/01/01/three-ansi-term-tips/
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'auto-mode-alist '("/\\.bash_[^/]*\\'" . sh-mode))
 #+END_SRC
+** org-babel
+#+begin_src emacs-lisp
+(org-babel-do-load-languages
+  'org-babel-load-languages
+  '((shell . t)))
+#+end_src
 ** TODO shell mode
 #+BEGIN_SRC emacs-lisp
 (defun my/shell-mode-hook-func ()
@@ -1684,7 +1691,7 @@ Bob -> Alice : Hello World!
 (setq python-python-command "python3")
 (setq py-default-interpreter "python3")
 #+end_src
-** org-bable for python
+** org-babel for python
 ref: https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-python.html
 *** setup
 #+begin_src emacs-lisp
@@ -1702,6 +1709,9 @@ ref: https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-python.html
   - =:exports {code, results, both, none}=
   - =:file=: Filename to save results to (e.g. for graphics)
 *** examples
+:PROPERTIES:
+:header-args: :tangle no
+:END:
 **** default (non-session + reture)
 Entire source block will get indented and used as the body of main()
 #+begin_src python
