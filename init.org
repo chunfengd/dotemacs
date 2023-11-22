@@ -117,6 +117,7 @@
 - [[#lsp-deprecated][lsp (deprecated)]]
   - [[#config-1][config]]
   - [[#dap][dap]]
+  - [[#eldoc][eldoc]]
 - [[#java][java]]
   - [[#links][links]]
   - [[#lsp-java][lsp-java]]
@@ -964,7 +965,7 @@ https://github.com/oantolin/embark
 
   ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
   ;; strategy, if you want to see the documentation from multiple providers.
-  (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+  ;; (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
   ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
 
   :config
@@ -979,7 +980,8 @@ https://github.com/oantolin/embark
 (use-package embark-consult
   :after embark consult
   :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
+  (embark-collect-mode . consult-preview-at-point-mode)
+  )
 #+end_src
 ** consult
 - https://github.com/minad/consult
@@ -1755,13 +1757,13 @@ print(2)
 : 2
 
 * TODO lsp (deprecated)
-:PROPERTIES:
-:header-args: :tangle no
-:END:
 - https://emacs-lsp.github.io/lsp-mode/
 - https://emacs-lsp.github.io/lsp-mode/page/languages/
 - https://langserver.org/
 ** config
+:PROPERTIES:
+:header-args: :tangle no
+:END:
 #+begin_src emacs-lisp
 (defun my/lsp-mode-setup ()
   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
@@ -1785,12 +1787,28 @@ print(2)
 
 #+end_src
 ** dap
+:PROPERTIES:
+:header-args: :tangle no
+:END:
 #+begin_src emacs-lisp
 (use-package dap-mode
   :after lsp-mode
   :config (dap-auto-configure-mode))
 #+end_src
+** eldoc
+#+begin_src emacs-lisp
+;; disable eldoc hook
+(setq lsp-eldoc-hook nil)
+
+;; https://emacs.stackexchange.com/a/74876/19031
+;; (setq eldoc-echo-area-use-multiline-p nil)
+;; (setq max-mini-window-height 3)
+
+#+end_src
 * java
+:PROPERTIES:
+:header-args: :tangle no
+:END:
 ** links
 - lsp-java
   - https://emacs-lsp.github.io/lsp-java/
