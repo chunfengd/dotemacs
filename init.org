@@ -1663,6 +1663,9 @@ ref: https://oremacs.com/2015/01/01/three-ansi-term-tips/
 (my/setup-c++)
 #+end_src
 ** org-babel examples
+:PROPERTIES:
+:header-args: :tangle no
+:END:
 #+begin_src C++ :includes <iostream> :exports results
 using namespace std;
 cout << "Hello World!\n";
