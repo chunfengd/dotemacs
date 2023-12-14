@@ -107,6 +107,8 @@
 - [[#text-mode][text-mode]]
   - [[#auto-fill][auto fill]]
 - [[#json-mode][json-mode]]
+- [[#c][c++]]
+  - [[#org-babel-examples][org-babel examples]]
 - [[#rust][rust]]
 - [[#plantuml][plantuml]]
   - [[#org-babel-for-plantuml][org-babel for plantuml]]
@@ -1649,6 +1651,26 @@ ref: https://oremacs.com/2015/01/01/three-ansi-term-tips/
 #+BEGIN_SRC emacs-lisp
 (use-package json-mode)
 #+END_SRC
+* c++
+#+begin_src emacs-lisp
+(defun my/setup-c++ ()
+  ;; enable org-babel for c++
+  ;; https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-C.html
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((C . t)))
+  )
+(my/setup-c++)
+#+end_src
+** org-babel examples
+#+begin_src C++ :includes <iostream> :exports results
+using namespace std;
+cout << "Hello World!\n";
+#+end_src
+
+#+RESULTS:
+: Hello World!
+
 * rust
 #+begin_src emacs-lisp
 (use-package rust-mode)
