@@ -97,6 +97,7 @@
   - [[#custom-agenda-commands][custom agenda commands]]
   - [[#keyword-faces][keyword faces]]
   - [[#deadline-warning-days][deadline warning days]]
+- [[#edebug][edebug]]
 - [[#shell-02][shell]]
   - [[#term-mode][term mode]]
   - [[#tm-function][tm function]]
@@ -482,6 +483,7 @@ doc: https://jwiegley.github.io/use-package/
   (evil-global-set-key 'motion "g0" 'evil-beginning-of-line)
   (evil-global-set-key 'motion "g$" 'evil-end-of-line)
 
+  ;; use C-z (evil-emacs-state) to toggle emacs and evil mode
   ;; https://evil.readthedocs.io/en/latest/settings.html#the-initial-state
   ;; config initial-state
   ;;  - 'normal
@@ -1513,6 +1515,10 @@ Set =VISIBILITY= property to =folded=, =children=, =content= or =all=.
 #+BEGIN_SRC emacs-lisp
 (setq org-deadline-warning-days 10)
 #+END_SRC
+* edebug
+#+begin_src emacs-lisp
+(setq edebug-print-length 500)
+#+end_src
 * shell [0/2]
 ** term mode
 ref: https://oremacs.com/2015/01/01/three-ansi-term-tips/
