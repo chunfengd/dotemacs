@@ -110,6 +110,7 @@
 - [[#json-mode][json-mode]]
 - [[#c][c++]]
   - [[#org-babel-examples][org-babel examples]]
+  - [[#org-babel-via-docker][org-babel via docker]]
 - [[#rust][rust]]
 - [[#plantuml][plantuml]]
   - [[#org-babel-for-plantuml][org-babel for plantuml]]
@@ -1680,6 +1681,75 @@ cout << "Hello World!\n";
 #+RESULTS:
 : Hello World!
 
+** org-babel via docker
+*** =my/org-babel-execute:C++=
+#+begin_src emacs-lisp
+(defun my/org-babel-execute:C++ (body params)
+  (let* ((image "gcc")
+         (dirname "orgtmp")
+         (include-dirname "include")
+         (src-filename "main.cpp")
+         (bin-filename "main")
+         (host-dir-path (format "~/%s" dirname))
+         (host-include-path default-directory)
+         (host-src-file-path (format "~/%s/%s" dirname src-filename))
+         (host-bin-file-path (format "~/%s/%s" dirname bin-filename))
+         (docker-dir-path (format "/%s" dirname))
+         (docker-include-path (format "/%s" include-dirname))
+         (docker-src-file-path (format "/%s/%s" dirname src-filename))
+         (docker-bin-file-path (format "/%s/%s" dirname bin-filename))
+         (cmdline (cdr (assq :cmdline params)))
+         (cmdline (if cmdline (concat " " cmdline) ""))
+         (flags (cdr (assq :flags params)))
+         (flags (mapconcat 'identity
+                           (if (listp flags) flags (list flags)) " "))
+         (libs (org-babel-read
+                (or (cdr (assq :libs params))
+                    (org-entry-get nil "libs" t))
+                nil))
+         (libs (mapconcat #'identity
+                          (if (listp libs) libs (list libs))
+                          " "))
+         (full-body (org-babel-C-expand-C++ body params))
+         (cmd (format "docker run %s %s --rm %s /bin/sh -c \"%s && %s\""
+                      ;; mount
+                      (format "-v %s:%s" host-dir-path docker-dir-path)
+                      (format "-v %s:%s:ro"
+                              host-include-path docker-include-path)
+                      image
+                      ;; compile
+                      (format "g++ -o %s %s %s %s %s"
+                              docker-bin-file-path
+                              flags
+                              (format "-I %s" docker-include-path)
+                              docker-src-file-path
+                              libs)
+                      ;; execute
+                      (format "%s %s"
+                              docker-bin-file-path cmdline))))
+    (make-directory host-dir-path t)
+    (with-temp-file host-src-file-path (insert full-body))
+    (message "Running: %s" cmd)
+    (let ((results (org-babel-eval cmd "")))
+      (when results
+        (setq results (org-remove-indentation results))
+        (org-babel-reassemble-table
+         (org-babel-result-cond (cdr (assq :result-params params))
+           results
+           (let ((tmp-file (org-babel-temp-file "c-")))
+             (with-temp-file tmp-file (insert results))
+             (org-babel-import-elisp-from-file tmp-file)))
+         (org-babel-pick-name
+          (cdr (assq :colname-names params)) (cdr (assq :colnames params)))
+         (org-babel-pick-name
+          (cdr (assq :rowname-names params)) (cdr (assq :rownames params))))))))
+#+end_src
+*** add this to =~/.emacs= if need to use docker
+#+begin_src emacs-lisp :tangle no
+(add-hook 'org-mode-hook
+          (lambda ()
+            (fset 'org-babel-execute:C++ 'my/org-babel-execute:C++)))
+#+end_src
 * rust
 #+begin_src emacs-lisp
 (use-package rust-mode)
