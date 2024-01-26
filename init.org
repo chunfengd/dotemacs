@@ -1691,7 +1691,7 @@ cout << "Hello World!\n";
          (src-filename "main.cpp")
          (bin-filename "main")
          (host-dir-path (format "~/%s" dirname))
-         (host-include-path default-directory)
+         (host-include-path "$PWD")
          (host-src-file-path (format "~/%s/%s" dirname src-filename))
          (host-bin-file-path (format "~/%s/%s" dirname bin-filename))
          (docker-dir-path (format "/%s" dirname))
