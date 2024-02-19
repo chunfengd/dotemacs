@@ -1733,6 +1733,7 @@ cout << "Hello World!\n";
                       ;; execute
                       (format "%s %s"
                               docker-bin-file-path cmdline))))
+    (message "running cpp in docker")
     (make-directory host-dir-path t)
     (with-temp-file host-src-file-path (insert full-body))
     (message "Running: %s" cmd)
@@ -1750,14 +1751,23 @@ cout << "Hello World!\n";
          (org-babel-pick-name
           (cdr (assq :rowname-names params)) (cdr (assq :rownames params))))))))
 #+end_src
-*** add this to =~/.emacs= if need to use docker
-#+begin_src emacs-lisp :tangle no
-(defvar original-org-babel-execute:C++ nil "the real function")
+*** override org-babel-execute:C++
+#+begin_src emacs-lisp
+(defvar my/original-org-babel-execute:C++ nil "the real function")
+(defun my/org-babel-execute:C++-wrapper (body params)
+  (let* ((docker (assq :docker params))
+        (docker (and docker (not (string= (cdr docker) "no")))))
+    (if docker
+        (my/org-babel-execute:C++ body params)
+      (my/original-org-babel-execute:C++ body params))))
 (add-hook 'org-mode-hook
           (lambda ()
-            (unless (fboundp 'original-org-babel-execute:C++)
-              (fset 'original-org-babel-execute:C++ 'org-babel-execute:C++)
-              (fset 'org-babel-execute:C++ 'my/org-babel-execute:C++))))
+            (unless (fboundp 'my/original-org-babel-execute:C++)
+              (message "rebind org-babel-execute:C++")
+              (fset 'my/original-org-babel-execute:C++
+                    (symbol-function 'org-babel-execute:C++))
+              (fset 'org-babel-execute:C++
+                    'my/org-babel-execute:C++-wrapper))))
 #+end_src
 *** to run docker container
 #+begin_src sh :tangle no
