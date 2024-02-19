@@ -1685,19 +1685,25 @@ cout << "Hello World!\n";
 *** =my/org-babel-execute:C++=
 #+begin_src emacs-lisp
 (defun my/org-babel-execute:C++ (body params)
-  (let* ((image "gcc")
-         (dirname "orgtmp")
+  (let* ((image "cppdev")
+         (host-dirname "orgtmp")
+         (docker-dirname "playground")
          (include-dirname "include")
          (src-filename "main.cpp")
          (bin-filename "main")
-         (host-dir-path (format "~/%s" dirname))
+         (home "~")
+         (host-dir-path (format "%s/%s" home host-dirname))
          (host-include-path "$PWD")
-         (host-src-file-path (format "~/%s/%s" dirname src-filename))
-         (host-bin-file-path (format "~/%s/%s" dirname bin-filename))
-         (docker-dir-path (format "/%s" dirname))
+         (host-src-file-path (format "%s/%s/%s"
+                                     home host-dirname src-filename))
+         (host-bin-file-path (format "%s/%s/%s"
+                                     home host-dirname bin-filename))
+         (docker-dir-path (format "/%s" docker-dirname))
          (docker-include-path (format "/%s" include-dirname))
-         (docker-src-file-path (format "/%s/%s" dirname src-filename))
-         (docker-bin-file-path (format "/%s/%s" dirname bin-filename))
+         (docker-src-file-path (format "/%s/%s"
+                                       docker-dirname src-filename))
+         (docker-bin-file-path (format "/%s/%s"
+                                       docker-dirname bin-filename))
          (cmdline (cdr (assq :cmdline params)))
          (cmdline (if cmdline (concat " " cmdline) ""))
          (flags (cdr (assq :flags params)))
@@ -1746,9 +1752,16 @@ cout << "Hello World!\n";
 #+end_src
 *** add this to =~/.emacs= if need to use docker
 #+begin_src emacs-lisp :tangle no
+(defvar original-org-babel-execute:C++ nil "the real function")
 (add-hook 'org-mode-hook
           (lambda ()
-            (fset 'org-babel-execute:C++ 'my/org-babel-execute:C++)))
+            (unless (fboundp 'original-org-babel-execute:C++)
+              (fset 'original-org-babel-execute:C++ 'org-babel-execute:C++)
+              (fset 'org-babel-execute:C++ 'my/org-babel-execute:C++))))
+#+end_src
+*** to run docker container
+#+begin_src sh :tangle no
+$ docker run -v ~/orgtmp:/playground -v $PWD:/include:ro --rm -it cppdev bash
 #+end_src
 * rust
 #+begin_src emacs-lisp
