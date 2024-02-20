@@ -1717,11 +1717,12 @@ cout << "Hello World!\n";
                           (if (listp libs) libs (list libs))
                           " "))
          (full-body (org-babel-C-expand-C++ body params))
-         (cmd (format "docker run %s %s --rm %s /bin/sh -c \"%s && %s\""
+         (cmd (format "docker run %s %s %s --rm %s /bin/sh -c \"%s && %s\""
                       ;; mount
                       (format "-v %s:%s" host-dir-path docker-dir-path)
                       (format "-v %s:%s:ro"
                               host-include-path docker-include-path)
+                      (format "--platform %s" "linux/x86_64")
                       image
                       ;; compile
                       (format "g++ -o %s %s %s %s %s"
