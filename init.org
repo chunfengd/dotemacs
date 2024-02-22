@@ -1685,7 +1685,7 @@ cout << "Hello World!\n";
 *** =my/org-babel-execute:C++=
 #+begin_src emacs-lisp
 (defun my/org-babel-execute:C++ (body params)
-  (let* ((image "cppdev")
+  (let* ((image "chunfengd/cppdev")
          (host-dirname "orgtmp")
          (docker-dirname "playground")
          (include-dirname "include")
