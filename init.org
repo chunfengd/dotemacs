@@ -115,8 +115,11 @@
 - [[#plantuml][plantuml]]
   - [[#org-babel-for-plantuml][org-babel for plantuml]]
   - [[#setup][setup]]
-- [[#python][python]]
+- [[#gnuplot][gnuplot]]
+  - [[#setup-org-babel-for-gnuplot][setup org babel for gnuplot]]
   - [[#setup-1][setup]]
+- [[#python][python]]
+  - [[#setup-2][setup]]
   - [[#org-babel-for-python][org-babel for python]]
 - [[#lsp-deprecated][lsp (deprecated)]]
   - [[#config-1][config]]
@@ -1811,6 +1814,24 @@ Bob -> Alice : Hello World!
    'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
   ;; add to org-mode
   (add-hook 'org-mode-hook 'my/setup-org-plantuml))
+#+end_src
+* gnuplot
+** setup org babel for gnuplot
+#+begin_src emacs-lisp
+(defun my/setup-org-gnuplot ()
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((gnuplot . t))))
+#+end_src
+** setup
+#+begin_src emacs-lisp
+(use-package gnuplot
+  :init
+  (autoload 'gnuplot-mode "gnuplot" "Gnuplot major mode" t)
+  (autoload 'gnuplot-make-buffer "gnuplot" "open a buffer in gnuplot-mode" t)
+  (setq auto-mode-alist (append '(("\\.gp$" . gnuplot-mode)) auto-mode-alist))
+  ;; add to org-mode
+  (add-hook 'org-mode-hook 'my/setup-org-gnuplot))
 #+end_src
 * python
 ** setup
