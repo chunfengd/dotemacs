@@ -41,6 +41,7 @@
   - [[#set-key-bindings-function][set key bindings function]]
   - [[#global-keys][global keys]]
   - [[#mac-key][mac key]]
+  - [[#evil-custom-text-object][evil custom text object]]
   - [[#evil][evil]]
   - [[#evil-collection][evil-collection]]
   - [[#which-key][which-key]]
@@ -443,8 +444,23 @@ doc: https://jwiegley.github.io/use-package/
   (progn
     (defconst my/system-include-dirs nil))))
 #+END_SRC
+** evil custom text object
+- https://stackoverflow.com/a/22418983/3078372
+#+begin_src emacs-lisp
+(defmacro define-and-bind-text-object (key start-regex end-regex)
+  (let ((inner-name (make-symbol "inner-name"))
+        (outer-name (make-symbol "outer-name")))
+    `(progn
+       (evil-define-text-object ,inner-name (count &optional beg end type)
+         (evil-select-paren ,start-regex ,end-regex beg end type count nil))
+       (evil-define-text-object ,outer-name (count &optional beg end type)
+         (evil-select-paren ,start-regex ,end-regex beg end type count t))
+       (define-key evil-inner-text-objects-map ,key (quote ,inner-name))
+       (define-key evil-outer-text-objects-map ,key (quote ,outer-name)))))
+#+end_src
 ** evil
 - github: https://github.com/emacs-evil/evil
+- emacs wiki: https://www.emacswiki.org/emacs/Evil
 - doc: https://evil.readthedocs.io/en/latest/index.html
 - reference: https://github.com/daviwil/dotfiles/blob/master/Emacs.org#lets-be-evil
 #+begin_src emacs-lisp
@@ -497,6 +513,9 @@ doc: https://jwiegley.github.io/use-package/
   (evil-set-initial-state 'dashboard-mode 'normal)
   ;; don't use evil in term-mode
   ;; (evil-set-initial-state 'term-mode 'emacs)
+
+  ;; custom text object
+  (define-and-bind-text-object "=" "=" "=")
   )
 #+end_src
 ** evil-collection
