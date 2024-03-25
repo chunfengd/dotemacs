@@ -1321,7 +1321,7 @@ Set up appearance.
   ;;
   ;; To find the face at the point, use `describe-char` function
   (set-face-attribute 'org-block
-                      nil :foreground nil :inherit 'fixed-pitch)
+                      nil :inherit 'fixed-pitch)
   ;; (set-face-attribute 'org-block
   ;;                     nil :inherit 'fixed-pitch)
   (set-face-attribute 'org-checkbox
