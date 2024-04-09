@@ -1865,6 +1865,7 @@ ref: https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-python.html
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((python . t)))
+(setq org-babel-python-command "python3")
 #+end_src
 *** header args
 - =:results {output, value}=
