@@ -1106,6 +1106,12 @@ https://github.com/oantolin/embark
   ;;;; 5. No project support
   ;; (setq consult-project-function nil)
 
+  ;; Override existing function.
+  ;; Do not put visible buffers in other windows to the bottom
+  (defun consult--buffer-sort-visibility (buffers)
+    (let ((current (current-buffer)))
+      (consult--keep! buffers (unless (eq it current) it))
+      (nconc buffers (list current))))
   )
 #+end_src
 *** consult-buffer narrowing keys
@@ -1114,7 +1120,7 @@ https://github.com/oantolin/embark
 |-------+------------------|
 | b     | buffers          |
 | <spc> | hidden buffers   |
-| =*=   | modified buffers |
+| =*=     | modified buffers |
 | f     | files            |
 | r     | file registers   |
 | m     | bootmarks        |
