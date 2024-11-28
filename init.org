@@ -327,7 +327,6 @@ doc: https://jwiegley.github.io/use-package/
 * before key binding
 ** basic
 #+begin_src emacs-lisp
-;; (load-theme 'wombat)
 (setq inhibit-startup-message t)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
@@ -723,7 +722,10 @@ https://github.com/seagle0128/doom-modeline
 ** doom-theme
 #+begin_src emacs-lisp
 (use-package doom-themes
-  :init (load-theme 'doom-vibrant t))
+  :config
+  ;; (load-theme 'doom-vibrate t)
+  (load-theme 'doom-ayu-mirage t)
+  )
 #+end_src
 ** line number
 #+begin_src emacs-lisp
