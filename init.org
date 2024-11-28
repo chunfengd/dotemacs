@@ -723,6 +723,7 @@ https://github.com/seagle0128/doom-modeline
 #+begin_src emacs-lisp
 (use-package doom-themes
   :config
+  ;; run M-x load-theme to test different themes
   ;; (load-theme 'doom-vibrate t)
   (load-theme 'doom-ayu-mirage t)
   )
