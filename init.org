@@ -1846,6 +1846,11 @@ Bob -> Alice : Hello World!
   ;; add to org-mode
   (add-hook 'org-mode-hook 'my/setup-org-plantuml))
 #+end_src
+*** for large diagrams
+add this to the org-mode file
+#+begin_example
+#+PROPERTY: header-args:plantuml :java -DPLANTUML_LIMIT_SIZE=8192
+#+end_example
 * gnuplot
 ** setup org babel for gnuplot
 #+begin_src emacs-lisp
