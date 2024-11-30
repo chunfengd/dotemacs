@@ -1835,6 +1835,9 @@ Bob -> Alice : Hello World!
 ;; use M-x plantuml-preview<RET> to preview
 (use-package plantuml-mode
   :init
+  (setq plantuml-java-args
+        '("-DPLANTUML_LIMIT_SIZE=8192"
+          "-Djava.awt.headless=true" "-jar" "--illegal-access=deny"))
   (setq plantuml-jar-path (my/path "lib/plantuml.jar"))
   (setq org-plantuml-jar-path (my/path "lib/plantuml.jar"))
   (setq plantuml-default-exec-mode 'jar)
