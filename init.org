@@ -677,6 +677,12 @@ https://github.com/justbur/emacs-which-key
 #+END_SRC
 ** daemon server
 #+BEGIN_SRC emacs-lisp
+;; open file with emacs and wait
+;; alias ec='emacsclient -s emacs-server'
+;; no wait
+;; alias ecn='emacsclient -s emacs-server -n'
+;; open on the current terminal
+;; alias ecnw='emacsclient -s emacs-server -nw'
 (setq server-name "emacs-server")
 (server-start)
 #+END_SRC
