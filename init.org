@@ -76,6 +76,7 @@
   - [[#embark][embark]]
   - [[#consult][consult]]
   - [[#consult-projectile][consult-projectile]]
+  - [[#examples][examples]]
 - [[#projectile][projectile]]
   - [[#useful-commands][useful commands]]
 - [[#company][company]]
@@ -1166,6 +1167,21 @@ https://github.com/oantolin/embark
   :quelpa
   (consult-projectile :fetcher gitlab :repo "OlMon/consult-projectile"))
 #+end_src
+** examples
+**** consult-ripgrep and add file path filter
+#+begin_src sh :tangle no
+### ripgrep
+# ripgrep search only in plans.org
+<spc> v r --> cftask -- -g plans.org
+# ripgrep with exclude
+<spc> v r --> cftask -- -g !logs.org
+
+### grep
+<spc> v g --> cftask -- --include plans.org
+#+end_src
+**** to ignore some files by default
+- =.gitignore=: for rg & git
+- =.rgignore=: for rg but not for grep
 * projectile
 #+begin_src emacs-lisp
 (use-package projectile
