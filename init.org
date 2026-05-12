@@ -160,6 +160,7 @@
   - [[#update-face-of-mode--status-bar][update face of mode / status bar]]
   - [[#read-a-list-of-people-with-nice-emacs-config-files][read a list of people with nice emacs config files]]
   - [[#magit][magit]]
+- [[#done][done]]
 - [[#license][License]]
 
 * introduction
@@ -2453,6 +2454,10 @@ If it's found, then add it to the `exec-path'."
 ** TODO read a list of people with nice emacs config files
 - https://github.com/zamansky/emacs.dz
 ** TODO magit
+* done
+#+begin_src emacs-lisp
+(message "init complete")
+#+end_src
 * License
 My Emacs configurations written in Org mode.
 
