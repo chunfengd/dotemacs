@@ -243,6 +243,7 @@ To toggle auto tangle, use =M-x my/toggle-auto-tangle-init=
 #+END_SRC
 ** install icons
 Run =M-x all-the-icons-install-fonts=
+Run =M-x load-theme= to test different themes
 * straight (deprecated)
 :PROPERTIES:
 :header-args: :tangle no
@@ -314,10 +315,11 @@ doc: https://jwiegley.github.io/use-package/
 #+end_src
 ** install packages manually
 #+begin_src emacs-lisp :tangle no
-;; https://github.com/melpa/melpa/issues/7238
-(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
-(package-refresh-contents nil)
-(package-install 'lsp-mode)
+  ;; https://github.com/melpa/melpa/issues/7238
+  (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+  (package-refresh-contents nil)
+  (package-install 'lsp-mode)
+
 #+end_src
 ** quelpa
 #+begin_src emacs-lisp
@@ -1261,7 +1263,7 @@ https://github.com/oantolin/embark
 (defun my/org-mode-setup ()
   (flyspell-mode-off)
   (setq org-src-fontify-natively t)
-  (setq org-edit-src-content-indentation 0)
+  ;; (setq org-edit-src-content-indentation 0)
   ;; (setq org-infojs-options my/default-org-infojs-options)
   (setq org-export-html-use-infojs t) ; alternative: when-configured, nil
   (setq org-latex-preview-ltxpng-directory "/tmp/ltxpng/")
