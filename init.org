@@ -87,7 +87,6 @@
   - [[#basic-config][basic config]]
   - [[#keys][keys]]
   - [[#appearance][appearance]]
-  - [[#org-superstar][org-superstar]]
   - [[#org-appear][org-appear]]
   - [[#structure-templates][structure templates]]
   - [[#toc-org][toc-org]]
@@ -1260,21 +1259,20 @@ https://github.com/oantolin/embark
   )
 #+END_SRC
 ** basic config
-#+BEGIN_SRC emacs-lisp
-(defun my/org-mode-setup ()
-  (flyspell-mode-off)
-  (setq org-src-fontify-natively t)
-  ;; (setq org-edit-src-content-indentation 0)
-  ;; (setq org-infojs-options my/default-org-infojs-options)
-  (setq org-export-html-use-infojs t) ; alternative: when-configured, nil
-  (setq org-latex-preview-ltxpng-directory "/tmp/ltxpng/")
-  (setq org-log-into-drawer t)
+#+BEGIN_SRC emacs-lisp :tangle no
+  (defun my/org-mode-setup ()
+    (setq org-src-fontify-natively t)
+    ;; (setq org-edit-src-content-indentation 0)
+    ;; (setq org-infojs-options my/default-org-infojs-options)
+    (setq org-export-html-use-infojs t) ; alternative: when-configured, nil
+    (setq org-latex-preview-ltxpng-directory "/tmp/ltxpng/")
+    (setq org-log-into-drawer t)
 
-  ;; skip num for toc
-  (setq org-num-skip-tags '("toc" "TOC"))
-  (setq org-num-max-level 3)
-  )
-(add-hook 'org-mode-hook 'my/org-mode-setup)
+    ;; skip num for toc
+    (setq org-num-skip-tags '("toc" "TOC"))
+    (setq org-num-max-level 3)
+    )
+  (add-hook 'org-mode-hook 'my/org-mode-setup)
 #+END_SRC
 ** keys
 #+begin_src emacs-lisp
@@ -1300,7 +1298,7 @@ https://github.com/oantolin/embark
 #+end_src
 ** appearance
 https://zzamboni.org/post/beautifying-org-mode-in-emacs/
-Set up category table. Use =M-x describe-categories= to view existing categories.
+*** Set up category table. Use =M-x describe-categories= to view existing categories.
 #+begin_src emacs-lisp
 (defun my/setup-org-category-table ()
   "enable word wrap at - and /"
@@ -1315,7 +1313,7 @@ Set up category table. Use =M-x describe-categories= to view existing categories
 (my/setup-org-category-table)
 #+end_src
 
-Set up appearance.
+*** Set up appearance.
 #+begin_src emacs-lisp
 (defun my/org-appearance-setup ()
   ;; set for variable pitch
@@ -1397,18 +1395,6 @@ Set up appearance.
   ;;                     nil :inherit 'fixed-pitch)
   )
 (add-hook 'org-mode-hook 'my/org-appearance-setup)
-#+end_src
-** org-superstar
-#+begin_src emacs-lisp :tangle no
-(use-package org-superstar
-  :disabled
-  :after org
-  :hook (org-mode . org-superstar-mode)
-  :init
-  (setq org-superstar-remove-leading-stars t)
-  (setq org-superstar-headline-bullets-list
-        '("◉" "○" "●" "○" "●" "○" "●"))
-  )
 #+end_src
 ** org-appear
 When =org-hide-emphasis-markers= is turned on. It temporarily shows the
