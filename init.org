@@ -1243,7 +1243,7 @@ https://github.com/oantolin/embark
   (global-company-mode 1))
 #+end_src
 * flycheck
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (use-package flycheck)
 #+END_SRC
 * org-mode
@@ -2271,7 +2271,7 @@ print(2)
 #+END_SRC
 * typescript
 ** config
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package typescript-mode
   :mode "\\.\\(js\\|jsx\\|ts\\)\\'"
   :hook (typescript-mode . lsp-deferred)
@@ -2346,7 +2346,7 @@ If it's found, then add it to the `exec-path'."
 #+END_SRC
 ** js-mode (deprecated to typescript)
 :PROPERTIES:
-:header-args: :tangle no
+xxx:header-args: :tangle no
 :END:
 #+BEGIN_SRC emacs-lisp
 (defun my/js-setup ()
@@ -2355,7 +2355,7 @@ If it's found, then add it to the `exec-path'."
 #+END_SRC
 ** js2-mode (deprecated to typescript)
 :PROPERTIES:
-:header-args: :tangle no
+xxx:header-args: :tangle no
 :END:
 #+BEGIN_SRC emacs-lisp
 (defun my/js2-setup ()
@@ -2388,9 +2388,9 @@ If it's found, then add it to the `exec-path'."
      '()))
   (add-hook 'js2-mode-hook 'my/init-js))
 
-;; (if (package-installed-p 'js2-mode)
-;;     (my/js2-setup)
-;;   (message "js2-mode not installed"))
+(if (package-installed-p 'js2-mode)
+    (my/js2-setup)
+  (message "js2-mode not installed"))
 #+END_SRC
 * TODO spell
 #+BEGIN_SRC emacs-lisp
