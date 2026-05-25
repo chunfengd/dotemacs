@@ -1623,6 +1623,10 @@ ref: https://oremacs.com/2015/01/01/three-ansi-term-tips/
     ;; let C-q pass through to terminal
     (define-key vterm-mode-map (kbd "C-q") 'vterm-send-next-key)
     (evil-define-key 'insert vterm-mode-map (kbd "C-q") #'vterm-send-next-key)
+
+    ;; let C-w act as evil window prefix
+    (define-key vterm-mode-map (kbd "C-w") evil-window-map)
+    (evil-define-key 'insert vterm-mode-map (kbd "C-w") #'evil-window-map)
     )
 
   (my/leader-keys
