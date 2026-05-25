@@ -745,6 +745,7 @@ https://github.com/seagle0128/doom-modeline
 (dolist (mode '(org-mode-hook
                 shell-mode-hook
                 term-mode-hook
+                vterm-mode-hook
                 eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 #+end_src
