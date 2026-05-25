@@ -1612,6 +1612,13 @@ ref: https://oremacs.com/2015/01/01/three-ansi-term-tips/
 | C-c C-n | go forward |
 |---------+------------|
 ** vterm
+*** install libvterm
+This requires libvterm to be installed
+#+begin_src sh :tangle no
+  # on mac
+  $ brew install libvterm
+#+end_src
+*** package
 #+begin_src emacs-lisp
   (use-package vterm
     :commands vterm
