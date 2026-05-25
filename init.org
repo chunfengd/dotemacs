@@ -1609,6 +1609,27 @@ ref: https://oremacs.com/2015/01/01/three-ansi-term-tips/
 | C-c C-p | go back    |
 | C-c C-n | go forward |
 |---------+------------|
+*** vterm
+#+begin_src emacs-lisp
+(use-package vterm
+  :commands vterm
+  :config
+  (setq vterm-max-scrollback 10000)
+  ;; use shell-side configuration for better prompt detection:
+  ;; https://github.com/akermu/emacs-libvterm#shell-side-configuration
+  )
+
+(my/leader-keys
+  "tt" 'vterm)
+
+(defun vt ()
+  "start vterm with a given name"
+  (interactive)
+  (let ((bf-name (read-from-minibuffer "Buffer (*vterm*): " nil)))
+    (if (or (not bf-name) (= (length bf-name) 0))
+        (vterm)
+      (vterm (generate-new-buffer-name bf-name)))))
+#+end_src
 ** tm function
 #+begin_src emacs-lisp
 (defun tm ()
