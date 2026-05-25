@@ -24,6 +24,7 @@
   - [[#automatic-tangling][automatic tangling]]
   - [[#add-the-following-line-into-emacsdinitel][add the following line into =~/.emacs.d/init.el=]]
   - [[#install-icons][install icons]]
+  - [[#install-libvterm][install libvterm]]
 - [[#straight-deprecated][straight (deprecated)]]
   - [[#add-the-following-line-into-emacsdearly-initel][add the following line into =~/.emacs.d/early-init.el=]]
   - [[#install][install]]
@@ -245,6 +246,11 @@ To toggle auto tangle, use =M-x my/toggle-auto-tangle-init=
 ** install icons
 Run =M-x all-the-icons-install-fonts=
 Run =M-x load-theme= to test different themes
+** install libvterm
+#+begin_src sh :tangle no
+  # on mac
+  $ brew install libvterm
+#+end_src
 * straight (deprecated)
 :PROPERTIES:
 :header-args: :tangle no
