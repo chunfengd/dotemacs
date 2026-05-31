@@ -1502,7 +1502,7 @@ Set =VISIBILITY= property to =folded=, =children=, =content= or =all=.
 | <tab>          | org-cycle                        |
 | S-<tab>        | org-shifttab (tab all)           |
 |----------------+----------------------------------|
-* TODO org-gtd
+* org-gtd
 ** add agenda files into =~/.emacs.d/init.el=
 #+BEGIN_SRC emacs-lisp :tangle no
 (setq org-agenda-files
