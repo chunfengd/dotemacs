@@ -244,7 +244,7 @@ To toggle auto tangle, use =M-x my/toggle-auto-tangle-init=
 (load "/path/to/init.el")
 #+END_SRC
 ** install icons
-Run =M-x all-the-icons-install-fonts=
+Run =M-x nerd-icons-install-fonts=
 Run =M-x load-theme= to test different themes
 ** install libvterm
 #+begin_src sh :tangle no
@@ -725,9 +725,7 @@ When you visit a file, point goes to the last place where it was when you previo
 https://github.com/seagle0128/doom-modeline
 #+begin_src emacs-lisp
 ;; Install icons for doom
-;; Run M-x all-the-icons-install-fonts to install
-(use-package all-the-icons
-  :if (display-graphic-p))
+;; Run M-x nerd-icons-install-fonts to install
 
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
