@@ -99,6 +99,7 @@
   - [[#custom-agenda-commands][custom agenda commands]]
   - [[#keyword-faces][keyword faces]]
   - [[#deadline-warning-days][deadline warning days]]
+- [[#ediff][ediff]]
 - [[#edebug][edebug]]
 - [[#shell-02][shell]]
   - [[#term-mode][term mode]]
@@ -1564,6 +1565,11 @@ Set =VISIBILITY= property to =folded=, =children=, =content= or =all=.
 #+BEGIN_SRC emacs-lisp
 (setq org-deadline-warning-days 10)
 #+END_SRC
+* ediff
+#+begin_src emacs-lisp
+(setq ediff-split-window-function 'split-window-horizontally)
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+#+end_src
 * edebug
 #+begin_src emacs-lisp
 (setq edebug-print-length 500)
