@@ -538,6 +538,18 @@ https://github.com/emacs-evil/evil-collection
   ;; (setq evil-collection-term-sync-state-and-mode-p nil)
   )
 #+end_src
+** window navigation
+Jump between windows from any evil state (=C-w h/j/k/l= only works in normal state).
+#+begin_src emacs-lisp
+(my/set-key-bindings
+ 'global-set-key
+ '(
+   ("C-M-h" evil-window-left)
+   ("C-M-j" evil-window-down)
+   ("C-M-k" evil-window-up)
+   ("C-M-l" evil-window-right)
+   ))
+#+end_src
 ** which-key
 https://github.com/justbur/emacs-which-key
 #+begin_src emacs-lisp
@@ -1593,6 +1605,10 @@ ref: https://oremacs.com/2015/01/01/three-ansi-term-tips/
          ;; use "C-x o" to jump to the next window
          ;; ("C-w" . nil)
          ;; ("C-w C-w" . evil-window-next)
+         ("C-M-h" . evil-window-left)
+         ("C-M-j" . evil-window-down)
+         ("C-M-k" . evil-window-up)
+         ("C-M-l" . evil-window-right)
          )
   ;; :bind (:map term-raw-map
   ;;        ("C-b" . scroll-up-command)
@@ -1644,6 +1660,12 @@ This requires libvterm to be installed
     ;; let C-w act as evil window prefix
     (define-key vterm-mode-map (kbd "C-w") evil-window-map)
     (evil-define-key 'insert vterm-mode-map (kbd "C-w") #'evil-window-map)
+
+    ;; let C-M-hjkl jump between windows instead of being sent to the terminal
+    (define-key vterm-mode-map (kbd "C-M-h") 'evil-window-left)
+    (define-key vterm-mode-map (kbd "C-M-j") 'evil-window-down)
+    (define-key vterm-mode-map (kbd "C-M-k") 'evil-window-up)
+    (define-key vterm-mode-map (kbd "C-M-l") 'evil-window-right)
     )
 
   (my/leader-keys
@@ -1701,7 +1723,6 @@ This requires libvterm to be installed
    'local-set-key
    '(
      ;; ("C-d" my/shell-kill)
-     ("C-M-l" nil)
      ;;("C-c h" comint-history-isearch-backward)
      ;;("M-s" comint-history-isearch-search)
      ("C-c h" comint-history-isearch-backward-regexp)
