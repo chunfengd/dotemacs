@@ -347,9 +347,9 @@ doc: https://jwiegley.github.io/use-package/
 (setq visible-bell t)
 
 ;; highlight current line
+;; NOTE: the hl-line face itself is set in the doom-theme section below --
+;; it has to run after load-theme or the theme overrides it.
 (global-hl-line-mode t)
-(if (display-graphic-p)
-    (set-face-background hl-line-face "grey20"))
 
 (setq default-fill-column 70)
 
@@ -753,6 +753,18 @@ https://github.com/seagle0128/doom-modeline
   ;; run M-x load-theme to test different themes
   ;; (load-theme 'doom-vibrate t)
   (load-theme 'doom-ayu-mirage t)
+
+  ;; doom-ayu-mirage sets hl-line to bg-alt (#171b24), which is *darker* than
+  ;; the background (#1f2430) -- so the current line reads as a shadow rather
+  ;; than a highlight.  Override it here, after load-theme, or the theme wins.
+  ;; The region/selection face is blue (#2f3b54), so these tints avoid blue to
+  ;; stay distinguishable from it.  To switch: comment the active :background
+  ;; line and uncomment one of the others.
+  (set-face-attribute 'hl-line nil
+                      :background "#3d3830"   ; warm amber (ayu accent   #ffcc66)
+                      ;; :background "#3a3450" ; violet     (ayu constant #d4bfff)
+                      ;; :background "#26383d" ; teal       (ayu regexp   #95e6cb)
+                      :extend t)
   )
 #+end_src
 ** line number
