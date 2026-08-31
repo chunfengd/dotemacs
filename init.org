@@ -45,6 +45,7 @@
   - [[#evil-custom-text-object][evil custom text object]]
   - [[#evil][evil]]
   - [[#evil-collection][evil-collection]]
+  - [[#window-navigation][window navigation]]
   - [[#which-key][which-key]]
   - [[#general-leader][general leader]]
   - [[#myleader-keys][my/leader-keys]]
