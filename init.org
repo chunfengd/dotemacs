@@ -765,6 +765,19 @@ https://github.com/seagle0128/doom-modeline
                       ;; :background "#3a3450" ; violet     (ayu constant #d4bfff)
                       ;; :background "#26383d" ; teal       (ayu regexp   #95e6cb)
                       :extend t)
+
+  ;; Comments default to base5 (#484f5b), only 1.88:1 against the background
+  ;; -- effectively invisible.  Lift them to ~4:1: legible, but still clearly
+  ;; secondary to code (which sits at 9.6:1).  To switch: comment the active
+  ;; line and uncomment the other.  (The theme also has a built-in knob,
+  ;; doom-ayu-mirage-brighter-comments, but it picks a vivid blue that
+  ;; competes with code, and must be set before load-theme.)
+  (let ((comment-fg "#7a8494")      ; slate            4.1:1
+        ;; (comment-fg "#8a94a6")   ; brighter slate   5.1:1
+        )
+    (set-face-attribute 'font-lock-comment-face nil :foreground comment-fg)
+    (set-face-attribute 'font-lock-doc-face nil
+                        :foreground (doom-lighten comment-fg 0.15)))
   )
 #+end_src
 ** line number
