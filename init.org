@@ -157,7 +157,7 @@
 - [[#spell][spell]]
 - [[#tramp][tramp]]
 - [[#prettier][prettier]]
-- [[#todolist-07][todolist]]
+- [[#todolist-17][todolist]]
   - [[#facemenu-set-face][=facemenu-set-face=]]
   - [[#super-save][super-save]]
   - [[#func-to-toggle-auto-save][func to toggle auto-save]]
@@ -755,6 +755,12 @@ https://github.com/seagle0128/doom-modeline
   :config
   ;; run M-x load-theme to test different themes
   ;; (load-theme 'doom-vibrate t)
+
+  ;; Paint the ACTIVE mode-line blue instead of near-black.  Must be set
+  ;; before load-theme: the theme computes its faces from this flag.
+  ;; Without it, the mode-line background is almost identical to the
+  ;; buffer background (#1f2430), so window splits are hard to see.
+  (setq doom-ayu-mirage-brighter-modeline t)
   (load-theme 'doom-ayu-mirage t)
 
   ;; doom-ayu-mirage sets hl-line to bg-alt (#171b24), which is *darker* than
@@ -781,6 +787,42 @@ https://github.com/seagle0128/doom-modeline
     (set-face-attribute 'font-lock-comment-face nil :foreground comment-fg)
     (set-face-attribute 'font-lock-doc-face nil
                         :foreground (doom-lighten comment-fg 0.15)))
+
+  ;; Make window splits unmistakable.  The mode-line IS the divider
+  ;; between stacked windows (C-x 2): outline every mode-line with a
+  ;; full 1px box -- accent gold on the active window, dim gray on
+  ;; inactive ones -- so the split is always visible.  The blue (active)
+  ;; vs dark (inactive) backgrounds still tell you which window is active.
+  ;; Outline every mode-line with a full 1px box (see comment above).
+  ;; NOTE: an earlier version used overline + a gold left bar, which
+  ;; looked lopsided, like an "L" -- the box does all the work instead.
+  (set-face-attribute 'mode-line nil :box '(:line-width 1 :color "#ffcc66"))
+  (set-face-attribute 'mode-line-inactive nil :box '(:line-width 1 :color "#5c6773"))
+
+  ;; Hide doom-modeline's left-edge bars so the box stays a uniform 1px
+  ;; on all four sides.  The inactive bar especially must be overridden:
+  ;; its default background is mode-line-inactive's FOREGROUND (light!),
+  ;; 4px wide -- much thicker than the box edge, which is why the left
+  ;; border looked wrong.  Look the backgrounds up from the modeline
+  ;; faces themselves so the bars always match, whatever colors the
+  ;; theme computes.
+  (set-face-attribute 'doom-modeline-bar nil
+                      :background (face-background 'mode-line))
+  (set-face-attribute 'doom-modeline-bar-inactive nil
+                      :background (face-background 'mode-line-inactive))
+
+  ;; Crisp dividers for side-by-side splits (C-x 3), where the default
+  ;; vertical border is otherwise nearly invisible.  No bottom divider:
+  ;; it would sit directly under the mode-line box's bottom edge and
+  ;; make that edge look twice as thick (same gray on inactive windows).
+  ;; (No-op in terminal Emacs; harmless to enable unconditionally.)
+  (setq window-divider-default-places t
+        window-divider-default-right-width 2
+        window-divider-default-bottom-width 0)
+  (set-face-attribute 'window-divider nil :foreground "#5c6773")
+  (set-face-attribute 'window-divider-first-pixel nil :foreground "#5c6773")
+  (set-face-attribute 'window-divider-last-pixel nil :foreground "#5c6773")
+  (window-divider-mode 1)
   )
 #+end_src
 ** line number
@@ -2654,14 +2696,14 @@ xxx:header-args: :tangle no
 ;;     (my/setup-prettier)
 ;;   (message "prettier-js not installed"))
 #+END_SRC
-* todolist [0/7]
+* todolist [1/7]
 ** TODO =facemenu-set-face=
 ** TODO super-save
 - https://github.com/daviwil/dotfiles/blob/master/Emacs.org#auto-saving-changed-files
 ** TODO func to toggle auto-save
 ** TODO origami.el for folding
 - https://github.com/daviwil/dotfiles/blob/master/Emacs.org#origamiel-for-folding
-** TODO update face of mode / status bar
+** DONE update face of mode / status bar
 ** TODO read a list of people with nice emacs config files
 - https://github.com/zamansky/emacs.dz
 ** TODO magit
