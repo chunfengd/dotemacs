@@ -1,7 +1,7 @@
 tmp
 .DS_Store
-init.el
-init.sh
+# init.el
+# init.sh
 
 # ignore plantuml
 lib/plantuml.jar

@@ -1,0 +1,1845 @@
+;; define =my/path=
+
+(defvar my/dotemacs-home (file-name-directory load-file-name))
+
+(defun my/path (path)
+  (expand-file-name path my/dotemacs-home))
+
+;; extra load path
+;; - updated from https://github.com/redguardtoo/emacs.d/blob/master/init.el
+
+(defun my/add-site-dir (site-dir)
+  "Add a directory into `load-path'."
+  (setq load-path
+        (append
+         (delq nil
+               (mapcar (lambda (dir)
+                         (unless (string-match-p "^\\." dir)
+                           (expand-file-name dir site-dir)))
+                       (directory-files site-dir)))
+         load-path)))
+(my/add-site-dir (my/path "site"))
+
+;; automatic tangling
+;; To avoid having to tangle manually each time a change is made, we can add a function to =after-save-hook= to tangle the =init.org= after saving.
+
+;; To toggle auto tangle, use =M-x my/toggle-auto-tangle-init=
+
+(defvar my/auto-tangle-init t "auto tangle dotemacs/init.org")
+(defun my/tangle-init-file ()
+  "Tangle the current buffer if it is the init.org file."
+  (interactive)
+  (when (and my/auto-tangle-init
+             (equal (buffer-file-name) (my/path "init.org")))
+    (org-babel-tangle)))
+
+(defun my/toggle-auto-tangle-init ()
+  "auto tangle dotemacs/init.org"
+  (interactive)
+  (setq my/auto-tangle-init (not my/auto-tangle-init))
+  (message "auto-tangle-init %s"
+	   (if my/auto-tangle-init "enabled" "disabled"))
+  (my/tangle-init-file))
+
+(add-hook 'after-save-hook 'my/tangle-init-file)
+
+;; package init
+
+(require 'package)
+(setq package-archives
+      '(
+        ;; ("melpa-stable" . "https://stable.melpa.org/packages/")
+        ("melpa" . "https://melpa.org/packages/")
+        ("org" . "http://orgmode.org/elpa/")
+        ("elpa" . "https://elpa.gnu.org/packages/")
+        ;; ("marmalade" . "https://marmalade-repo.org/packages/")
+        ))
+(package-initialize)
+(unless package-archive-contents
+  (package-refresh-contents nil))
+
+;; use-package
+;; github: https://github.com/jwiegley/use-package
+;; doc: https://jwiegley.github.io/use-package/
+
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+(require 'use-package)
+;; make sure packages are installed
+(setq use-package-always-ensure t)
+
+;; quelpa
+
+(use-package quelpa)
+(use-package quelpa-use-package)
+(quelpa-use-package-activate-advice)
+
+;; basic
+
+(setq inhibit-startup-message t)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
+(tooltip-mode -1)
+(menu-bar-mode -1)
+(set-fringe-mode 10)
+(setq visible-bell t)
+
+;; highlight current line
+;; NOTE: the hl-line face itself is set in the doom-theme section below --
+;; it has to run after load-theme or the theme overrides it.
+(global-hl-line-mode t)
+
+(setq default-fill-column 70)
+
+;; display the current column in the mode line
+(setq column-number-mode t)
+
+(setq-default scroll-margin 3
+              scroll-conservatively 10000)
+
+;; frame title
+(when window-system
+  (setq frame-title-format '(buffer-file-name "%f" ("%b"))))
+
+;; frame
+(when (display-graphic-p)
+  (add-to-list 'default-frame-alist '(height . 42))
+  (add-to-list 'default-frame-alist '(width . 85))
+  (add-to-list 'default-frame-alist '(left . 650))
+  (add-to-list 'default-frame-alist '(top . 100)))
+
+(setq-default indent-tabs-mode nil)
+(setq default-tab-width 8)
+;; disable sentence end double space
+(setq sentence-end-double-space nil)
+
+;; delete selection
+(delete-selection-mode 1)
+
+;; move backup / auto save files out of cwd
+;; - =#xxx#= files: [[info:emacs#Auto Save Files][emacs#Auto Save Files]]
+;; - =xxx~= files: [[info:emacs#Backup Names][emacs#Backup Files/Names]]
+;; - =.#xxx= files: [[info:emacs#Interlocking][emacs#Interlocking]]
+
+;; (setq-default make-backup-files nil)
+;; https://emacs.stackexchange.com/questions/17210/how-to-place-all-auto-save-files-in-a-directory
+;; https://superuser.com/questions/131538/can-i-create-directories-that-dont-exist-while-creating-a-new-file-in-emacs
+;; https://emacsredux.com/blog/2013/05/09/keep-backup-and-auto-save-files-out-of-the-way/
+(let ((my-backup-directory "~/.emacs-saves/"))
+  (unless (file-exists-p my-backup-directory)
+    (message "creating backup dir: %s" my-backup-directory)
+    (make-directory my-backup-directory t))
+  ;; `xxx~` files
+  (setq backup-directory-alist
+        `((".*" . ,my-backup-directory)))
+  ;; `#xxx#` files
+  (setq auto-save-file-name-transforms
+        `((".*" ,my-backup-directory t)))
+  ;; `.#xxx` interlocking files
+  (setq lock-file-name-transforms
+        `((".*" ,my-backup-directory t)))
+  )
+
+;; switch C-c & C-g
+
+(keyboard-translate ?\C-c ?\C-g)
+(keyboard-translate ?\C-g ?\C-c)
+
+;; set key bindings function
+
+(defun my/set-key-bindings (action bind-list &optional map)
+  "Set key bindings. 'bind-list' is 2-D list."
+  (dolist (pair bind-list)
+    (if (null map)
+	(funcall action (eval `(kbd ,(nth 0 pair))) (nth 1 pair))
+      (funcall action map (eval `(kbd ,(nth 0 pair))) (nth 1 pair)))))
+
+;; global keys
+
+(my/set-key-bindings
+ 'global-set-key
+ '(
+   ("C-?" help-command)
+   ("C-c C-c" comment-or-uncomment-region)
+   ;; ("C-x C-b" consult-buffer)
+   ;; ("C-x b" list-buffers)
+   ("C-x b" consult-buffer)
+   ))
+(global-set-key [(hyper c)] 'kill-ring-save)
+(global-set-key [(hyper v)] 'yank)
+
+;; mac key
+
+(cond
+ ((string-equal system-type "windows-nt")
+  ;; windows
+  (progn
+    ))
+ ((string-equal system-type "darwin")
+  ;; mac os x
+  (progn
+    ;; (setq mac-option-key-is-meta t)
+    ;; (setq mac-command-key-is-meta nil)
+
+    ;; works for Emacs Mac Port: https://github.com/railwaycat/homebrew-emacsmacport
+    ;; switch key https://gist.github.com/railwaycat/3498096
+    (setq mac-option-modifier 'meta)
+    (setq mac-command-modifier 'hyper)
+    ))
+ ((string-equal system-type "gnu/linux")
+  (message "linux")
+  (progn
+    (defconst my/system-include-dirs nil))))
+
+;; evil custom text object
+;; - https://stackoverflow.com/a/22418983/3078372
+
+(defmacro define-and-bind-text-object (key start-regex end-regex)
+  (let ((inner-name (make-symbol "inner-name"))
+        (outer-name (make-symbol "outer-name")))
+    `(progn
+       (evil-define-text-object ,inner-name (count &optional beg end type)
+         (evil-select-paren ,start-regex ,end-regex beg end type count nil))
+       (evil-define-text-object ,outer-name (count &optional beg end type)
+         (evil-select-paren ,start-regex ,end-regex beg end type count t))
+       (define-key evil-inner-text-objects-map ,key (quote ,inner-name))
+       (define-key evil-outer-text-objects-map ,key (quote ,outer-name)))))
+
+;; evil
+;; - github: https://github.com/emacs-evil/evil
+;; - emacs wiki: https://www.emacswiki.org/emacs/Evil
+;; - doc: https://evil.readthedocs.io/en/latest/index.html
+;; - reference: https://github.com/daviwil/dotfiles/blob/master/Emacs.org#lets-be-evil
+
+;; Make ESC quit prompts
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+(use-package undo-tree
+  :init
+  (setq undo-tree-auto-save-history nil)
+  (global-undo-tree-mode 1))
+
+(use-package evil
+  :init
+  (setq evil-want-integration t)
+  (setq evil-want-keybinding nil)
+  (setq evil-want-C-i-jump t)
+  (setq evil-want-C-u-scroll t)
+  (setq evil-want-Y-yank-to-eol t)
+  (setq evil-shift-width 2)
+  (setq evil-undo-system 'undo-tree)
+  (setq evil-respect-visual-line-mode nil)
+  :config
+  (evil-mode 1)
+  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+  (define-key evil-insert-state-map (kbd "C-h")
+    'evil-delete-backward-char-and-join)
+  (define-key evil-replace-state-map (kbd "C-g") 'evil-normal-state)
+  (define-key evil-replace-state-map (kbd "C-h")
+    'evil-delete-backward-char-and-join)
+  ;(define-key evil-insert-state-map (kbd "C-n") nil)
+  (define-key evil-normal-state-map (kbd "C-.") nil)
+
+  ;; Use visual line motions even outside of visual-line-mode buffers
+  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+  (evil-global-set-key 'motion "0" 'evil-beginning-of-visual-line)
+  (evil-global-set-key 'motion "$" 'evil-end-of-visual-line)
+  (evil-global-set-key 'motion "gj" 'evil-next-line)
+  (evil-global-set-key 'motion "gk" 'evil-previous-line)
+  (evil-global-set-key 'motion "g0" 'evil-beginning-of-line)
+  (evil-global-set-key 'motion "g$" 'evil-end-of-line)
+
+  ;; use C-z (evil-emacs-state) to toggle emacs and evil mode
+  ;; https://evil.readthedocs.io/en/latest/settings.html#the-initial-state
+  ;; config initial-state
+  ;;  - 'normal
+  ;;  - 'insert
+  ;;  - 'emacs
+  (evil-set-initial-state 'messages-buffer-mode 'normal)
+  (evil-set-initial-state 'dashboard-mode 'normal)
+  ;; don't use evil in term-mode
+  ;; (evil-set-initial-state 'term-mode 'emacs)
+
+  ;; custom text object
+  (define-and-bind-text-object "=" "=" "=")
+  )
+
+;; evil-collection
+;; https://github.com/emacs-evil/evil-collection
+
+(use-package evil-collection
+  :after evil
+  :config
+  (evil-collection-init)
+  ;; (setq evil-collection-term-sync-state-and-mode-p nil)
+  )
+
+;; window navigation
+;; Jump between windows from any evil state (=C-w h/j/k/l= only works in normal state).
+
+(my/set-key-bindings
+ 'global-set-key
+ '(
+   ("C-M-h" evil-window-left)
+   ("C-M-j" evil-window-down)
+   ("C-M-k" evil-window-up)
+   ("C-M-l" evil-window-right)
+   ))
+
+;; which-key
+;; https://github.com/justbur/emacs-which-key
+
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 0.6))
+
+;; general leader
+
+(use-package general
+  :after evil which-key
+  :config
+  (general-create-definer my/leader-keys
+    :keymaps '(normal insert visual emacs)
+    :prefix "SPC"
+    :global-prefix "C-M-SPC")
+  )
+
+;; my/leader-keys
+
+(my/leader-keys
+  ;; x
+  "x" '(:ignore t :which-key "x")
+  "xf" 'find-file
+  "x/" 'find-file-other-window
+  ;;"xb" 'switch-to-buffer
+  ;; consult-buffer shortcut
+  ;;   b<spc> Buffers
+  ;;   <spc> Hidden buffers
+  ;;   *<spc> Modified buffers
+  ;;   f<spc> files
+  ;;   r<spc> file registers
+  ;;   m<spc> bootmarks
+  ;;   p<spc> project
+  "xb" 'consult-buffer
+  "xp" 'consult-projectile
+  "xk" 'kill-buffer
+  "xs" 'save-buffer
+  "xc" 'save-buffers-kill-terminal
+  "xg" 'save-buffers-kill-terminal
+
+  ;; x5
+  "x5" '(:ignore t :which-key "x5")
+  "x52" 'make-frame-command
+
+  ;; h
+  "h" '(:ignore t :which-key "help")
+  "hk" 'describe-key
+  "hf" 'describe-function
+  "hv" 'describe-variable
+  "hm" 'describe-mode
+  "hb" 'describe-bindings
+  )
+(my/leader-keys
+  "p" '(:ignore t :which-key "projectile")
+  "pp" 'consult-projectile
+  )
+(my/leader-keys
+  "v" '(:ignore t :which-key "vertico")
+  "vl" 'consult-line
+  "vg" 'consult-grep
+  "vG" 'consult-git-grep
+  "vr" 'consult-ripgrep
+  "vy" 'consult-yank-pop
+  "vm" 'consult-mark
+  )
+(my/leader-keys
+  "o" '(:ignore t :which-key "org")
+
+  "oh" 'consult-org-heading
+
+  "oi" 'org-insert-structure-template
+  "os" 'org-edit-special
+  "oe" 'org-edit-src-exit
+
+  "ob" 'org-backward-heading-same-level
+  "of" 'org-forward-heading-same-level
+  "on" 'outline-next-visible-heading
+  "op" 'outline-previous-visible-heading
+  "ou" 'outline-up-heading
+  )
+
+(my/leader-keys
+  "." 'embark-act
+  ";" 'embark-dwim)
+
+;; jump (avy)
+
+(use-package avy
+  :after general
+  :config
+  (my/leader-keys
+    ;; avy jump
+    "j"  '(:ignore t :which-key "jump")
+    "jj"  'avy-goto-word-1
+    "jk"  'avy-goto-word-0
+    "jf"  'avy-goto-char-2
+    "jg"  'avy-goto-char
+    "jl"  'avy-goto-line)
+  )
+
+;; info
+
+;; unset space to enable my/leader-keys
+(general-define-key
+ :keymaps 'Info-mode-map
+ :states 'normal
+ "SPC" nil)
+
+;; auto reload
+
+(global-auto-revert-mode t)
+
+;; uniquify buffer name
+
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+
+;; default major mode
+
+(setq default-major-mode 'text-mode)
+
+;; electric pair
+
+(electric-pair-mode 1)
+(defun my/inhibit-electric-pair (char)
+  (minibufferp))
+(setq electric-pair-inhibit-predicate #'my/inhibit-electric-pair)
+
+;; daemon server
+
+;; open file with emacs and wait
+;; alias ec='emacsclient -s emacs-server'
+;; no wait
+;; alias ecn='emacsclient -s emacs-server -n'
+;; open on the current terminal
+;; alias ecnw='emacsclient -s emacs-server -nw'
+(setq server-name "emacs-server")
+(server-start)
+
+;; narrow
+
+;; Enable narrow-to-region
+(put 'narrow-to-region 'disabled nil)
+
+;; save place
+;; When you visit a file, point goes to the last place where it was when you previously visited the same file.
+
+(setq save-place-file (concat user-emacs-directory "places"))
+(save-place-mode 1)
+
+;; speed bar
+
+(add-hook
+ 'speedbar-load-hook
+ '(lambda ()
+    (add-to-list 'speedbar-frame-parameters '(width . 35))
+    (setq speedbar-show-unknown-files t)
+    (display-line-numbers-mode 0)))
+
+;; diff
+
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+(setq diff-switches "-u")
+
+;; doom-modeline
+;; https://github.com/seagle0128/doom-modeline
+
+;; Install icons for doom
+;; Run M-x nerd-icons-install-fonts to install
+
+(use-package doom-modeline
+  :init (doom-modeline-mode 1)
+  :custom
+  ((doom-modeline-height 15)
+   ))
+
+;; doom-theme
+
+(use-package doom-themes
+  :config
+  ;; run M-x load-theme to test different themes
+  ;; (load-theme 'doom-vibrate t)
+  (load-theme 'doom-ayu-mirage t)
+
+  ;; doom-ayu-mirage sets hl-line to bg-alt (#171b24), which is *darker* than
+  ;; the background (#1f2430) -- so the current line reads as a shadow rather
+  ;; than a highlight.  Override it here, after load-theme, or the theme wins.
+  ;; The region/selection face is blue (#2f3b54), so these tints avoid blue to
+  ;; stay distinguishable from it.  To switch: comment the active :background
+  ;; line and uncomment one of the others.
+  (set-face-attribute 'hl-line nil
+                      :background "#3d3830"   ; warm amber (ayu accent   #ffcc66)
+                      ;; :background "#3a3450" ; violet     (ayu constant #d4bfff)
+                      ;; :background "#26383d" ; teal       (ayu regexp   #95e6cb)
+                      :extend t)
+
+  ;; Comments default to base5 (#484f5b), only 1.88:1 against the background
+  ;; -- effectively invisible.  Lift them to ~4:1: legible, but still clearly
+  ;; secondary to code (which sits at 9.6:1).  To switch: comment the active
+  ;; line and uncomment the other.  (The theme also has a built-in knob,
+  ;; doom-ayu-mirage-brighter-comments, but it picks a vivid blue that
+  ;; competes with code, and must be set before load-theme.)
+  (let ((comment-fg "#7a8494")      ; slate            4.1:1
+        ;; (comment-fg "#8a94a6")   ; brighter slate   5.1:1
+        )
+    (set-face-attribute 'font-lock-comment-face nil :foreground comment-fg)
+    (set-face-attribute 'font-lock-doc-face nil
+                        :foreground (doom-lighten comment-fg 0.15)))
+  )
+
+;; line number
+
+(global-display-line-numbers-mode)
+;; (setq display-line-numbers-type 'visual)
+(setq display-line-numbers-type t)
+(dolist (mode '(org-mode-hook
+                shell-mode-hook
+                term-mode-hook
+                vterm-mode-hook
+                eshell-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+;; parenthesis
+
+(show-paren-mode)
+(setq show-paren-style 'mixed)
+
+;; rainbow-delimiters
+;; https://github.com/Fanael/rainbow-delimiters
+
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+;; defaults
+;; https://zzamboni.org/post/beautifying-org-mode-in-emacs/
+
+(defvar my/default-font-size 128)
+(defvar my/default-variable-font-size 135)
+
+(set-face-attribute 'default
+                    nil
+                    :height my/default-font-size)
+
+;; Set the fixed pitch face
+;; On Mac, find "family" in the "Font Book" application.
+(set-face-attribute 'fixed-pitch
+                    nil
+                    :family (face-attribute 'default :family)
+                    ;; :font "Fira Code Retina"
+                    :height my/default-font-size)
+
+;; Set the variable pitch face
+(set-face-attribute 'variable-pitch
+                    nil
+                    :family "Helvetica"
+                    :height my/default-variable-font-size
+                    :weight 'regular)
+
+;; recent files
+
+(use-package recentf
+  :init (recentf-mode)
+  :config
+  (setq recentf-max-saved-items 200
+        recentf-max-menu-items 15)
+  )
+
+;; auto save
+;; - refs
+;;   - https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-utils.el
+;;   - https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-misc.el
+;;   - https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-autoload.el
+
+(defvar my/disable-idle-timer nil
+  "Function passed to `my/run-with-idle-timer' is run immediately.")
+
+(defun my/run-with-idle-timer (seconds func)
+  "After SECONDS, run function FUNC once."
+  (cond
+   (my/disable-idle-timer
+    (funcall func))
+   (t
+    (run-with-idle-timer seconds nil func))))
+
+(defun setup-auto-save ()
+  (autoload 'auto-save-enable "auto-save" "" t)
+  (with-eval-after-load 'auto-save
+    ;; (push 'my-file-too-big-p auto-save-exclude)
+    ;; (push 'my-check-major-mode-for-auto-save auto-save-exclude)
+    (setq auto-save-idle 1)
+    (setq auto-save-slient t))
+  (my/run-with-idle-timer 1 #'auto-save-enable))
+(setup-auto-save)
+
+;; find map of key binding
+;; Find a key binding is in which map. From [[http://stackoverflow.com/questions/18801018/how-to-find-in-which-map-a-key-binding-is-from-programatically-in-emacs][stackoverflow]]
+
+(defun my/overlay-key-binding (key)
+  "Keymaps can also be attached to overlays, like yasnippet.
+   From: http://stackoverflow.com/questions/18801018/how-to-find-in-which-map-a-key-binding-is-from-programatically-in-emacs"
+  (mapcar (lambda (keymap) (lookup-key keymap key))
+          (cl-remove-if-not
+           #'keymapp
+           (mapcar (lambda (overlay)
+                     (overlay-get overlay 'keymap))
+                   (overlays-at (point))))))
+
+(defun my/find-kbd (key)
+  "From: http://stackoverflow.com/questions/18801018/how-to-find-in-which-map-a-key-binding-is-from-programatically-in-emacs"
+  (interactive "kInput key: ")
+  (message "%s"
+   (list
+    (my/overlay-key-binding key)
+    (minor-mode-key-binding key)
+    (local-key-binding key)
+    (global-key-binding key))))
+
+;; dos to unix
+;; From [[http://www.emacswiki.org/emacs/DosToUnix][emacswiki]].
+
+(defun my/dos2unix ()
+  "From: http://www.emacswiki.org/emacs/DosToUnix
+Not exactly but it's easier to remember"
+  (interactive)
+  (set-buffer-file-coding-system 'unix 't))
+
+;; path related
+
+(defun my/get-path ()
+  ""
+  (interactive)
+  (let ((path
+         (or buffer-file-name default-directory)))
+    (message path)
+    path))
+
+(defun my/copy-path ()
+  ""
+  (interactive)
+  (let ((path (my/get-path)))
+    (if path
+        (kill-new path))))
+
+;; eval and replace
+;; From: http://emacsredux.com/blog/2013/06/21/eval-and-replace/
+
+(defun my/eval-and-replace ()
+  "Replace the preceding sexp with its value."
+  (interactive)
+  (backward-kill-sexp)
+  (condition-case nil
+      (prin1 (eval (read (current-kill 0)))
+             (current-buffer))
+    (error (message "Invalid expression")
+           (insert (current-kill 0)))))
+
+;; revert all buffers
+;; From: http://blog.plover.com/prog/revert-all.html
+
+(defun my/revert-all-buffers ()
+  "Refreshes all open buffers from their respective files"
+  (interactive)
+  (let* ((list (buffer-list))
+         (buffer (car list)))
+    (while buffer
+      (when (and (buffer-file-name buffer)
+                 (not (buffer-modified-p buffer)))
+        (set-buffer buffer)
+        (revert-buffer t t t))
+      (setq list (cdr list))
+      (setq buffer (car list))))
+  (message "Refreshed open files"))
+
+;; vertico
+;; - https://github.com/minad/vertico
+;; - https://systemcrafters.cc/emacs-tips/streamline-completions-with-vertico/
+
+(use-package vertico
+  :bind (:map vertico-map
+              ("C-n" . vertico-next)
+              ("C-p" . vertico-previous))
+  :init
+  (vertico-mode)
+  :custom
+  ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
+  (setq vertico-cycle t)
+  )
+
+(use-package savehist
+  :init
+  (savehist-mode))
+
+;; marginalia
+;; - https://github.com/minad/marginalia
+
+(use-package marginalia
+  :after vertico
+  :custom
+  (marginalia-annotators
+   '(marginalia-annotators-heavy marginalia-annotators-light nil))
+  :init
+  (marginalia-mode))
+
+;; orderless
+;; - https://github.com/oantolin/orderless
+
+(use-package orderless
+  :init
+  ;; Configure a custom style dispatcher (see the Consult wiki)
+  ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
+  ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+  (setq completion-styles '(orderless basic)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion)))))
+
+;; embark
+;; https://github.com/oantolin/embark
+
+(use-package embark
+  :quelpa (embark :fetcher github :repo "oantolin/embark")
+  :bind
+  (("C-." . embark-act)         ;; pick some comfortable binding
+   ;; executes the default action at point, good alternative: M-.
+   ("C-;" . embark-dwim)
+   ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+
+  :init
+
+  ;; Optionally replace the key help with a completing-read interface
+  (setq prefix-help-command #'embark-prefix-help-command)
+  ;;(setq embark-prompter 'embark-completing-read-prompter)
+  (setq embark-prompter 'embark-keymap-prompter)
+
+  ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
+  ;; strategy, if you want to see the documentation from multiple providers.
+  ;; (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+  ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+
+  :config
+
+  ;; Hide the mode line of the Embark live/completions buffers
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
+
+;; Consult users will also want the embark-consult package.
+(use-package embark-consult
+  :after embark consult
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode)
+  )
+
+;; config
+
+(use-package consult
+  :quelpa (consult :fetcher github :repo "minad/consult")
+  :bind (
+         :map minibuffer-local-map
+              ("M-s" . consult-history)
+              ("C-r" . consult-history)
+         )
+  ;; Enable automatic preview at point in the *Completions* buffer. This is
+  ;; relevant when you use the default completion UI.
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+
+    ;; The :init configuration is always executed (Not lazy)
+  :init
+
+  ;; Optionally configure the register formatting. This improves the register
+  ;; preview for `consult-register', `consult-register-load',
+  ;; `consult-register-store' and the Emacs built-ins.
+  (setq register-preview-delay 0.5
+        register-preview-function #'consult-register-format)
+
+  ;; Optionally tweak the register preview window.
+  ;; This adds thin lines, sorting and hides the mode line of the window.
+  (advice-add #'register-preview :override #'consult-register-window)
+
+  ;; Use Consult to select xref locations with preview
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
+
+  ;; Configure other variables and modes in the :config section,
+  ;; after lazily loading the package.
+  :config
+
+  ;; Optionally configure preview. The default value
+  ;; is 'any, such that any key triggers the preview.
+  ;; (setq consult-preview-key 'any)
+  (setq consult-preview-key "C-l")
+  ;; (setq consult-preview-key '("S-<down>" "S-<up>"))
+  ;; For some commands and buffer sources it is useful to configure the
+  ;; :preview-key on a per-command basis using the `consult-customize' macro.
+  (consult-customize
+   consult-theme
+   :preview-key '(:debounce 0.2 any)
+
+   consult-ripgrep
+   consult-git-grep
+   consult-grep
+   consult-line
+   consult-xref
+   :preview-key '(:debounce 0.4 any)
+
+   ;; ; use C-l to preview
+   ;; consult-bookmark
+   ;; consult-recent-file
+   ;; consult--source-bookmark
+   ;; consult--source-file-register
+   ;; consult--source-recent-file
+   ;; consult--source-project-recent-file
+   ;; :preview-key "C-l"
+   )
+  (defalias 'consult-line-thing-at-point 'consult-line)
+  (consult-customize
+   consult-line
+   :initial
+   ;; use region text if selected
+   (if (use-region-p)
+       (let ((s (buffer-substring-no-properties (mark) (point))))
+         (deactivate-mark)
+         s))
+   consult-line-thing-at-point
+   :initial (thing-at-point 'symbol))
+
+  ;; Optionally configure the narrowing key.
+  (setq consult-narrow-key "<") ;; "C-+" also works
+
+  ;; Optionally make narrowing help available in the minibuffer.
+  ;; You may want to use `embark-prefix-help-command' or which-key instead.
+  ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
+
+  ;; By default `consult-project-function' uses `project-root' from project.el.
+  ;; Optionally configure a different project root function.
+  ;;;; 1. project.el (the default)
+  ;; (setq consult-project-function #'consult--default-project--function)
+  ;;;; 2. vc.el (vc-root-dir)
+  ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
+  ;;;; 3. locate-dominating-file
+  ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
+  ;; 4. projectile.el (projectile-project-root)
+  (autoload 'projectile-project-root "projectile")
+  (setq consult-project-function (lambda (_) (projectile-project-root)))
+  ;;;; 5. No project support
+  ;; (setq consult-project-function nil)
+
+  ;; Override existing function.
+  ;; Do not put visible buffers in other windows to the bottom
+  (defun consult--buffer-sort-visibility (buffers)
+    (let ((current (current-buffer)))
+      (consult--keep! buffers (unless (eq it current) it))
+      (nconc buffers (list current))))
+  )
+
+;; consult-projectile
+;; - https://gitlab.com/OlMon/consult-projectile
+
+(use-package consult-projectile
+  :quelpa
+  (consult-projectile :fetcher gitlab :repo "OlMon/consult-projectile"))
+
+;; projectile
+
+(use-package projectile
+  :diminish projectile-mode
+  :custom (;;(projectile-completion-system 'ivy) switch to vertico
+           )
+  :bind-keymap ("C-x p" . projectile-command-map)
+  :init
+  ;; NOTE: Set this to the folder where you keep your Git repos!
+  (when (file-directory-p "~/dev")
+    (setq projectile-project-search-path '("~/dev")))
+  ;; (setq projectile-switch-project-action #'projectile-dired)
+  :config
+  (projectile-mode)
+  )
+
+;; config
+
+(use-package company
+  ;; :after lsp-mode
+  ;; :hook (lsp-mode . company-mode)
+  :bind (:map evil-insert-state-map
+         ("C-n" . company-complete)
+         :map company-active-map
+         ("C-n" . company-select-next)
+         ("C-p" . company-select-previous)
+         :map company-active-map
+         ("C-n" . company-select-next)
+         ("C-p" . company-select-previous))
+  :custom
+  (company-minimum-prefix-length 3)
+  (company-idle-delay 0.0)
+  (company-show-numbers t)
+  (company-tootip-align-annotations t)
+  (campany-dabbrev-downcase nil)
+  :config
+  (global-company-mode 1))
+
+;; init
+
+(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(use-package org
+  :init
+  ;; fold everything at the beginning
+  (setq org-startup-folded t)
+  ;; hide = and *
+  (setq org-hide-emphasis-markers t)
+  )
+
+;; keys
+
+(defun my/org-mode-keys ()
+  (local-unset-key (kbd "M-j"))
+  (local-unset-key (kbd "M-k"))
+  (evil-define-key '(normal visual)
+    org-mode-map (kbd "M-j") 'org-next-visible-heading)
+  (evil-define-key '(normal visual)
+    org-mode-map (kbd "M-k") 'org-previous-visible-heading)
+
+  ;; up level
+  (evil-define-key '(normal visual)
+    org-mode-map (kbd "M-u") 'outline-up-heading)
+  ;; previous same level
+  (evil-define-key '(normal visual)
+    org-mode-map (kbd "M-h") 'org-backward-heading-same-level)
+  ;; next same level
+  (evil-define-key '(normal visual)
+    org-mode-map (kbd "M-l") 'org-forward-heading-same-level)
+  )
+(add-hook 'org-mode-hook 'my/org-mode-keys)
+
+;; Set up category table. Use =M-x describe-categories= to view existing categories.
+
+(defun my/setup-org-category-table ()
+  "enable word wrap at - and /"
+  ;; https://emacs.stackexchange.com/questions/19027/how-to-wrap-line-at-some-characters-other-than-space
+  (setq my/org-category-table (copy-category-table))
+  (modify-category-entry ?- ?| my/org-category-table)
+  (modify-category-entry ?/ ?| my/org-category-table)
+  (modify-category-entry ?& ?| my/org-category-table)
+  (modify-category-entry ?? ?| my/org-category-table)
+  (modify-category-entry ?# ?| my/org-category-table)
+  )
+(my/setup-org-category-table)
+
+;; Set up appearance.
+
+(defun my/org-appearance-setup ()
+  ;; set for variable pitch
+  (variable-pitch-mode 1)
+
+  ;; visual-line-mode
+  (set-category-table my/org-category-table)
+  (setq-local word-wrap-by-category t)
+  (auto-fill-mode 0)
+  (visual-line-mode 1)
+
+  (dolist (face '((org-level-1 . 1.2)
+                  (org-level-2 . 1.1)
+                  (org-level-3 . 1.05)
+                  (org-level-4 . 1.05)
+                  (org-level-5 . 1.05)
+                  (org-level-6 . 1.05)
+                  (org-level-7 . 1.05)
+                  (org-level-8 . 1.05)))
+    (set-face-attribute (car face)
+                        nil
+                        ;; :font "Iosevka Aile"
+                        :weight 'bold
+                        :height (cdr face)))
+
+  (font-lock-add-keywords
+   'org-mode
+   '(("^ *\\([-]\\) "
+      (0 (prog1 ()
+           (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+  ;; (setq org-src-fontify-natively t)
+  ;; (setq org-src-tab-acts-natively t)
+
+  ;; Ensure that anything that should be fixed-pitch in Org files
+  ;; appears that way
+  ;;
+  ;; To find the face at the point, use `describe-char` function
+  (set-face-attribute 'org-block
+                      nil :inherit 'fixed-pitch)
+  ;; (set-face-attribute 'org-block
+  ;;                     nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-checkbox
+                      nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-checkbox-statistics-todo
+                      nil  :inherit '(fixed-pitch org-todo))
+  (set-face-attribute 'org-checkbox-statistics-done
+                      nil  :inherit '(fixed-pitch org-done))
+  (set-face-attribute 'org-code
+                      nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-date
+                      nil  :inherit 'fixed-pitch)
+  (set-face-attribute 'org-document-info
+                      nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-meta-line
+                      nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-special-keyword
+                      nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-table
+                      nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-formula
+                      nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-verbatim
+                      nil :inherit '(shadow fixed-pitch))
+
+  ;; fix indent faces
+  ;; https://emacs.stackexchange.com/a/76133
+  (org-indent-mode t)
+  (set-face-attribute 'org-indent
+                    nil :inherit '(org-hide fixed-pitch))
+  (set-face-attribute 'org-hide
+                    nil :inherit 'fixed-pitch)
+
+  ;; (set-face-attribute 'org-formula
+  ;;                     nil :inherit 'fixed-pitch)
+  ;; (set-face-attribute 'line-number
+  ;;                     nil :inherit 'fixed-pitch)
+  ;; (set-face-attribute 'line-number-current-line
+  ;;                     nil :inherit 'fixed-pitch)
+  )
+(add-hook 'org-mode-hook 'my/org-appearance-setup)
+
+;; org-appear
+;; When =org-hide-emphasis-markers= is turned on. It temporarily shows the
+;; emphasis markers around certain markup elements when you place your
+;; cursor inside of them.
+
+;; function to show in evil insert mode
+(defun my/org-setup-appear ()
+  (org-appear-mode)
+  (add-hook 'evil-insert-state-entry-hook
+            #'org-appear-manual-start
+            nil
+            t)
+  (add-hook 'evil-insert-state-exit-hook
+            #'org-appear-manual-stop
+            nil
+            t)
+  )
+(use-package org-appear
+  :after org
+  ;; :init
+  ;; (setq org-appear-trigger 'manual)
+  ;; (setq org-appear-autolinks t)
+  :hook
+  ;; (org-mode . my/org-setup-appear)
+  (org-mode . org-appear-mode)
+  )
+
+;; structure templates
+
+(with-eval-after-load 'org
+  ;; This is needed as of Org 9.2
+  (require 'org-tempo)
+  ;; common structure template:
+  ;; C: comment
+  ;; e: example
+  ;; q: quote
+  ;; s: src
+  ;; v: verse
+  ;; For full list, checkout 'org-structure-template-alist
+  (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist '("ru" . "src rust"))
+  )
+;; ref: https://stackoverflow.com/a/69765466/3078372
+(defun my/org-structure-templates-setup ()
+  (setq-local electric-pair-inhibit-predicate
+              `(lambda (c)
+                 (if (char-equal c ?<)
+                     t
+                   (,electric-pair-inhibit-predicate c))))
+  )
+(add-hook 'org-mode-hook 'my/org-structure-templates-setup)
+
+;; toc-org
+;; Automatically generate a table of contents for org files.
+;; Use =org-set-tags-command= (C-c C-q) to add a TOC tag.
+;; Use TOC_2 tag to sets the max depth to 2.
+
+(use-package toc-org
+  :init
+  (add-hook 'org-mode-hook #'toc-org-enable))
+
+;; agenda-hook
+
+(defun my/org-agenda-mode-hook-func ()
+  (my/set-key-bindings
+   'define-key
+   '(
+     ("j" org-agenda-next-line)
+     ("k" org-agenda-previous-line)
+     ("J" org-agenda-next-item)
+     ("K" org-agenda-previous-item)
+     ("g" org-agenda-goto-date)
+     ("G" org-agenda-clock-goto)
+     )
+   org-agenda-mode-map))
+(add-hook 'org-agenda-mode-hook 'my/org-agenda-mode-hook-func)
+
+;; custom agenda commands
+
+(setq org-agenda-custom-commands
+      '(("d" "Daily Agenda and All TODOs"
+         ((agenda "" ((org-agenda-ndays 1)))
+          (alltodo ""
+                   ((org-agenda-skip-function
+                     '(org-agenda-skip-entry-if
+                       'todo '("TODO" "HOLD" "MISS")))
+                    (org-agenda-overriding-header "In Progress Tasks:")))
+          (alltodo ""
+                   ((org-agenda-skip-function
+                     '(or (org-agenda-skip-entry-if 'scheduled 'deadline)
+                          (org-agenda-skip-entry-if 'todo '("HOLD"))))
+                    (org-agenda-overriding-header "Todo Tasks without time:"))))
+         ;; ((org-agenda-compact-blocks t))
+         )
+        ("h" "All Holds"
+         ((alltodo ""
+                   ((org-agenda-skip-function
+                     '(org-agenda-skip-entry-if
+                       'todo '("TODO" "PROG" "MISS")))
+                    (org-agenda-overriding-header "In Progress Tasks:")))))
+        ))
+
+;; todo keyword faces
+
+(setq org-todo-keyword-faces
+      '(("TODO" . org-warning)
+        ("IN-PROGRESS" . "yellow")
+        ("PROG" . "yellow")
+        ("PROGRESS" . "yellow")
+        ("DONE" . "green")
+        ("HOLD" . "red")
+        ("CANCELLED" . "purple1")))
+
+;; deadline warning days
+
+(setq org-deadline-warning-days 10)
+
+;; ediff
+
+(setq ediff-split-window-function 'split-window-horizontally)
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
+;; edebug
+
+(setq edebug-print-length 500)
+
+;; config
+
+(use-package term
+  :config
+  (setq explicit-shell-file-name "bash")
+
+  ;; make sure C-c C-p / C-c C-n jump to the right place
+  (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
+  (setq scroll-margin 0)
+  :bind (:map term-raw-map
+         ("H-v" . term-paste)
+         ;; ("C-x C-b" . consult-buffer)
+         ;; doesn't work with C-w
+         ;; use "C-x o" to jump to the next window
+         ;; ("C-w" . nil)
+         ;; ("C-w C-w" . evil-window-next)
+         ("C-M-h" . evil-window-left)
+         ("C-M-j" . evil-window-down)
+         ("C-M-k" . evil-window-up)
+         ("C-M-l" . evil-window-right)
+         )
+  ;; :bind (:map term-raw-map
+  ;;        ("C-b" . scroll-up-command)
+  ;;        :map company-active-map
+  ;;        ("C-n" . company-select-next)
+  ;;        ("C-p" . company-select-previous)
+  ;;        :map company-active-map
+  ;;        ("C-n" . company-select-next)
+  ;;        ("C-p" . company-select-previous))
+  ;;  '(("C-b" scroll-up-command)
+  ;;    ("C-f" scroll-down)
+  ;;    ("C-y" term-paste)
+  ;;    ("s-v" term-paste)
+  ;;    ("M-x" nil)
+  ;;    ("C-u" universal-argument)
+  ;;    ("C-c C-y" term-interrupt-subjob)
+  ;;    )
+  )
+
+;; package
+
+(use-package vterm
+  :commands vterm
+  :config
+  (setq vterm-max-scrollback 10000)
+  ;; use shell-side configuration for better prompt detection:
+  ;; https://github.com/akermu/emacs-libvterm#shell-side-configuration
+
+  ;; let C-q pass through to terminal
+  (define-key vterm-mode-map (kbd "C-q") 'vterm-send-next-key)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-q") #'vterm-send-next-key)
+
+  ;; let C-w act as evil window prefix
+  (define-key vterm-mode-map (kbd "C-w") evil-window-map)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-w") #'evil-window-map)
+
+  ;; let C-M-hjkl jump between windows instead of being sent to the terminal
+  (define-key vterm-mode-map (kbd "C-M-h") 'evil-window-left)
+  (define-key vterm-mode-map (kbd "C-M-j") 'evil-window-down)
+  (define-key vterm-mode-map (kbd "C-M-k") 'evil-window-up)
+  (define-key vterm-mode-map (kbd "C-M-l") 'evil-window-right)
+  )
+
+(my/leader-keys
+  "tt" 'vterm)
+
+(defun vt ()
+  "start vterm with a given name"
+  (interactive)
+  (let ((bf-name (read-from-minibuffer "Buffer (*vterm*): " nil)))
+    (if (or (not bf-name) (= (length bf-name) 0))
+        (vterm)
+      (vterm (generate-new-buffer-name bf-name)))))
+
+;; tm function
+
+(defun tm ()
+  "start bash ansi-term with a different name"
+  (interactive)
+  (let ((sh-name "bash")
+        (bf-name "tm")
+        )
+    (if t ;;current-prefix-arg
+        (setq bf-name
+              (read-from-minibuffer "name (tm): " bf-name)))
+    (if (or (not bf-name)
+            (= (length bf-name) 0))
+        (setq bf-name "*tm*"))
+    (setq bf-name (generate-new-buffer-name bf-name))
+
+    ;; term-mode
+    ;; (set-buffer (make-term bf-name sh-name))
+    ;; (term-mode)
+    ;; (term-char-mode)
+    ;; (switch-to-buffer (concat "*" bf-name "*"))
+
+    ;; ansi-term
+    (ansi-term sh-name)
+    (rename-buffer bf-name)
+    ))
+
+;; sh mode
+
+(add-to-list 'auto-mode-alist '("/\\.bash_[^/]*\\'" . sh-mode))
+
+;; org-babel
+
+(org-babel-do-load-languages
+  'org-babel-load-languages
+  '((shell . t)))
+
+;; TODO shell mode
+
+(defun my/shell-mode-hook-func ()
+  (my/set-key-bindings
+   'local-set-key
+   '(
+     ;; ("C-d" my/shell-kill)
+     ;;("C-c h" comint-history-isearch-backward)
+     ;;("M-s" comint-history-isearch-search)
+     ("C-c h" comint-history-isearch-backward-regexp)
+
+     ;;("C-n" comint-next-input)
+     ;;("C-p" comint-previous-input)
+     ("C-M-n" comint-next-matching-input-from-input)
+     ("C-M-p" comint-previous-matching-input-from-input)
+
+     ("C-c C-b" shell-backward-command)
+     ("C-c C-f" shell-forward-command)
+     ("C-c C-n" comint-next-prompt)
+     ("C-c C-p" comint-previous-prompt)
+
+     )
+   ;;shell-mode-map
+   )
+  (evil-define-key
+    'insert shell-mode-map (kbd "C-n") 'comint-next-input)
+  (evil-define-key
+    'insert shell-mode-map (kbd "C-p") 'comint-previous-input)
+  )
+(add-hook 'shell-mode-hook 'my/shell-mode-hook-func)
+
+;; TODO sh function
+
+(defun sh ()
+  "start-shell"
+  (interactive)
+  (let (bf-name)
+    (setq bf-name
+          (read-from-minibuffer "Buffer (*shell*): " bf-name))
+    (if (or (not bf-name)
+            (= (length bf-name) 0))
+        (shell)
+      (shell bf-name))))
+
+;; auto fill
+
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+
+;; json-mode
+
+(use-package json-mode)
+
+;; c++
+
+(defun my/setup-c++ ()
+  ;; enable org-babel for c++
+  ;; https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-C.html
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((C . t)))
+  ;; allow lowercase #+begin_src c to work like #+begin_src C
+  (defalias 'org-babel-execute:c 'org-babel-execute:C)
+  (defalias 'org-babel-expand-body:c 'org-babel-expand-body:C))
+(my/setup-c++)
+
+;; code
+
+(require 'cl-lib)
+(require 'ob-shell) ; for org-babel-sh-var-to-string
+
+(defun my/org-babel-C-stdin-input (params)
+  "Resolve the :stdin header arg in PARAMS to a string, or nil.
+The value may be a literal string or a reference to a named
+block/table (resolved the same way `ob-shell' resolves :stdin)."
+  (let ((stdin (cdr (assq :stdin params))))
+    (when (stringp stdin)
+      (org-babel-sh-var-to-string
+       (or (condition-case nil
+               (org-babel-ref-resolve stdin)
+             (error stdin))
+           "")))))
+
+(defun my/org-babel-C-execute-with-stdin (orig-fun body params)
+  "Advice around `org-babel-C-execute' adding :stdin support.
+Feeds the :stdin value to the compiled binary's stdin. Covers C,
+c and C++ blocks since they all go through `org-babel-C-execute'."
+  (let ((input (my/org-babel-C-stdin-input params)))
+    (if (not input)
+        (funcall orig-fun body params)
+      (let ((orig-eval (symbol-function 'org-babel-eval)))
+        (cl-letf (((symbol-function 'org-babel-eval)
+                   (lambda (cmd query)
+                     ;; ob-C passes "" as stdin for both the compile
+                     ;; and the run step; gcc ignores piped stdin when
+                     ;; compiling from files, so feeding input to both
+                     ;; is harmless.
+                     (funcall orig-eval cmd
+                              (if (and (stringp query) (string= query ""))
+                                  input
+                                query)))))
+          (funcall orig-fun body params))))))
+
+(advice-add 'org-babel-C-execute :around #'my/org-babel-C-execute-with-stdin)
+
+;; =my/org-babel-execute:C++=
+
+(defun my/org-babel-execute:C++ (body params)
+  (let* ((image "chunfengd/cppdev")
+         (host-dirname "orgtmp")
+         (docker-dirname "playground")
+         (include-dirname "include")
+         (src-filename "main.cpp")
+         (bin-filename "main")
+         (home "~")
+         (host-dir-path (format "%s/%s" home host-dirname))
+         (host-include-path "$PWD")
+         (host-src-file-path (format "%s/%s/%s"
+                                     home host-dirname src-filename))
+         (host-bin-file-path (format "%s/%s/%s"
+                                     home host-dirname bin-filename))
+         (docker-dir-path (format "/%s" docker-dirname))
+         (docker-include-path (format "/%s" include-dirname))
+         (docker-src-file-path (format "/%s/%s"
+                                       docker-dirname src-filename))
+         (docker-bin-file-path (format "/%s/%s"
+                                       docker-dirname bin-filename))
+         (cmdline (cdr (assq :cmdline params)))
+         (cmdline (if cmdline (concat " " cmdline) ""))
+         (flags (cdr (assq :flags params)))
+         (flags (mapconcat 'identity
+                           (if (listp flags) flags (list flags)) " "))
+         (libs (org-babel-read
+                (or (cdr (assq :libs params))
+                    (org-entry-get nil "libs" t))
+                nil))
+         (libs (mapconcat #'identity
+                          (if (listp libs) libs (list libs))
+                          " "))
+         (full-body (org-babel-C-expand-C++ body params))
+         (cmd (format "docker run %s %s %s --rm %s /bin/sh -c \"%s && %s\""
+                      ;; mount
+                      (format "-v %s:%s" host-dir-path docker-dir-path)
+                      (format "-v %s:%s:ro"
+                              host-include-path docker-include-path)
+                      (format "--platform %s" "linux/x86_64")
+                      image
+                      ;; compile
+                      (format "g++ -o %s %s %s %s %s"
+                              docker-bin-file-path
+                              flags
+                              (format "-I %s" docker-include-path)
+                              docker-src-file-path
+                              libs)
+                      ;; execute
+                      (format "%s %s"
+                              docker-bin-file-path cmdline))))
+    (message "running cpp in docker")
+    (make-directory host-dir-path t)
+    (with-temp-file host-src-file-path (insert full-body))
+    (message "Running: %s" cmd)
+    (let ((results (org-babel-eval cmd "")))
+      (when results
+        (setq results (org-remove-indentation results))
+        (org-babel-reassemble-table
+         (org-babel-result-cond (cdr (assq :result-params params))
+           results
+           (let ((tmp-file (org-babel-temp-file "c-")))
+             (with-temp-file tmp-file (insert results))
+             (org-babel-import-elisp-from-file tmp-file)))
+         (org-babel-pick-name
+          (cdr (assq :colname-names params)) (cdr (assq :colnames params)))
+         (org-babel-pick-name
+          (cdr (assq :rowname-names params)) (cdr (assq :rownames params))))))))
+
+;; override org-babel-execute:C++
+
+(defvar my/original-org-babel-execute:C++ nil "the real function")
+(defun my/org-babel-execute:C++-wrapper (body params)
+  (let* ((docker (assq :docker params))
+        (docker (and docker (not (string= (cdr docker) "no")))))
+    (if docker
+        (my/org-babel-execute:C++ body params)
+      (my/original-org-babel-execute:C++ body params))))
+(add-hook 'org-mode-hook
+          (lambda ()
+            (unless (fboundp 'my/original-org-babel-execute:C++)
+              (message "rebind org-babel-execute:C++")
+              (fset 'my/original-org-babel-execute:C++
+                    (symbol-function 'org-babel-execute:C++))
+              (fset 'org-babel-execute:C++
+                    'my/org-babel-execute:C++-wrapper))))
+
+;; rust
+
+(use-package rust-mode)
+
+;; org-babel for plantuml
+;; - https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-plantuml.html
+
+(defun my/setup-org-plantuml ()
+  (add-to-list
+   'org-src-lang-modes '("plantuml" . plantuml))
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((plantuml . t)))
+  )
+
+;; setup
+
+;; use M-x plantuml-download-jar<RET> to download jar
+;; use M-x plantuml-preview<RET> to preview
+(use-package plantuml-mode
+  :init
+  (setq plantuml-java-args
+        '("-DPLANTUML_LIMIT_SIZE=8192"
+          "-Djava.awt.headless=true" "-jar" "--illegal-access=deny"))
+  (setq plantuml-jar-path (my/path "lib/plantuml.jar"))
+  (setq org-plantuml-jar-path (my/path "lib/plantuml.jar"))
+  (setq plantuml-default-exec-mode 'jar)
+  (add-to-list
+   'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
+  ;; add to org-mode
+  (add-hook 'org-mode-hook 'my/setup-org-plantuml))
+
+;; setup org babel for gnuplot
+
+(defun my/setup-org-gnuplot ()
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((gnuplot . t))))
+
+;; setup
+
+(use-package gnuplot
+  :init
+  (autoload 'gnuplot-mode "gnuplot" "Gnuplot major mode" t)
+  (autoload 'gnuplot-make-buffer "gnuplot" "open a buffer in gnuplot-mode" t)
+  (setq auto-mode-alist (append '(("\\.gp$" . gnuplot-mode)) auto-mode-alist))
+  ;; add to org-mode
+  (add-hook 'org-mode-hook 'my/setup-org-gnuplot))
+
+;; setup
+
+(setq python-python-command "python3")
+(setq py-default-interpreter "python3")
+
+;; setup
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)))
+(setq org-babel-python-command "python3")
+
+;; eldoc
+
+;; disable eldoc hook
+(setq lsp-eldoc-hook nil)
+
+;; https://emacs.stackexchange.com/a/74876/19031
+;; (setq eldoc-echo-area-use-multiline-p nil)
+;; (setq max-mini-window-height 3)
+
+;; key binding
+
+(defun my/dired-key-binding ()
+  (my/set-key-bindings
+   'define-key
+   '(
+     ("j" dired-next-line)
+     ("k" dired-previous-line)
+     ("r" revert-buffer)
+     ("C-t" set-mark-command))
+   dired-mode-map))
+(add-hook 'dired-mode-hook 'my/dired-key-binding)
+
+;; Listing Parameters
+
+(setq dired-listing-switches "-alnoh")
+(defun my/set-ls (parameter)
+  "Set ls parameter in dired mode"
+  (interactive "s")
+  (setq dired-listing-switches parameter))
+
+;; main code
+
+(setq default-label 'cycle-fold)
+
+(defun goto-list (count depth)
+  (condition-case ex
+      (goto-char (scan-lists (point) count depth))
+    (error
+      (message "Error in goto-list: %s" ex)
+      nil)))
+
+(defun scan-lists-safe (from count depth &optional default)
+  (condition-case ex
+      (scan-lists from count depth)
+    (error
+      (message "Error in scan-lists: %s" ex)
+      default)))
+
+(defun get-bol (pos)
+  (save-excursion (goto-char (or pos (point)))
+                  (beginning-of-line)
+                  (point)))
+
+(defun get-eol (pos)
+  (save-excursion (goto-char (or pos (point)))
+                  (end-of-line)
+                  (point)))
+
+(defun my/filter (condp lst)
+  (delq nil
+        (mapcar (lambda (x) (and (funcall condp x) x)) lst)))
+
+(defun label->tag (label)
+  (intern (concat "tag-" (symbol-name (or label default-label)))))
+
+(defun create-overlay (start end &optional label val)
+  (let ((o (make-overlay start end))
+        (tag (label->tag label)))
+    ;; (message "tag: %s" tag)
+    (if val
+        (overlay-put o tag val)
+      (overlay-put o tag t))
+    (overlay-put o 'evaporate t)
+    (overlay-put o 'invisible t)
+    (overlay-put o 'display `(:string "..."))
+    (overlay-put
+     o 'isearch-open-invisible
+     (lambda (ov)
+       (message "open invisible")
+       (delete-overlay ov)))
+    (overlay-put
+     o 'isearch-open-invisible-temporary
+     (lambda (ov invisible)
+       (overlay-put ov 'invisible invisible)
+       (overlay-put ov 'display (and invisible `(:string "...")))))
+    o))
+
+(defun get-overlays (start end &optional label val)
+  (let ((tag (label->tag label))
+        (os (overlays-in start end)))
+    (if (null tag)
+        os
+      (my/filter (lambda (o)
+                   (if (null val)
+                       (overlay-get o tag)
+                     (equal (overlay-get o tag) val)))
+                 os))))
+
+(defun delete-overlays (start end &optional label val)
+  (dolist (o (get-overlays start end label val))
+    (delete-overlay o)))
+
+(defun cal-fold-region-at (&optional pos)
+  (interactive)
+  (let* ((start (or pos (point)))
+         (eol (get-eol start))
+         (end (scan-lists start 1 0)))
+    (if (> (- end eol) 1)
+        (list (cons :start eol)
+              (cons :end (1- end))))))
+
+(defun cal-fold-region-line (&optional pos)
+  (interactive)
+  (let* ((p (or pos (point)))
+         (bol (get-bol p))
+         (eol (get-eol p))
+         (end (scan-lists-safe bol 1 0 (min (1+ bol) eol))))
+    (while (< end eol)
+      (setq end (scan-lists-safe end 1 0 (min (1+ end) eol))))
+    (if (> end eol)
+        (cal-fold-region-at (scan-lists end -1 0)))))
+
+(defun current-fold-state (&optional pos)
+  (interactive)
+  (let ((range (cal-fold-region-line pos)))
+    (if range
+        (let* ((start (cdr (assoc :start range)))
+               (end (cdr (assoc :end range)))
+               (os (get-overlays start end)))
+          ;; (message "%s %s %s" start end os)
+          (if os
+              (if (and (null (cdr os))
+                       (equal start (overlay-start (car os)))
+                       (equal end (overlay-end (car os))))
+                  :folded
+                :mis-folded)
+            :unfolded))
+      :no-fold)))
+
+(defun fold-at (&optional pos)
+  (interactive)
+  (let ((range (cal-fold-region-at pos)))
+    (if range
+        (create-overlay (cdr (assoc :start range))
+                        (cdr (assoc :end range))))))
+
+(defun fold-line (&optional pos)
+  (interactive)
+  (let ((range (cal-fold-region-line pos)))
+    (if range
+        (create-overlay (cdr (assoc :start range))
+                        (cdr (assoc :end range))))))
+
+(defun fold-at-end (&optional pos)
+  (interactive)
+  (save-excursion
+    (goto-list -1 0)
+    (fold-at (point))))
+
+(defun unfold-line (&optional pos)
+  (interactive)
+  (let ((range (cal-fold-region-line pos)))
+    (if range
+        (delete-overlays (cdr (assoc :start range))
+                         (cdr (assoc :end range))))))
+
+(defun fold-children (&optional pos)
+  (interactive)
+  (save-excursion
+    (let ((range (cal-fold-region-line pos)))
+      (when range
+        (goto-char (cdr (assoc :start range)))
+        (while (goto-list 1 0)
+          (fold-at-end))))))
+
+(defun toggle-fold-line (&optional pos)
+  (interactive)
+  (let ((status (current-fold-state)))
+    (cond
+     ((eq status :no-fold) nil)
+     ((eq status :unfolded) (fold-line pos))
+     ((eq status :mis-folded)
+      (unfold-line pos)
+      (unless (eq last-command 'toggle-fold-line)
+        (fold-line pos)))
+     ((eq status :folded)
+      (unfold-line pos)
+      (fold-children pos))
+     (t :default))))
+
+(defun toggle-fold-all ()
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (if (and (eq last-command 'toggle-fold-all)
+             (get-overlays (point-min) (point-max)))
+        (delete-overlays (point-min) (point-max))
+      (progn (delete-overlays (point-min) (point-max))
+             (while (goto-list 1 0)
+               (fold-at-end))))))
+
+;; key binding
+
+(my/set-key-bindings
+ 'global-set-key
+ '(("C-<tab>" toggle-fold-line)
+   ("C-S-<tab>" toggle-fold-all)))
+
+;; TODO graphviz dot mode
+
+(defun my/graphviz-mode ()
+  ""
+  (setq graphviz-dot-indent-width 2)
+  ;; (setq graphviz-dot-auto-indent-on-semi nil)
+  )
+(add-hook 'graphviz-dot-mode-hook 'my/graphviz-mode)
+
+;; web-mode
+
+(use-package web-mode
+  :mode "\\.\\(jsx\\|html\\|hbs\\)\\'"
+  :config
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-code-indent-offset 2)
+  (setq web-mode-attr-indent-offset 2)
+  (setq web-mode-style-padding 2)
+  (setq web-mode-script-padding 2)
+  (setq web-mode-block-padding 0)
+  (set-face-attribute 'web-mode-html-tag-face nil :foreground "SkyBlue1")
+  (setq web-mode-enable-current-element-highlight t)
+  (set-face-attribute 'web-mode-current-element-highlight-face nil :background "honeydew4")
+  (setq web-mode-enable-current-column-highlight nil)
+  (setq web-mode-enable-sexp-functions t)
+  ;; (setq web-mode-enable-auto-quoting nil)
+  ;; (setq web-mode-enable-auto-indentation nil)
+
+  ;; setup for org-mode
+  (add-to-list
+   'org-src-lang-modes '("web" . web))
+  (org-babel-do-load-languages
+    'org-babel-load-languages
+    '((web . t)))
+  )
+
+;; node-modules-path-setup
+;; From: https://github.com/codesuki/add-node-modules-path
+
+(defun my/node-modules-path-setup ()
+  (defvar add-node-modules-path-debug nil
+    "Enable verbose output when non nil.")
+
+  (defun add-node-modules-path ()
+    "Search the current buffer's parent directories for `node_modules/.bin`.
+If it's found, then add it to the `exec-path'."
+    (let* ((root (locate-dominating-file
+                  (or (buffer-file-name) default-directory)
+                  "node_modules"))
+           (path (and root
+                      (expand-file-name "node_modules/.bin/" root))))
+      (if root
+          (progn
+            (make-local-variable 'exec-path)
+            (add-to-list 'exec-path path)
+            (when add-node-modules-path-debug
+              (message (concat "added " path  " to exec-path"))))
+        (when add-node-modules-path-debug
+          (message (concat "node_modules not found in " root))))))
+  (eval-after-load 'js-mode
+    '(add-hook 'js-mode-hook #'add-node-modules-path))
+  (eval-after-load 'js2-mode
+  '(add-hook 'js2-mode-hook #'add-node-modules-path))
+  (eval-after-load 'web-mode
+    '(add-hook 'web-mode-hook #'add-node-modules-path)))
+(my/node-modules-path-setup)
+
+;; js-mode (deprecated to typescript)
+;; :PROPERTIES:
+;; xxx:header-args: :tangle no
+;; :END:
+
+(defun my/js-setup ()
+  (setq-default js-indent-level 2))
+(my/js-setup)
+
+;; js2-mode (deprecated to typescript)
+;; :PROPERTIES:
+;; xxx:header-args: :tangle no
+;; :END:
+
+(defun my/js2-setup ()
+  ;; js2-mode-hide-comments
+  ;; js2-mode-hide-element
+  ;; js2-mode-hide-functions
+  ;; js2-mode-hide-warnings-and-errors
+  ;;
+  ;; js2-mode-show-all
+  ;; js2-mode-show-comments
+  ;; js2-mode-show-element
+  ;; js2-mode-show-functions
+  ;; js2-mode-show-node
+  ;;
+  ;; js2-mode-toggle-element "C-c C-o"
+  ;; js2-mode-toggle-hide-comments
+  ;; js2-mode-toggle-hide-functions
+  ;; js2-mode-toggle-warnings-and-errors
+  (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+  (setq-default js-indent-level 2)
+  ;; this will hide errors & warnings
+  (setq-default js2-mode-show-parse-errors nil)
+  (setq-default js2-mode-show-strict-warnings nil)
+  (setq-default js2-bounce-indent-p t)
+  ;; (setq-default js2-strict-inconsistent-return-warning nil)
+  (defun my/init-js ()
+    ;; (electric-indent-mode -1)
+    (my/set-key-bindings
+     'local-set-key
+     '()))
+  (add-hook 'js2-mode-hook 'my/init-js))
+
+(if (package-installed-p 'js2-mode)
+    (my/js2-setup)
+  (message "js2-mode not installed"))
+
+;; TODO spell
+
+(setq-default ispell-program-name "aspell")
+
+;; done
+
+(message "init complete")
