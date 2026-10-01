@@ -115,6 +115,7 @@
 - [[#json-mode][json-mode]]
 - [[#c][c++]]
   - [[#org-babel-examples][org-babel examples]]
+  - [[#suppress-warning-pop-ups][suppress warning pop-ups]]
   - [[#org-babel-via-docker][org-babel via docker]]
 - [[#rust][rust]]
 - [[#plantuml][plantuml]]
@@ -1803,7 +1804,9 @@ This requires libvterm to be installed
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((C . t)))
-  )
+  ;; allow lowercase #+begin_src c to work like #+begin_src C
+  (defalias 'org-babel-execute:c 'org-babel-execute:C)
+  (defalias 'org-babel-expand-body:c 'org-babel-expand-body:C))
 (my/setup-c++)
 #+end_src
 ** org-babel examples
@@ -1817,6 +1820,27 @@ cout << "Hello World!\n";
 
 #+RESULTS:
 : Hello World!
+
+** suppress warning pop-ups
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+Compiler warnings go to stderr and cause a ~*Org-Babel Error Output*~ buffer to pop up.
+Use ~:flags -w~ in the block header to suppress all warnings:
+
+#+begin_example
+#+begin_src C :flags -w
+...
+#+end_src
+#+end_example
+
+To suppress warnings globally for all C/C++ blocks, add to the file or subtree properties:
+
+#+begin_example
+#+PROPERTY: header-args:C :flags -w
+#+PROPERTY: header-args:c :flags -w
+#+PROPERTY: header-args:C++ :flags -w
+#+end_example
 
 ** org-babel via docker
 *** =my/org-babel-execute:C++=
