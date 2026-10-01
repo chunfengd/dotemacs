@@ -116,6 +116,7 @@
 - [[#c][c++]]
   - [[#org-babel-examples][org-babel examples]]
   - [[#suppress-warning-pop-ups][suppress warning pop-ups]]
+  - [[#feed-stdin-with-stdin][feed stdin with =:stdin=]]
   - [[#org-babel-via-docker][org-babel via docker]]
 - [[#rust][rust]]
 - [[#plantuml][plantuml]]
@@ -1842,6 +1843,96 @@ To suppress warnings globally for all C/C++ blocks, add to the file or subtree p
 #+PROPERTY: header-args:C++ :flags -w
 #+end_example
 
+** feed stdin with =:stdin=
+~ob-C~ ignores the standard ~:stdin~ header argument: ~org-babel-C-execute~ hardcodes an empty stdin for both the compile and the run step.
+
+The advice below adds ~:stdin~ support, covering ~C~, ~c~ and ~C++~ blocks (they all go through ~org-babel-C-execute~). The value may be a literal string or a reference to a named data block/table (resolved the same way ~ob-shell~ does).
+*** code
+#+begin_src emacs-lisp
+(require 'cl-lib)
+(require 'ob-shell) ; for org-babel-sh-var-to-string
+
+(defun my/org-babel-C-stdin-input (params)
+  "Resolve the :stdin header arg in PARAMS to a string, or nil.
+The value may be a literal string or a reference to a named
+block/table (resolved the same way `ob-shell' resolves :stdin)."
+  (let ((stdin (cdr (assq :stdin params))))
+    (when (stringp stdin)
+      (org-babel-sh-var-to-string
+       (or (condition-case nil
+               (org-babel-ref-resolve stdin)
+             (error stdin))
+           "")))))
+
+(defun my/org-babel-C-execute-with-stdin (orig-fun body params)
+  "Advice around `org-babel-C-execute' adding :stdin support.
+Feeds the :stdin value to the compiled binary's stdin. Covers C,
+c and C++ blocks since they all go through `org-babel-C-execute'."
+  (let ((input (my/org-babel-C-stdin-input params)))
+    (if (not input)
+        (funcall orig-fun body params)
+      (let ((orig-eval (symbol-function 'org-babel-eval)))
+        (cl-letf (((symbol-function 'org-babel-eval)
+                   (lambda (cmd query)
+                     ;; ob-C passes "" as stdin for both the compile
+                     ;; and the run step; gcc ignores piped stdin when
+                     ;; compiling from files, so feeding input to both
+                     ;; is harmless.
+                     (funcall orig-eval cmd
+                              (if (and (stringp query) (string= query ""))
+                                  input
+                                query)))))
+          (funcall orig-fun body params))))))
+
+(advice-add 'org-babel-C-execute :around #'my/org-babel-C-execute-with-stdin)
+#+end_src
+*** example: named data block/table input
+Note the input must be a named data block such as ~example~ or a table, not a named ~src~ block (named ~src~ blocks are executed and their /output/ is used instead):
+
+#+name: my-input
+#+begin_example
+hello world
+#+end_example
+
+#+begin_src c :stdin hello-input :results output :tangle no
+  #include <stdio.h>
+
+  int main() {
+    char c;
+    while ((c = getchar()) != EOF) {
+      printf("%c", c);
+    }
+  }
+
+#+end_src
+*** example: output of src block
+#+name: echo-output
+#+begin_src sh :tangle no
+  echo "hello from echo"
+#+end_src
+
+#+begin_src c :stdin echo-output :results output :tangle no
+  #include <stdio.h>
+
+  int main() {
+    char c;
+    while ((c = getchar()) != EOF) {
+      printf("%c", c);
+    }
+  }
+#+end_src
+
+*** example: string literal
+#+begin_src c :stdin "hello" :results output :tangle no
+  #include <stdio.h>
+
+  int main() {
+    char c;
+    while ((c = getchar()) != EOF) {
+      printf("%c", c);
+    }
+  }
+#+end_src
 ** org-babel via docker
 *** =my/org-babel-execute:C++=
 #+begin_src emacs-lisp
