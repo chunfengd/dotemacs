@@ -210,11 +210,14 @@ After cloning from [[https://github.com/xiongtx/.emacs.d][GitHub]], there is no 
 Open =init.org= and call =M-x org-babel-tangle=, which extracts code blocks from the current file into =init.el=
 ** tangle via command line
 #+BEGIN_SRC sh :tangle no
-$ ./tangle.sh
+./tangle.sh
 #+END_SRC
+
+#+RESULTS:
+
 or
+
 #+BEGIN_SRC sh :tangle no
-$ \
 emacs --batch \
         --eval "(require 'ob-tangle)" \
         --eval "(org-babel-tangle-file \"./init.org\")"
