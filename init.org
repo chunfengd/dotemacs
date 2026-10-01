@@ -2026,6 +2026,21 @@ hello world
 #+begin_src sh :tangle no
 $ docker run -v ~/orgtmp:/playground -v $PWD:/include:ro --rm -it cppdev bash
 #+end_src
+*** example: call the same code with different stdin
+#+name: cecho
+#+begin_src C :stdin "" :includes <stdio.h> :tangle no
+  #include <stdio.h>
+  int main() {
+    char c;
+    while ((c = getchar()) != EOF) {
+      printf("%c", c);
+    }
+  }
+#+end_src
+
+#+call: cecho[:stdin "hello"]()
+
+#+call: cecho[:stdin "world"]()
 * rust
 #+begin_src emacs-lisp
 (use-package rust-mode)
