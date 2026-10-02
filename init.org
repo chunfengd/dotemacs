@@ -2667,11 +2667,15 @@ xxx:header-args: :tangle no
 (setq-default ispell-program-name "aspell")
 #+END_SRC
 * TODO tramp
-#+BEGIN_SRC emacs-lisp :tangle no
-(require 'tramp)
-(setq tramp-default-method "scp")
-;;(custom-set-variables '(tramp-verbose 6))
-(eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
+#+BEGIN_SRC emacs-lisp
+  (require 'tramp)
+
+  ;; these are for org-babel using ControlMaster
+  (setq tramp-default-method "sshx")
+  (setq tramp-use-ssh-controlmaster-options nil)
+
+  ;;(custom-set-variables '(tramp-verbose 6))
+  ;;(eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 #+END_SRC
 * TODO prettier
 - https://github.com/prettier/prettier-emacs

@@ -1882,6 +1882,17 @@ If it's found, then add it to the `exec-path'."
 
 (setq-default ispell-program-name "aspell")
 
+;; TODO tramp
+
+(require 'tramp)
+
+;; these are for org-babel using ControlMaster
+(setq tramp-default-method "sshx")
+(setq tramp-use-ssh-controlmaster-options nil)
+
+;;(custom-set-variables '(tramp-verbose 6))
+;;(eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
+
 ;; done
 
 (message "init complete")
