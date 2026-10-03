@@ -94,6 +94,7 @@
   - [[#toc-org][toc-org]]
   - [[#initial-visibility][initial visibility]]
   - [[#key-shortcut][key shortcut]]
+  - [[#org-babel][org-babel]]
 - [[#org-gtd][org-gtd]]
   - [[#add-agenda-files-into-emacsdinitel][add agenda files into =~/.emacs.d/init.el=]]
   - [[#agenda-hook][agenda-hook]]
@@ -107,7 +108,6 @@
   - [[#vterm][vterm]]
   - [[#tm-function][tm function]]
   - [[#sh-mode][sh mode]]
-  - [[#org-babel][org-babel]]
   - [[#shell-mode][shell mode]]
   - [[#sh-function][sh function]]
 - [[#text-mode][text-mode]]
@@ -1588,6 +1588,20 @@ Set =VISIBILITY= property to =folded=, =children=, =content= or =all=.
 | <tab>          | org-cycle                        |
 | S-<tab>        | org-shifttab (tab all)           |
 |----------------+----------------------------------|
+** org-babel
+#+begin_src emacs-lisp
+(org-babel-do-load-languages
+  'org-babel-load-languages
+  '((shell . t)))
+
+;; Default :results to output (instead of value/table).
+;; Keep `replace' so re-executing a block replaces the old result
+;; instead of piling new results on top of it.
+;; Preserves other defaults in `org-babel-default-header-args'.
+(setq org-babel-default-header-args
+      (cons '(:results . "output replace")
+            (assq-delete-all :results org-babel-default-header-args)))
+#+end_src
 * org-gtd
 ** add agenda files into =~/.emacs.d/init.el=
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -1783,12 +1797,6 @@ This requires libvterm to be installed
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'auto-mode-alist '("/\\.bash_[^/]*\\'" . sh-mode))
 #+END_SRC
-** org-babel
-#+begin_src emacs-lisp
-(org-babel-do-load-languages
-  'org-babel-load-languages
-  '((shell . t)))
-#+end_src
 ** TODO shell mode
 #+BEGIN_SRC emacs-lisp
 (defun my/shell-mode-hook-func ()

@@ -1125,6 +1125,20 @@ Not exactly but it's easier to remember"
   :init
   (add-hook 'org-mode-hook #'toc-org-enable))
 
+;; org-babel
+
+(org-babel-do-load-languages
+  'org-babel-load-languages
+  '((shell . t)))
+
+;; Default :results to output (instead of value/table).
+;; Keep `replace' so re-executing a block replaces the old result
+;; instead of piling new results on top of it.
+;; Preserves other defaults in `org-babel-default-header-args'.
+(setq org-babel-default-header-args
+      (cons '(:results . "output replace")
+            (assq-delete-all :results org-babel-default-header-args)))
+
 ;; agenda-hook
 
 (defun my/org-agenda-mode-hook-func ()
@@ -1294,12 +1308,6 @@ Not exactly but it's easier to remember"
 ;; sh mode
 
 (add-to-list 'auto-mode-alist '("/\\.bash_[^/]*\\'" . sh-mode))
-
-;; org-babel
-
-(org-babel-do-load-languages
-  'org-babel-load-languages
-  '((shell . t)))
 
 ;; TODO shell mode
 
