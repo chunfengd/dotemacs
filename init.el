@@ -464,8 +464,26 @@
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
   :custom
-  ((doom-modeline-height 15)
-   ))
+  ((doom-modeline-height 15))
+  :config
+  ;; Keep active/inactive segments in agreement with the modeline base.
+  ;; `doom-modeline--active' wrongly reports active while the minibuffer
+  ;; is reading (it maps to the invoking window) and while the frame is
+  ;; unfocused (selection is unchanged), but Emacs uses the inactive
+  ;; base in both cases -- mixing blue and dark segments on one line.
+  (defun my/doom-modeline--active-with-focus (orig-fun)
+    (and (or (not (fboundp 'frame-focus-state)) (frame-focus-state))
+         (not (active-minibuffer-window))
+         (funcall orig-fun)))
+  (advice-add 'doom-modeline--active :around #'my/doom-modeline--active-with-focus)
+
+  ;; Disable doom-modeline's focus-out face remap: redundant on macOS
+  ;; (the NS port already uses the inactive base unfocused) and buggy
+  ;; (global cookie vs buffer-local remap leaves stuck dark modelines).
+  (advice-add 'doom-modeline-focus :override #'ignore)
+  (advice-add 'doom-modeline-unfocus :override #'ignore)
+  (remove-hook 'focus-in-hook #'doom-modeline-focus)
+  (remove-hook 'focus-out-hook #'doom-modeline-unfocus))
 
 ;; doom-theme
 
