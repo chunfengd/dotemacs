@@ -1000,9 +1000,25 @@ Not exactly but it's easier to remember"
 
 ;; Set up appearance.
 
+(defface my/org-bold
+  '((t :inherit bold :foreground "#73d0ff" :weight bold))
+  "Face for bold Org emphasis text.")
+
 (defun my/org-appearance-setup ()
   ;; set for variable pitch
   (variable-pitch-mode 1)
+
+  ;; Bold emphasis in blue. Org maps "*" to the generic `bold' face
+  ;; (see `org-emphasis-alist'), so a buffer-local mapping is what
+  ;; keeps bold elsewhere in Emacs unchanged. Other entries are the
+  ;; Org defaults, unchanged.
+  (setq-local org-emphasis-alist
+              '(("*" my/org-bold)
+                ("/" italic)
+                ("_" underline)
+                ("=" org-verbatim verbatim)
+                ("~" org-code verbatim)
+                ("+" (:strike-through t))))
 
   ;; visual-line-mode
   (set-category-table my/org-category-table)
