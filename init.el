@@ -1024,12 +1024,6 @@ Not exactly but it's easier to remember"
                         :weight 'bold
                         :height (cdr face)))
 
-  (font-lock-add-keywords
-   'org-mode
-   '(("^ *\\([-]\\) "
-      (0 (prog1 ()
-           (compose-region (match-beginning 1) (match-end 1) "•"))))))
-
   ;; (setq org-src-fontify-natively t)
   ;; (setq org-src-tab-acts-natively t)
 
@@ -1069,6 +1063,15 @@ Not exactly but it's easier to remember"
   (org-indent-mode t)
   (set-face-attribute 'org-indent
                     nil :inherit '(org-hide fixed-pitch))
+
+  ;; Physical leading spaces before list bullets in fixed-pitch, so
+  ;; nested indentation is as wide as in code buffers. The virtual
+  ;; prefix from `org-indent-mode' is already fixed-pitch via
+  ;; `org-indent' above; these spaces have no face of their own and
+  ;; otherwise inherit `variable-pitch'.
+  (font-lock-add-keywords
+   nil
+   '(("^\\( +\\)\\([-+*]\\|[0-9]+[.)]\\) " 1 'fixed-pitch)))
   (set-face-attribute 'org-hide
                     nil :inherit 'fixed-pitch)
 
@@ -1080,6 +1083,103 @@ Not exactly but it's easier to remember"
   ;;                     nil :inherit 'fixed-pitch)
   )
 (add-hook 'org-mode-hook 'my/org-appearance-setup)
+
+;; org-superstar
+;; Replace heading markers and plain-list bullets with larger UTF-8 glyphs.
+
+(use-package org-superstar
+  :after org
+  :custom
+  ;; The default maps `-` to an en-dash, which is even smaller than `•`.
+  (org-superstar-item-bullet-alist '((?* . ?●) (?+ . ?◆) (?- . ?●)))
+  (org-superstar-headline-bullets-list '(?◉ ?○ ?✸ ?✿))
+  (org-superstar-remove-leading-stars t)
+  :hook (org-mode . org-superstar-mode)
+  :config
+  (set-face-attribute 'org-superstar-item nil
+                      :height 1.3 :weight 'bold :foreground "#ffcc66")
+  (set-face-attribute 'org-superstar-header-bullet nil
+                      :height 1.2 :weight 'bold))
+
+;; list bullet colors
+;; Color plain list bullets by nesting depth, cycling through three
+;; colors. =org-superstar= has a single face for all list bullets, so
+;; this adds a depth-aware font-lock rule on top of it. Depth is the
+;; parent chain by indentation, which also handles numbered lists
+;; whose step differs from =-= lists. Colors cycle so adjacent depths
+;; always differ.
+
+(defface my/org-list-bullet-1
+  '((t :inherit org-superstar-item :height 1.3 :weight bold :foreground "#ffcc66"))
+  "Face for depth-1 plain list bullets.")
+(defface my/org-list-bullet-2
+  '((t :inherit org-superstar-item :height 1.3 :weight bold :foreground "#95e6cb"))
+  "Face for depth-2 plain list bullets.")
+(defface my/org-list-bullet-3
+  '((t :inherit org-superstar-item :height 1.3 :weight bold :foreground "#d4bfff"))
+  "Face for depth-3 plain list bullets.")
+
+;; Size is stated on each face: height does not reliably inherit
+;; from `org-superstar-item'.
+(defvar my/org-list-bullet-faces
+  [my/org-list-bullet-1 my/org-list-bullet-2 my/org-list-bullet-3]
+  "Bullet faces cycling by plain list depth.")
+
+(defun my/org-list-bullet-depth ()
+  "Return 1-based nesting depth of the list item on the current line.
+An item's parent is the nearest preceding list item with strictly
+smaller indentation.  Assumes point is on a list item line."
+  (save-match-data
+    (save-excursion
+      (beginning-of-line)
+      (let ((indent (current-indentation)) (depth 1))
+        (catch 'done
+          (while (> (point) (point-min))
+            (forward-line -1)
+            (beginning-of-line)
+            (cond
+             ((looking-at "^\\*+ ") (throw 'done depth))
+             ((looking-at "^#\\+") (throw 'done depth))
+             ((looking-at "^ *\\([-+*]\\|[0-9]+[.)]\\) ")
+              (let ((ind2 (current-indentation))
+                    (bullet (match-string 1)))
+                (when (and (< ind2 indent)
+                           (not (and (equal bullet "*") (= ind2 0))))
+                  (setq indent ind2)
+                  (setq depth (1+ depth)))))))
+          depth)))))
+
+(defun my/org-list-bullet-face ()
+  "Return the face for the list bullet in the current match."
+  (let ((depth (my/org-list-bullet-depth)))
+    (aref my/org-list-bullet-faces
+          (mod (1- (or depth 1)) (length my/org-list-bullet-faces)))))
+
+(defun my/org-list-bullet-matcher (limit)
+  "Search for the next plain list bullet up to LIMIT.
+Set match data with group 2 as the bullet.  Headings and lines
+in source blocks are skipped."
+  (let (found)
+    (while (and (not found)
+                (re-search-forward "^\\( *\\)\\([-+*]\\|[0-9]+[.)]\\) " limit t))
+      (let ((indent (length (match-string 1)))
+            (bullet (match-string 2)))
+        (when (and (not (and (equal bullet "*") (= indent 0)))
+                   (save-match-data
+                     (save-excursion
+                       (goto-char (match-beginning 0))
+                       (and (org-at-item-p)
+                            (not (org-in-src-block-p))))))
+          (setq found t))))
+    found))
+
+;; Override `org-superstar-item' with the depth face. The superstar
+;; rule still composes the glyph; this only replaces its color.
+(with-eval-after-load 'org
+  (font-lock-add-keywords 'org-mode
+                          '((my/org-list-bullet-matcher
+                             (2 (my/org-list-bullet-face) t)))
+                          t))
 
 ;; org-appear
 ;; When =org-hide-emphasis-markers= is turned on. It temporarily shows the
